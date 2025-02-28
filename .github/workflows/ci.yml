@@ -40,12 +40,12 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        working-directory: $ {{ secrets.WORKING_DIRECTORY }}
+        working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
       - name: Execute checkstyleMain
         run: ./gradlew clean checkstyleMain
-        working-directory: $ {{ secrets.WORKING_DIRECTORY }}
+        working-directory: ${{ secrets.WORKING_DIRECTORY }}
 
       - name: Execute checkstyleTest
         run: ./gradlew clean checkstyleTest
-        working-directory: $ {{ secrets.WORKING_DIRECTORY }}
+        working-directory: ${{ secrets.WORKING_DIRECTORY }}

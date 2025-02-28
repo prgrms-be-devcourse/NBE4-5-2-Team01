@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : CI Working Directory 설정">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
-    </list>
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -221,7 +219,7 @@
       <workItem from="1740713671580" duration="5000" />
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
-      <workItem from="1740722692969" duration="2585000" />
+      <workItem from="1740722692969" duration="2904000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
@@ -247,7 +245,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740724997770</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Chore : 오타 수정">
+      <option name="closed" value="true" />
+      <created>1740725333267</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740725333267</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -257,7 +263,8 @@
     <MESSAGE value="Feat : naver-checkstyle 린트 적용" />
     <MESSAGE value="Feat : CI 작성" />
     <MESSAGE value="Chore : CI Working Directory 설정" />
-    <option name="LAST_COMMIT_MESSAGE" value="Chore : CI Working Directory 설정" />
+    <MESSAGE value="Chore : 오타 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chore : 오타 수정" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
