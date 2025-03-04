@@ -21,12 +21,12 @@ public class Follow {
 	@Column(name = "follow_id")
 	private Long id;
 
-	private Long followerId;
+	private Long toUserId;
 
-	private Long followingId;
+	private Long fromUserId;
 
-	public Follow(Long followerId, Long followingId) {
-		this.followerId = followerId;
-		this.followingId = followingId;
+	public Follow(Long toUserId, Long fromUserId) {
+		this.toUserId = toUserId;
+		this.fromUserId = fromUserId;
 	}
 }

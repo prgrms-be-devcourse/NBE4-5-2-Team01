@@ -1,6 +1,7 @@
 package com.team01.project.follow.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,11 @@ public class FollowController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void create(@PathVariable(name = "user-id") Long userId) {
 		commandFollowService.create(userId);
+	}
+
+	@DeleteMapping("/{user-id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable(name = "user-id") Long userId) {
+		commandFollowService.delete(userId);
 	}
 }

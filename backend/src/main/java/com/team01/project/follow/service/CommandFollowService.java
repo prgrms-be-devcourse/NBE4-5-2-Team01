@@ -15,7 +15,14 @@ public class CommandFollowService {
 
 	private final FollowRepository followRepository;
 
-	public void create(Long followingId) {
-		followRepository.save(new Follow(followingId, 0L));
+	public void create(Long toUserId) {
+		followRepository.save(new Follow(toUserId, 0L));
+	}
+
+	public void delete(Long toUserId) {
+		Follow follow = followRepository.findByToUserIdAndFromUserId(toUserId, 0L)
+			.orElseThrow(() -> new IllegalArgumentException("팔로우를 찾을 수 없습니다."));
+
+		followRepository.delete(follow);
 	}
 }
