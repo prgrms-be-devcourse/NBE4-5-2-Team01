@@ -1,16 +1,15 @@
 package com.team01.project.domain.notification.entity;
 
+import com.team01.project.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
@@ -19,9 +18,9 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     private LocalDateTime notificationTime;
 
@@ -30,10 +29,4 @@ public class Notification {
 
     private boolean isRead = false;
 
-//    public Notification(User user, LocalDateTime notificationTime, String message) {
-//        this.user = user;
-//        this.notificationTime = notificationTime;
-//        this.message = message;
-//        this.isRead = false;
-//    }
 }
