@@ -23,6 +23,12 @@ public class NotificationService {
         return notificationRepository.findByUserId(userId);
     }
 
+    @Transactional(readOnly = true)
+    public Notification getNotification(Long notificationId) {
+        return notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
+    }
+
     @Transactional
     public Notification createNotification(Long userId, String message, LocalDateTime notificationTime) {
         User user = userRepository.findById(userId)
