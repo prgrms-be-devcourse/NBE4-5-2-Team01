@@ -18,6 +18,10 @@ public class NotificationService {
 
 	private final UserRepository userRepository; // User 조회를 위해 필요
 
+	public List<Notification> getAllNotifications() {
+		return notificationRepository.findAll();
+	}
+
 	@Transactional(readOnly = true)
 	public List<Notification> getUserNotifications(Long userId) {
 		return notificationRepository.findByUserId(userId);

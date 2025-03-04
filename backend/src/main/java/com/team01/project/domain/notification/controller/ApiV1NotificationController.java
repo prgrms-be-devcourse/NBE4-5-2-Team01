@@ -19,6 +19,15 @@ import java.util.List;
 public class ApiV1NotificationController {
 	private final NotificationService notificationService;
 
+	// 전체 알림 목록 조회
+	@GetMapping
+	public ResponseEntity<List<NotificationDto>> getNotifications() {
+		return ResponseEntity.ok(notificationService.getAllNotifications()
+				.stream()
+				.map(NotificationDto::new)
+				.toList());
+	}
+
 	// 특정 사용자의 알림 목록 조회
 	@GetMapping("/{userId}/lists")
 	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "userId") Long userId) {
