@@ -34,7 +34,7 @@ public class ApiV1MusicController {
 		return ResponseEntity.ok(musicDto);
 	}
 
-	@PostMapping("/save/{id}")
+	@PostMapping("/spotify/{id}")
 	public ResponseEntity<MusicDto> saveMusicFromSpotify(
 		@PathVariable String id,
 		@RequestHeader("Authorization") String accessToken
