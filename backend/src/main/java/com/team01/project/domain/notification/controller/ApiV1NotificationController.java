@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,9 +35,12 @@ public class ApiV1NotificationController {
     public ResponseEntity<Notification> createNotification(
             @RequestParam Long userId,
             @RequestParam String message,
-            @RequestParam LocalDateTime notificationTime) {
+            @RequestParam String notificationTime) {
 
-        Notification notification = notificationService.createNotification(userId, message, notificationTime);
+        // "HH:mm" 형식의 문자열을 LocalTime으로 변환
+        LocalTime time = LocalTime.parse(notificationTime, DateTimeFormatter.ofPattern("HH:mm"));
+
+        Notification notification = notificationService.createNotification(userId, message, time);
         return ResponseEntity.ok(notification);
     }
 
@@ -51,7 +55,7 @@ public class ApiV1NotificationController {
             @NotBlank
             String message,
             @NotBlank
-            LocalDateTime localDateTime
+            LocalTime notificationTime
     ) {
     }
 
@@ -59,7 +63,7 @@ public class ApiV1NotificationController {
     @PutMapping("/{notificationId}/modify")
     public ResponseEntity<Notification> ModifyNotification(@PathVariable Long notificationId, @RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
         Notification notification = notificationService.updateNotification(
-                notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.localDateTime);
+                notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
 
         return ResponseEntity.ok(notification);
     }

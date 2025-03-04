@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -30,7 +30,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public Notification createNotification(Long userId, String message, LocalDateTime notificationTime) {
+    public Notification createNotification(Long userId, String message, LocalTime notificationTime) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
@@ -47,7 +47,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public Notification updateNotification(Long notificationId, String message, LocalDateTime notificationTime) {
+    public Notification updateNotification(Long notificationId, String message, LocalTime notificationTime) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
         notification.setMessage(message);

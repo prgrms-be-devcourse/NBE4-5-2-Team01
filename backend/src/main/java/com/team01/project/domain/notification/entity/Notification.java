@@ -4,7 +4,7 @@ import com.team01.project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -22,7 +22,7 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime notificationTime;
+    private LocalTime notificationTime; // 시:분만 저장
 
     @Column(nullable = false)
     private String message;
