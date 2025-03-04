@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team01.project.domain.music.dto.MusicDto;
 import com.team01.project.domain.music.entity.Music;
@@ -17,12 +18,17 @@ public class MusicService {
 
 	private final MusicRepository musicRepository;
 
+	@Transactional
 	public MusicDto saveMusic(MusicDto musicDto) {
-		Music music = musicDto.toEntity();
-		Music savedMusic = musicRepository.save(music);
-		return MusicDto.fromEntity(savedMusic);
+		return musicRepository.findById(musicDto.getId())
+			.map(MusicDto::fromEntity)
+			.orElseGet(() -> {
+				Music savedMusic = musicRepository.save(musicDto.toEntity());
+				return MusicDto.fromEntity(savedMusic);
+			});
 	}
 
+	@Transactional(readOnly = true)
 	public List<MusicDto> getAllMusic() {
 		return musicRepository.findAll()
 			.stream()
@@ -30,12 +36,14 @@ public class MusicService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public MusicDto getMusicById(String id) {
-		Music music = musicRepository.findById(id)
+		return musicRepository.findById(id)
+			.map(MusicDto::fromEntity)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 음악을 찾을 수 없습니다: " + id));
-		return MusicDto.fromEntity(music);
 	}
 
+	@Transactional
 	public void deleteMusic(String id) {
 		if (!musicRepository.existsById(id)) {
 			throw new IllegalArgumentException("해당 ID의 음악을 찾을 수 없습니다: " + id);
