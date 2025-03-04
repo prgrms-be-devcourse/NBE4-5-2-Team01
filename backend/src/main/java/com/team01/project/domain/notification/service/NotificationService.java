@@ -30,5 +30,12 @@ public class NotificationService {
         return notificationRepository.save(Notification.builder().user(user).notificationTime(notificationTime).message(message).build());
     }
 
+    @Transactional
+    public void markAsRead(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
 
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/notifications")
+@RequestMapping("/notifications")
 public class ApiV1NotificationController {
     private final NotificationService notificationService;
 
@@ -32,5 +32,10 @@ public class ApiV1NotificationController {
         return ResponseEntity.ok(notification);
     }
 
-
+    // 알림 읽음 처리
+    @PutMapping("/{notificationId}/read")
+    public ResponseEntity<String> markNotificationAsRead(@PathVariable Long notificationId) {
+        notificationService.markAsRead(notificationId);
+        return ResponseEntity.ok("Notification marked as read");
+    }
 }
