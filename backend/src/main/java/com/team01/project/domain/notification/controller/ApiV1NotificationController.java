@@ -4,11 +4,9 @@ import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,6 +19,17 @@ public class ApiV1NotificationController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getUserNotifications(userId));
+    }
+
+    // 알림 생성
+    @PostMapping("/create")
+    public ResponseEntity<Notification> createNotification(
+            @RequestParam Long userId,
+            @RequestParam String message,
+            @RequestParam LocalDateTime notificationTime) {
+
+        Notification notification = notificationService.createNotification(userId, message, notificationTime);
+        return ResponseEntity.ok(notification);
     }
 
 
