@@ -17,71 +17,74 @@ import java.util.List;
 @RestController
 @RequestMapping("/notifications")
 public class ApiV1NotificationController {
-    private final NotificationService notificationService;
+	private final NotificationService notificationService;
 
-    // 특정 사용자의 알림 목록 조회
-    @GetMapping("/{userId}/lists")
-    public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "userId") Long userId) {
-        return ResponseEntity.ok(notificationService.getUserNotifications(userId)
-                .stream()
-                .map(NotificationDto::new)
-                .toList());
-    }
+	// 특정 사용자의 알림 목록 조회
+	@GetMapping("/{userId}/lists")
+	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "userId") Long userId) {
+		return ResponseEntity.ok(notificationService.getUserNotifications(userId)
+				.stream()
+				.map(NotificationDto::new)
+				.toList());
+	}
 
-    // 알림 단건 조회
-    @GetMapping("/{notificationId}")
-    public ResponseEntity<NotificationDto> getUserNotification(@PathVariable(name = "notificationId") Long notificationId) {
-        Notification notification = notificationService.getNotification(notificationId);
-        return ResponseEntity.ok(new NotificationDto(notification));
-    }
+	// 알림 단건 조회
+	@GetMapping("/{notificationId}")
+	public ResponseEntity<NotificationDto> getUserNotification(
+			@PathVariable(name = "notificationId") Long notificationId) {
+		Notification notification = notificationService.getNotification(notificationId);
+		return ResponseEntity.ok(new NotificationDto(notification));
+	}
 
-    record WriteNotificationReqBody(
-            @NotNull
-            Long userId,
-            @NotBlank
-            String message,
-            @NotNull
-            LocalTime notificationTime
-    ) {
-    }
+	record WriteNotificationReqBody(
+			@NotNull
+			Long userId,
+			@NotBlank
+			String message,
+			@NotNull
+			LocalTime notificationTime
+	) {
+	}
 
-    // 알림 생성
-    @PostMapping("/create")
-    public ResponseEntity<String> createNotification(
-            @RequestBody @Valid WriteNotificationReqBody reqBody) {
+	// 알림 생성
+	@PostMapping("/create")
+	public ResponseEntity<String> createNotification(
+			@RequestBody @Valid WriteNotificationReqBody reqBody) {
 
-        notificationService.createNotification(reqBody.userId, reqBody.message, reqBody.notificationTime);
-        return ResponseEntity.ok("알림이 설정되었습니다.");
-    }
+		notificationService.createNotification(reqBody.userId, reqBody.message, reqBody.notificationTime);
+		return ResponseEntity.ok("알림이 설정되었습니다.");
+	}
 
-    // 알림 읽음 처리
-    @PutMapping("/{notificationId}/read")
-    public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notificationId") Long notificationId) {
-        notificationService.markAsRead(notificationId);
-        return ResponseEntity.ok("Notification marked as read");
-    }
+	// 알림 읽음 처리
+	@PutMapping("/{notificationId}/read")
+	public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notificationId") Long notificationId) {
+		notificationService.markAsRead(notificationId);
+		return ResponseEntity.ok("Notification marked as read");
+	}
 
-    record ModifyNotificationReqBody(
-            @NotBlank
-            String message,
-            @NotNull
-            LocalTime notificationTime
-    ) {
-    }
+	record ModifyNotificationReqBody(
+			@NotBlank
+			String message,
+			@NotNull
+			LocalTime notificationTime
+	) {
+	}
 
-    // 알림 변경
-    @PutMapping("/{notificationId}/modify")
-    public ResponseEntity<String> ModifyNotification(@PathVariable(name = "notificationId") Long notificationId, @RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
-        Notification notification = notificationService.updateNotification(
-                notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
+	// 알림 변경
+	@PutMapping("/{notificationId}/modify")
+	public ResponseEntity<String> modifyNotification(
+			@PathVariable(name = "notificationId") Long notificationId,
+			@RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
+		Notification notification = notificationService.updateNotification(
+				notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
 
-        return ResponseEntity.ok("Notification modified");
-    }
+		return ResponseEntity.ok("Notification modified");
+	}
 
-    // 알림 삭제
-    @DeleteMapping("/{notificationId}")
-    public ResponseEntity<String> deleteNotification(@PathVariable(name = "notificationId") Long notificationId) {
-        notificationService.deleteNotification(notificationId);
-        return ResponseEntity.ok("Notification deleted");
-    }
+	// 알림 삭제
+	@DeleteMapping("/{notificationId}")
+	public ResponseEntity<String> deleteNotification(@PathVariable(name = "notificationId") Long notificationId) {
+		notificationService.deleteNotification(notificationId);
+		return ResponseEntity.ok("Notification deleted");
+	}
 }
