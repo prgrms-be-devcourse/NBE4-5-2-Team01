@@ -5,6 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.team01.project.domain.music.entity.Music;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +26,11 @@ public class MusicDto {
 	private String id;
 	private String name;
 	private String singer;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate releaseDate;
+
 	private String albumImage;
 	private String genre;
 
