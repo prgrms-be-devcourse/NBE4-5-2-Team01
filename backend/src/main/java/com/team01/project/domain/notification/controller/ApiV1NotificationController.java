@@ -20,14 +20,18 @@ public class ApiV1NotificationController {
 
     // 특정 사용자의 알림 목록 조회
     @GetMapping("/{userId}/lists")
-    public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable Long userId) {
-        return ResponseEntity.ok(notificationService.getUserNotifications(userId));
+    public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "userId") Long userId) {
+        return ResponseEntity.ok(notificationService.getUserNotifications(userId)
+                .stream()
+                .map(NotificationDto::new)
+                .toList());
     }
 
     // 알림 단건 조회
     @GetMapping("/{notificationId}")
-    public ResponseEntity<Notification> getUserNotification(@PathVariable Long notificationId) {
-        return ResponseEntity.ok(notificationService.getNotification(notificationId));
+    public ResponseEntity<NotificationDto> getUserNotification(@PathVariable(name = "notificationId") Long notificationId) {
+        Notification notification = notificationService.getNotification(notificationId);
+        return ResponseEntity.ok(new NotificationDto(notification));
     }
 
     // 알림 생성
