@@ -1,6 +1,6 @@
-package com.team01.project.notification.service;
+package com.team01.project.domain.notification.service;
 
-import com.team01.project.notification.repository.NotificationRepository;
+import com.team01.project.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

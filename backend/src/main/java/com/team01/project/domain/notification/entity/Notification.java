@@ -1,4 +1,4 @@
-package com.team01.project.notification.entity;
+package com.team01.project.domain.notification.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
-package com.team01.project.notification.controller;
+package com.team01.project.domain.notification.controller;
 
-import com.team01.project.notification.service.NotificationService;
+import com.team01.project.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1NotificationController {
     private final NotificationService notificationService;
 
-    
+
 }

@@ -1,6 +1,6 @@
-package com.team01.project.notification.repository;
+package com.team01.project.domain.notification.repository;
 
-import com.team01.project.notification.entity.Notification;
+import com.team01.project.domain.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
