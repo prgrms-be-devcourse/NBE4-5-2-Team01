@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team01.project.domain.music.dto.MusicDto;
 import com.team01.project.domain.music.service.MusicService;
+import com.team01.project.domain.music.service.SpotifyService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,10 +23,28 @@ import lombok.RequiredArgsConstructor;
 public class MusicController {
 
 	private final MusicService musicService;
+	private final SpotifyService spotifyService;
 
-	@PostMapping
-	public ResponseEntity<MusicDto> createMusic(@RequestBody MusicDto musicDto) {
-		return ResponseEntity.ok(musicService.saveMusic(musicDto));
+	@GetMapping("/spotify/{id}")
+	public ResponseEntity<MusicDto> getMusicFromSpotify(
+		@PathVariable String id,
+		@RequestHeader(value = "Authorization") String accessToken
+	) {
+		MusicDto musicDto = spotifyService.getTrackWithGenre(id, accessToken);
+		return ResponseEntity.ok(musicDto);
+	}
+
+	@PostMapping("/save/{id}")
+	public ResponseEntity<MusicDto> saveMusicFromSpotify(
+		@PathVariable String id,
+		@RequestHeader("Authorization") String accessToken
+	) {
+		MusicDto musicDto = spotifyService.getTrackWithGenre(id, accessToken);
+		if (musicDto != null) {
+			MusicDto savedMusic = musicService.saveMusic(musicDto);
+			return ResponseEntity.ok(savedMusic);
+		}
+		return ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping
@@ -38,7 +57,7 @@ public class MusicController {
 		return ResponseEntity.ok(musicService.getMusicById(id));
 	}
 
-	@DeleteMapping("{/id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteMusic(@PathVariable String id) {
 		musicService.deleteMusic(id);
 		return ResponseEntity.noContent().build();
