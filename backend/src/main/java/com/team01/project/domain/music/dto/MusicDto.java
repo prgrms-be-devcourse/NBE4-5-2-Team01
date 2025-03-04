@@ -40,7 +40,7 @@ public class MusicDto {
 			.id(track.getId())
 			.name(track.getName())
 			.singer(singer)
-			.releaseDate(LocalDate.parse(track.getAlbum().getRelease_date(), DateTimeFormatter.ISO_DATE))
+			.releaseDate(LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE))
 			.albumImage(track.getAlbum().getImages().get(0).getUrl())
 			.genre(genre)
 			.build();

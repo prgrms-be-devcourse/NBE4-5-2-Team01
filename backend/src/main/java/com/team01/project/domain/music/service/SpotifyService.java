@@ -48,7 +48,9 @@ public class SpotifyService {
 
 	public MusicDto getTrackWithGenre(String trackId, String accessToken) {
 		SpotifyTrackResponse track = getTrackInfo(trackId, accessToken);
-		if (track == null) return null;
+		if (track == null) {
+			return null;
+		}
 
 		List<String> artistIds = track.getArtists().stream()
 			.map(SpotifyTrackResponse.Artist::getId)

@@ -22,7 +22,9 @@ public class SpotifyTrackResponse {
 	@Setter
 	public static class Album {
 		private String name;
-		private String release_date;
+
+		@JsonProperty("release_date")
+		private String releaseDate;
 
 		@JsonProperty("images")
 		private List<Image> images;
