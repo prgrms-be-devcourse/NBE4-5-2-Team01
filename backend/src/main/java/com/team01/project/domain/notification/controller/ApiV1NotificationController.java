@@ -2,6 +2,8 @@ package com.team01.project.domain.notification.controller;
 
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.service.NotificationService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +39,22 @@ public class ApiV1NotificationController {
     public ResponseEntity<String> markNotificationAsRead(@PathVariable Long notificationId) {
         notificationService.markAsRead(notificationId);
         return ResponseEntity.ok("Notification marked as read");
+    }
+
+    record ModifyNotificationReqBody(
+            @NotBlank
+            String message,
+            @NotBlank
+            LocalDateTime localDateTime
+    ) {
+    }
+
+    // 알림 변경
+    @PutMapping("/{notificationId}/modify")
+    public ResponseEntity<Notification> ModifyNotification(@PathVariable Long notificationId, @RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
+        Notification notification = notificationService.updateNotification(
+                notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.localDateTime);
+
+        return ResponseEntity.ok(notification);
     }
 }

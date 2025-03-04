@@ -18,6 +18,7 @@ public class NotificationService {
 
     private final UserRepository userRepository; // User 조회를 위해 필요
 
+    @Transactional(readOnly = true)
     public List<Notification> getUserNotifications(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
@@ -37,5 +38,14 @@ public class NotificationService {
 
         notification.setRead(true);
         notificationRepository.save(notification);
+    }
+
+    @Transactional
+    public Notification updateNotification(Long notificationId, String message, LocalDateTime notificationTime) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
+        notification.setMessage(message);
+        notification.setNotificationTime(notificationTime);
+        return notificationRepository.save(notification);
     }
 }
