@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/music")
 @RequiredArgsConstructor
-public class MusicController {
+public class ApiV1MusicController {
 
 	private final MusicService musicService;
 	private final SpotifyService spotifyService;
