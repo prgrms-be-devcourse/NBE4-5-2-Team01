@@ -143,4 +143,50 @@ public class ApiV1MusicControllerTest {
 			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
 			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
 	}
+
+	@Test
+	@DisplayName("저장된 모든 음악 조회")
+	void test3() throws Exception {
+		ResultActions resultActions = mvc
+			.perform(get("/music"))
+			.andDo(print());
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.size()").value(testMusicList.size()))
+			.andExpect(jsonPath("$[0].id").value(testMusicList.get(0).getId()))
+			.andExpect(jsonPath("$[1].id").value(testMusicList.get(1).getId()));
+	}
+
+	@Test
+	@DisplayName("ID로 특정 음악 조회")
+	void test4() throws Exception {
+		MusicDto musicDto = testMusicList.get(2);
+
+		ResultActions resultActions = mvc
+			.perform(get("/music/" + musicDto.getId()))
+			.andDo(print());
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(musicDto.getId()))
+			.andExpect(jsonPath("$.name").value(musicDto.getName()))
+			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+	}
+
+	@Test
+	@DisplayName("ID로 음악 삭제")
+	void test5() throws Exception {
+		String id = testMusicList.get(0).getId();
+
+		ResultActions resultActions = mvc
+			.perform(delete("/music/" + id))
+			.andDo(print());
+
+		resultActions
+			.andExpect(status().isNoContent());
+	}
 }
