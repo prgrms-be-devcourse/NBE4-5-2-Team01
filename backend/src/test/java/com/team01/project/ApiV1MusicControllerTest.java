@@ -105,4 +105,42 @@ public class ApiV1MusicControllerTest {
 			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
 			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
 	}
+
+	@Test
+	@DisplayName("Spotify API에서 음악 정보를 가져와 저장")
+	void test2() throws Exception {
+		MusicDto musicDto = new MusicDto(
+			"6uPnrBgweGOcwjFL4ItAvV",
+			"Whiplash",
+			"aespa",
+			LocalDate.of(2024, 10, 21),
+			"https://i.scdn.co/image/ab67616d0000b273e467a8e8d7b0aa92d354aa75",
+			"k-pop"
+		);
+
+		when(spotifyService.getTrackWithGenre(eq(musicDto.getId()), any())).thenAnswer(invocation -> {
+			System.out.println("🛠 Mocked SpotifyService getTrackWithGenre 호출됨!");
+			return musicDto;
+		});
+
+		when(musicService.saveMusic(any())).thenAnswer(invocation -> {
+			MusicDto saved = invocation.getArgument(0);
+			System.out.println("🛠 saveMusic() 저장된 데이터: " + saved);
+			return saved;
+		});
+
+		ResultActions resultActions = mvc
+			.perform(post("/music/spotify/" + musicDto.getId())
+			.header("Authorization", "Bearer " + token))
+			.andDo(print());
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(musicDto.getId()))
+			.andExpect(jsonPath("$.name").value(musicDto.getName()))
+			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+	}
 }
