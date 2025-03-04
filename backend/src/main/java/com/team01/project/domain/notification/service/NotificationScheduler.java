@@ -5,7 +5,6 @@ import com.team01.project.domain.notification.entity.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -19,7 +18,6 @@ public class NotificationScheduler {
 
 
 	@Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
-	@Transactional
 	public void sendNotifications() {
 		LocalTime now = LocalTime.now().withSecond(0).withNano(0); // 현재 시간 (초, 나노초 제거)
 		List<Notification> notifications = notificationService.getNotificationsByTime(now);
