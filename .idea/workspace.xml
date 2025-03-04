@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정" />
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 띄워쓰기 수정">
+      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,6 +61,16 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -67,16 +80,19 @@
     &quot;assignee&quot;: &quot;Woongbin06&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/prgrms-be-devcourse/NBE-4-5-2-Team01.git",
-    "accountId": "6053ace1-1b9a-4523-a89e-32468913f41b"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/prgrms-be-devcourse/NBE-4-5-2-Team01.git&quot;,
+    &quot;accountId&quot;: &quot;6053ace1-1b9a-4523-a89e-32468913f41b&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -98,7 +114,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feat#1/woongbin",
+    "git-widget-placeholder": "feat#7/woongbin",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/wwd02/spring/NBE-4-5-2-Team01/backend",
     "node.js.detected.package.eslint": "true",
@@ -110,7 +126,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "settings.editor.selected.configurable": "preferences.editor",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -219,7 +235,8 @@
       <workItem from="1740713671580" duration="5000" />
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
-      <workItem from="1740722692969" duration="2904000" />
+      <workItem from="1740722692969" duration="3959000" />
+      <workItem from="1740727634113" duration="9244000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
@@ -253,7 +270,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740725333267</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Chore : 띄워쓰기 수정">
+      <option name="closed" value="true" />
+      <created>1740725754559</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1740725754559</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,7 +289,8 @@
     <MESSAGE value="Feat : CI 작성" />
     <MESSAGE value="Chore : CI Working Directory 설정" />
     <MESSAGE value="Chore : 오타 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="Chore : 오타 수정" />
+    <MESSAGE value="Chore : 띄워쓰기 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="Chore : 띄워쓰기 수정" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
