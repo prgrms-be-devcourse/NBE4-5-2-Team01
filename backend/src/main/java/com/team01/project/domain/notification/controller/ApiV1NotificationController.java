@@ -63,4 +63,11 @@ public class ApiV1NotificationController {
 
         return ResponseEntity.ok(notification);
     }
+
+    // 알림 삭제
+    @DeleteMapping("/{notificationId}")
+    public ResponseEntity<String> deleteNotification(@PathVariable Long notificationId) {
+        notificationService.deleteNotification(notificationId);
+        return ResponseEntity.ok("Notification deleted");
+    }
 }

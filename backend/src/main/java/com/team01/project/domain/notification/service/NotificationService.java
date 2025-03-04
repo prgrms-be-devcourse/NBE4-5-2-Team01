@@ -54,4 +54,9 @@ public class NotificationService {
         notification.setNotificationTime(notificationTime);
         return notificationRepository.save(notification);
     }
+
+    @Transactional
+    public void deleteNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
+    }
 }
