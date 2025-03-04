@@ -1,15 +1,16 @@
 package com.team01.project.domain.notification.controller;
 
+import com.team01.project.domain.notification.dto.NotificationDto;
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.service.NotificationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,23 +35,28 @@ public class ApiV1NotificationController {
         return ResponseEntity.ok(new NotificationDto(notification));
     }
 
+    record WriteNotificationReqBody(
+            @NotNull
+            Long userId,
+            @NotBlank
+            String message,
+            @NotNull
+            LocalTime notificationTime
+    ) {
+    }
+
     // 알림 생성
     @PostMapping("/create")
-    public ResponseEntity<Notification> createNotification(
-            @RequestParam Long userId,
-            @RequestParam String message,
-            @RequestParam String notificationTime) {
+    public ResponseEntity<String> createNotification(
+            @RequestBody @Valid WriteNotificationReqBody reqBody) {
 
-        // "HH:mm" 형식의 문자열을 LocalTime으로 변환
-        LocalTime time = LocalTime.parse(notificationTime, DateTimeFormatter.ofPattern("HH:mm"));
-
-        Notification notification = notificationService.createNotification(userId, message, time);
-        return ResponseEntity.ok(notification);
+        notificationService.createNotification(reqBody.userId, reqBody.message, reqBody.notificationTime);
+        return ResponseEntity.ok("알림이 설정되었습니다.");
     }
 
     // 알림 읽음 처리
     @PutMapping("/{notificationId}/read")
-    public ResponseEntity<String> markNotificationAsRead(@PathVariable Long notificationId) {
+    public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notificationId") Long notificationId) {
         notificationService.markAsRead(notificationId);
         return ResponseEntity.ok("Notification marked as read");
     }
@@ -58,23 +64,23 @@ public class ApiV1NotificationController {
     record ModifyNotificationReqBody(
             @NotBlank
             String message,
-            @NotBlank
+            @NotNull
             LocalTime notificationTime
     ) {
     }
 
     // 알림 변경
     @PutMapping("/{notificationId}/modify")
-    public ResponseEntity<Notification> ModifyNotification(@PathVariable Long notificationId, @RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
+    public ResponseEntity<String> ModifyNotification(@PathVariable(name = "notificationId") Long notificationId, @RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
         Notification notification = notificationService.updateNotification(
                 notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
 
-        return ResponseEntity.ok(notification);
+        return ResponseEntity.ok("Notification modified");
     }
 
     // 알림 삭제
     @DeleteMapping("/{notificationId}")
-    public ResponseEntity<String> deleteNotification(@PathVariable Long notificationId) {
+    public ResponseEntity<String> deleteNotification(@PathVariable(name = "notificationId") Long notificationId) {
         notificationService.deleteNotification(notificationId);
         return ResponseEntity.ok("Notification deleted");
     }

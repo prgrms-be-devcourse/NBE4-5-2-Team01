@@ -30,11 +30,11 @@ public class NotificationService {
     }
 
     @Transactional
-    public Notification createNotification(Long userId, String message, LocalTime notificationTime) {
+    public void createNotification(Long userId, String message, LocalTime notificationTime) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        return notificationRepository.save(Notification.builder().user(user).notificationTime(notificationTime).message(message).build());
+        notificationRepository.save(Notification.builder().user(user).notificationTime(notificationTime).message(message).build());
     }
 
     @Transactional
