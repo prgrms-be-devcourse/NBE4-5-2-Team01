@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정" />
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -69,8 +73,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
-    "url": "https://github.com/prgrms-be-devcourse/NBE-4-5-2-Team01.git",
-    "accountId": "6053ace1-1b9a-4523-a89e-32468913f41b"
+    "url": "https://github.com/prgrms-be-devcourse/NBE4-5-2-Team01.git",
+    "accountId": "9fe690d2-e4e5-4709-8991-19095b085802"
   }
 }]]></component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -98,9 +102,9 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feat#1/woongbin",
+    "git-widget-placeholder": "feat#8/shinwoos",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/wwd02/spring/NBE-4-5-2-Team01/backend",
+    "last_opened_file_path": "D:/dev/dev_back4/devcourse_2_project/NBE4-5-2-Team01",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -110,11 +114,11 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.backend [build]">
+  <component name="RunManager" selected="Spring Boot.ProjectApplication">
     <configuration name="C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -180,6 +184,11 @@
       <method v="2" />
     </configuration>
     <configuration name="ProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="PASSWORD" value="lldj123414" />
+        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
+        <env name="USER" value="root" />
+      </envs>
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="backend.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.team01.project.ProjectApplication" />
@@ -187,6 +196,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="Gradle.backend [checkstyleMain]" />
+      <item itemvalue="Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" />
+      <item itemvalue="Spring Boot.ProjectApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.backend [build]" />
@@ -198,8 +213,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
       </set>
     </attachedChunks>
   </component>
@@ -220,6 +235,7 @@
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
       <workItem from="1740722692969" duration="2904000" />
+      <workItem from="1741070697460" duration="610000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
