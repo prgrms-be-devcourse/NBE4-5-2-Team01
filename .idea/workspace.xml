@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 띄워쓰기 수정">
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Feat : Follow 도메인 생성">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,7 +99,6 @@
 }</component>
   <component name="ProjectId" id="2teS26JW5FPZTBarJ5e0CIShzFZ" />
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
@@ -128,9 +128,14 @@
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.editor",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.backend [build]">
+  <component name="RunManager" selected="Spring Boot.ProjectApplication">
     <configuration name="C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -196,6 +201,11 @@
       <method v="2" />
     </configuration>
     <configuration name="ProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="URL" value="jdbc:mysql://localhost:3306/music_calender?&amp;useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true" />
+        <env name="USER" value="root" />
+        <env name="PASSWORD" value="kob3491007!" />
+      </envs>
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="backend.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.team01.project.ProjectApplication" />
@@ -203,6 +213,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="Gradle.backend [checkstyleMain]" />
+      <item itemvalue="Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" />
+      <item itemvalue="Spring Boot.ProjectApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.backend [build]" />
@@ -236,7 +252,7 @@
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
       <workItem from="1740722692969" duration="3959000" />
-      <workItem from="1740727634113" duration="9244000" />
+      <workItem from="1740727634113" duration="11160000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
@@ -278,7 +294,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740725754559</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Feat : Follow 도메인 생성">
+      <option name="closed" value="true" />
+      <created>1741069375532</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1741069375532</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,7 +314,8 @@
     <MESSAGE value="Chore : CI Working Directory 설정" />
     <MESSAGE value="Chore : 오타 수정" />
     <MESSAGE value="Chore : 띄워쓰기 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="Chore : 띄워쓰기 수정" />
+    <MESSAGE value="Feat : Follow 도메인 생성" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat : Follow 도메인 생성" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
