@@ -84,4 +84,25 @@ public class ApiV1MusicControllerTest {
 		when(musicService.getAllMusic()).thenReturn(testMusicList);
 	}
 
+	@Test
+	@DisplayName("Spotify API에서 특정 음악 정보 조회")
+	void test1() throws Exception {
+		MusicDto musicDto = testMusicList.get(1);
+
+		when(spotifyService.getTrackWithGenre(eq(musicDto.getId()), any())).thenReturn(musicDto);
+
+		ResultActions resultActions	= mvc
+			.perform(get("/music/spotify/" + musicDto.getId())
+			.header("Authorization", "Bearer " + token))
+			.andDo(print());
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(musicDto.getId()))
+			.andExpect(jsonPath("$.name").value(musicDto.getName()))
+			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+	}
 }
