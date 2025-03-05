@@ -9,7 +9,7 @@ interface NotificationDto {
   userId: number;
   message: string;
   notificationTime: string; // LocalTime을 string 형식으로 받으므로 string으로 처리
-  read: boolean; // isRead 추가
+  isRead: boolean; // isRead 추가
 }
 
 const Notifications = () => {
@@ -123,7 +123,7 @@ const Notifications = () => {
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
           notification.id === id
-            ? { ...notification, read: true } // 읽음 상태로 변경
+            ? { ...notification, isRead: true } // 읽음 상태로 변경
             : notification
         )
       );
@@ -176,7 +176,7 @@ const Notifications = () => {
       <h2 className={styles.heading}>알림 목록</h2>
       {notifications.length > 0 ? (
         notifications
-          .filter((notification) => !notification.read) // isRead가 false인 알림만 필터링
+          .filter((notification) => !notification.isRead) // isRead가 false인 알림만 필터링
           .map((notification) => (
             <div key={notification.id} className={styles.notificationCard}>
               {editingId === notification.id ? (
