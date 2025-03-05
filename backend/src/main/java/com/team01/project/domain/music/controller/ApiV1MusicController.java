@@ -2,13 +2,14 @@ package com.team01.project.domain.music.controller;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team01.project.domain.music.dto.MusicDto;
@@ -27,16 +28,17 @@ public class ApiV1MusicController {
 	private final SpotifyService spotifyService;
 
 	@GetMapping("/spotify/{id}")
-	public ResponseEntity<MusicDto> getMusicFromSpotify(
+	@ResponseStatus(HttpStatus.OK)
+	public MusicDto getMusicFromSpotify(
 		@PathVariable String id,
 		@RequestHeader(value = "Authorization") String accessToken
 	) {
-		MusicDto musicDto = spotifyService.getTrackWithGenre(id, accessToken);
-		return ResponseEntity.ok(musicDto);
+		return spotifyService.getTrackWithGenre(id, accessToken);
 	}
 
 	@PostMapping("/spotify/{id}")
-	public ResponseEntity<MusicDto> saveMusicFromSpotify(
+	@ResponseStatus(HttpStatus.CREATED)
+	public MusicDto saveMusicFromSpotify(
 		@PathVariable String id,
 		@RequestHeader("Authorization") String accessToken
 	) {
@@ -44,24 +46,26 @@ public class ApiV1MusicController {
 		if (musicDto != null) {
 			Music music = musicDto.toEntity();
 			Music savedMusic = musicService.saveMusic(music);
-			return ResponseEntity.ok(MusicDto.fromEntity(savedMusic));
+			return MusicDto.fromEntity(savedMusic);
 		}
-		return ResponseEntity.badRequest().build();
+		throw new IllegalArgumentException("Invalid music data");
 	}
 
 	@GetMapping
-	public ResponseEntity<List<MusicDto>> getAllMusic() {
-		return ResponseEntity.ok(musicService.getAllMusic());
+	@ResponseStatus(HttpStatus.OK)
+	public List<MusicDto> getAllMusic() {
+		return musicService.getAllMusic();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<MusicDto> getMusicById(@PathVariable String id) {
-		return ResponseEntity.ok(musicService.getMusicById(id));
+	@ResponseStatus(HttpStatus.OK)
+	public MusicDto getMusicById(@PathVariable String id) {
+		return musicService.getMusicById(id);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteMusic(@PathVariable String id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteMusic(@PathVariable String id) {
 		musicService.deleteMusic(id);
-		return ResponseEntity.noContent().build();
 	}
 }
