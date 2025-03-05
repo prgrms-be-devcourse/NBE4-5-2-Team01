@@ -138,7 +138,7 @@ public class ApiV1MusicControllerTest {
 			.andDo(print());
 
 		resultActions
-			.andExpect(status().isOk())
+			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").value(musicDto.id()))
 			.andExpect(jsonPath("$.name").value(musicDto.name()))
 			.andExpect(jsonPath("$.singer").value(musicDto.singer()))
