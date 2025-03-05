@@ -1,16 +1,15 @@
 package com.team01.project.domain.notification.controller;
 
+import com.team01.project.domain.notification.dto.CreateNotificationReqBody;
+import com.team01.project.domain.notification.dto.ModifyNotificationReqBody;
 import com.team01.project.domain.notification.dto.NotificationDto;
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.service.NotificationService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,22 +45,13 @@ public class NotificationController {
 		return ResponseEntity.ok(new NotificationDto(notification));
 	}
 
-	record WriteNotificationReqBody(
-			@NotNull
-			Long userId,
-			@NotBlank
-			String message,
-			@NotNull
-			LocalTime notificationTime
-	) {
-	}
 
 	// 알림 생성
 	@PostMapping("/create")
 	public ResponseEntity<String> createNotification(
-			@RequestBody @Valid WriteNotificationReqBody reqBody) {
+			@RequestBody @Valid CreateNotificationReqBody reqBody) {
 
-		notificationService.createNotification(reqBody.userId, reqBody.message, reqBody.notificationTime);
+		notificationService.createNotification(reqBody.userId(), reqBody.message(), reqBody.notificationTime());
 		return ResponseEntity.ok("알림이 설정되었습니다.");
 	}
 
@@ -72,13 +62,6 @@ public class NotificationController {
 		return ResponseEntity.ok("Notification marked as read");
 	}
 
-	record ModifyNotificationReqBody(
-			@NotBlank
-			String message,
-			@NotNull
-			LocalTime notificationTime
-	) {
-	}
 
 	// 알림 변경
 	@PutMapping("/{notification-id}/modify")
@@ -86,7 +69,7 @@ public class NotificationController {
 			@PathVariable(name = "notification-id") Long notificationId,
 			@RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
 		Notification notification = notificationService.updateNotification(
-				notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
+				notificationId, modifyNotificationReqBody.message(), modifyNotificationReqBody.notificationTime());
 
 		return ResponseEntity.ok("Notification modified");
 	}
