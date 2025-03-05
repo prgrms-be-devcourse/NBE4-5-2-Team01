@@ -9,6 +9,7 @@ interface NotificationDto {
   userId: number;
   message: string;
   notificationTime: string; // LocalTime을 string 형식으로 받으므로 string으로 처리
+  read: boolean; // isRead 추가
 }
 
 const Notifications = () => {
@@ -31,7 +32,6 @@ const Notifications = () => {
         "http://localhost:8080/api/v1/notifications"
       );
       console.log(response.data); // 응답 확인
-      // 응답이 배열이면 그대로 사용, 아니면 적절한 필드를 사용
       if (Array.isArray(response.data)) {
         setNotifications(response.data);
       } else if (response.data.notifications) {
@@ -59,7 +59,6 @@ const Notifications = () => {
         payload
       );
       alert("알림이 생성되었습니다.");
-      // 폼 초기화 후 목록 갱신
       setNewUserId(0);
       setNewMessage("");
       setNewTime("");
@@ -116,6 +115,26 @@ const Notifications = () => {
     }
   };
 
+  // 알림 읽음 처리
+  const markAsRead = async (id: number) => {
+    try {
+      await axios.put(`http://localhost:8080/api/v1/notifications/${id}/read`);
+      // 상태에서 해당 알림을 찾아 읽음 처리 후 업데이트
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification.id === id
+            ? { ...notification, read: true } // 읽음 상태로 변경
+            : notification
+        )
+      );
+
+      alert("알림이 읽음 처리되었습니다.");
+    } catch (error) {
+      console.error("Failed to mark notification as read", error);
+      alert("알림 읽음 처리에 실패했습니다.");
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* 알림 생성 폼 */}
@@ -156,64 +175,70 @@ const Notifications = () => {
       {/* 알림 목록 */}
       <h2 className={styles.heading}>알림 목록</h2>
       {notifications.length > 0 ? (
-        notifications.map((notification) => (
-          <div key={notification.id} className={styles.notificationCard}>
-            {editingId === notification.id ? (
-              // 수정 중인 경우, 편집 폼 보여주기
-              <div className={styles.editForm}>
-                <div className={styles.inputGroup}>
-                  <label>메시지</label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    value={editMessage}
-                    onChange={(e) => setEditMessage(e.target.value)}
-                  />
+        notifications
+          .filter((notification) => !notification.read) // isRead가 false인 알림만 필터링
+          .map((notification) => (
+            <div key={notification.id} className={styles.notificationCard}>
+              {editingId === notification.id ? (
+                <div className={styles.editForm}>
+                  <div className={styles.inputGroup}>
+                    <label>메시지</label>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      value={editMessage}
+                      onChange={(e) => setEditMessage(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label>알림 시간 (HH:mm)</label>
+                    <input
+                      className={styles.input}
+                      type="time"
+                      value={editTime}
+                      onChange={(e) => setEditTime(e.target.value)}
+                    />
+                  </div>
+                  <div className={styles.editButtons}>
+                    <button
+                      className={styles.button}
+                      onClick={() => handleUpdate(notification.id)}
+                    >
+                      저장
+                    </button>
+                    <button className={styles.button} onClick={cancelEditing}>
+                      취소
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.inputGroup}>
-                  <label>알림 시간 (HH:mm)</label>
-                  <input
-                    className={styles.input}
-                    type="time"
-                    value={editTime}
-                    onChange={(e) => setEditTime(e.target.value)}
-                  />
+              ) : (
+                <div className={styles.notificationDetails}>
+                  <h4>{notification.message}</h4>
+                  <p>{notification.notificationTime}</p>
+                  <div className={styles.buttons}>
+                    <button
+                      className={styles.button}
+                      onClick={() => startEditing(notification)}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className={styles.button}
+                      onClick={() => handleDelete(notification.id)}
+                    >
+                      삭제
+                    </button>
+                    <button
+                      className={styles.button}
+                      onClick={() => markAsRead(notification.id)} // 읽음 처리
+                    >
+                      읽음 처리
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.editButtons}>
-                  <button
-                    className={styles.button}
-                    onClick={() => handleUpdate(notification.id)}
-                  >
-                    저장
-                  </button>
-                  <button className={styles.button} onClick={cancelEditing}>
-                    취소
-                  </button>
-                </div>
-              </div>
-            ) : (
-              // 기본 상태: 알림 정보와 수정/삭제 버튼
-              <div className={styles.notificationDetails}>
-                <h4>{notification.message}</h4>
-                <p>{notification.notificationTime}</p>
-                <div className={styles.buttons}>
-                  <button
-                    className={styles.button}
-                    onClick={() => startEditing(notification)}
-                  >
-                    수정
-                  </button>
-                  <button
-                    className={styles.button}
-                    onClick={() => handleDelete(notification.id)}
-                  >
-                    삭제
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))
+              )}
+            </div>
+          ))
       ) : (
         <p>알림이 없습니다.</p>
       )}
