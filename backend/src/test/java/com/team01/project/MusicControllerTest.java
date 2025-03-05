@@ -20,14 +20,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.team01.project.domain.music.controller.ApiV1MusicController;
+import com.team01.project.domain.music.controller.MusicController;
 import com.team01.project.domain.music.dto.MusicDto;
 import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
 
 @ActiveProfiles("test")
-public class ApiV1MusicControllerTest {
+public class MusicControllerTest {
 
 	private MockMvc mvc;
 
@@ -38,7 +38,7 @@ public class ApiV1MusicControllerTest {
 	private SpotifyService spotifyService;
 
 	@InjectMocks
-	private ApiV1MusicController apiV1MusicController;
+	private MusicController musicController;
 
 	private String token;
 	private List<MusicDto> testMusicList;
@@ -46,7 +46,7 @@ public class ApiV1MusicControllerTest {
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
-		mvc = MockMvcBuilders.standaloneSetup(apiV1MusicController).build();
+		mvc = MockMvcBuilders.standaloneSetup(musicController).build();
 
 		// 토큰 값 입력
 		token = "your-token";
