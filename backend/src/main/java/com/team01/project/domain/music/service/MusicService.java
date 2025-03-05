@@ -20,7 +20,7 @@ public class MusicService {
 
 	@Transactional
 	public MusicDto saveMusic(MusicDto musicDto) {
-		return musicRepository.findById(musicDto.getId())
+		return musicRepository.findById(musicDto.id())
 			.map(MusicDto::fromEntity)
 			.orElseGet(() -> {
 				Music savedMusic = musicRepository.save(musicDto.toEntity());

@@ -77,7 +77,7 @@ public class ApiV1MusicControllerTest {
 		);
 
 		for (MusicDto music : testMusicList) {
-			when(musicService.getMusicById(music.getId())).thenReturn(music);
+			when(musicService.getMusicById(music.id())).thenReturn(music);
 			when(musicService.saveMusic(any())).thenReturn(music);
 		}
 
@@ -89,21 +89,21 @@ public class ApiV1MusicControllerTest {
 	void test1() throws Exception {
 		MusicDto musicDto = testMusicList.get(1);
 
-		when(spotifyService.getTrackWithGenre(eq(musicDto.getId()), any())).thenReturn(musicDto);
+		when(spotifyService.getTrackWithGenre(eq(musicDto.id()), any())).thenReturn(musicDto);
 
 		ResultActions resultActions	= mvc
-			.perform(get("/music/spotify/" + musicDto.getId())
+			.perform(get("/music/spotify/" + musicDto.id())
 			.header("Authorization", "Bearer " + token))
 			.andDo(print());
 
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(musicDto.getId()))
-			.andExpect(jsonPath("$.name").value(musicDto.getName()))
-			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
-			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
-			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
-			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+			.andExpect(jsonPath("$.id").value(musicDto.id()))
+			.andExpect(jsonPath("$.name").value(musicDto.name()))
+			.andExpect(jsonPath("$.singer").value(musicDto.singer()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.releaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.albumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.genre()));
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class ApiV1MusicControllerTest {
 			"k-pop"
 		);
 
-		when(spotifyService.getTrackWithGenre(eq(musicDto.getId()), any())).thenAnswer(invocation -> {
+		when(spotifyService.getTrackWithGenre(eq(musicDto.id()), any())).thenAnswer(invocation -> {
 			System.out.println("🛠 Mocked SpotifyService getTrackWithGenre 호출됨!");
 			return musicDto;
 		});
@@ -130,18 +130,18 @@ public class ApiV1MusicControllerTest {
 		});
 
 		ResultActions resultActions = mvc
-			.perform(post("/music/spotify/" + musicDto.getId())
+			.perform(post("/music/spotify/" + musicDto.id())
 			.header("Authorization", "Bearer " + token))
 			.andDo(print());
 
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(musicDto.getId()))
-			.andExpect(jsonPath("$.name").value(musicDto.getName()))
-			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
-			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
-			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
-			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+			.andExpect(jsonPath("$.id").value(musicDto.id()))
+			.andExpect(jsonPath("$.name").value(musicDto.name()))
+			.andExpect(jsonPath("$.singer").value(musicDto.singer()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.releaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.albumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.genre()));
 	}
 
 	@Test
@@ -154,8 +154,8 @@ public class ApiV1MusicControllerTest {
 		resultActions
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size()").value(testMusicList.size()))
-			.andExpect(jsonPath("$[0].id").value(testMusicList.get(0).getId()))
-			.andExpect(jsonPath("$[1].id").value(testMusicList.get(1).getId()));
+			.andExpect(jsonPath("$[0].id").value(testMusicList.get(0).id()))
+			.andExpect(jsonPath("$[1].id").value(testMusicList.get(1).id()));
 	}
 
 	@Test
@@ -164,23 +164,23 @@ public class ApiV1MusicControllerTest {
 		MusicDto musicDto = testMusicList.get(2);
 
 		ResultActions resultActions = mvc
-			.perform(get("/music/" + musicDto.getId()))
+			.perform(get("/music/" + musicDto.id()))
 			.andDo(print());
 
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(musicDto.getId()))
-			.andExpect(jsonPath("$.name").value(musicDto.getName()))
-			.andExpect(jsonPath("$.singer").value(musicDto.getSinger()))
-			.andExpect(jsonPath("$.releaseDate").value(musicDto.getReleaseDate().toString()))
-			.andExpect(jsonPath("$.albumImage").value(musicDto.getAlbumImage()))
-			.andExpect(jsonPath("$.genre").value(musicDto.getGenre()));
+			.andExpect(jsonPath("$.id").value(musicDto.id()))
+			.andExpect(jsonPath("$.name").value(musicDto.name()))
+			.andExpect(jsonPath("$.singer").value(musicDto.singer()))
+			.andExpect(jsonPath("$.releaseDate").value(musicDto.releaseDate().toString()))
+			.andExpect(jsonPath("$.albumImage").value(musicDto.albumImage()))
+			.andExpect(jsonPath("$.genre").value(musicDto.genre()));
 	}
 
 	@Test
 	@DisplayName("ID로 음악 삭제")
 	void test5() throws Exception {
-		String id = testMusicList.get(0).getId();
+		String id = testMusicList.get(0).id();
 
 		ResultActions resultActions = mvc
 			.perform(delete("/music/" + id))
