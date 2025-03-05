@@ -14,19 +14,19 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class Notification {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    private LocalTime notificationTime; // 시:분만 저장
+	private LocalTime notificationTime; // 시:분만 저장
 
-    @Column(nullable = false)
-    private String message;
+	@Column(nullable = false)
+	private String message;
 
-    private boolean isRead = false;
+	private boolean isRead = false;
 
 }
