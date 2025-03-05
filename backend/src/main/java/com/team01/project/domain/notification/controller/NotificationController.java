@@ -30,8 +30,8 @@ public class NotificationController {
 	}
 
 	// 특정 사용자의 알림 목록 조회
-	@GetMapping("/{userId}/lists")
-	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "userId") Long userId) {
+	@GetMapping("/{user-id}/lists")
+	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "user-id") Long userId) {
 		return ResponseEntity.ok(notificationService.getUserNotifications(userId)
 				.stream()
 				.map(NotificationDto::new)
@@ -39,9 +39,9 @@ public class NotificationController {
 	}
 
 	// 알림 단건 조회
-	@GetMapping("/{notificationId}")
+	@GetMapping("/{notification-id}")
 	public ResponseEntity<NotificationDto> getUserNotification(
-			@PathVariable(name = "notificationId") Long notificationId) {
+			@PathVariable(name = "notification-id") Long notificationId) {
 		Notification notification = notificationService.getNotification(notificationId);
 		return ResponseEntity.ok(new NotificationDto(notification));
 	}
@@ -66,8 +66,8 @@ public class NotificationController {
 	}
 
 	// 알림 읽음 처리
-	@PutMapping("/{notificationId}/read")
-	public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notificationId") Long notificationId) {
+	@PutMapping("/{notification-id}/read")
+	public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notification-id") Long notificationId) {
 		notificationService.markAsRead(notificationId);
 		return ResponseEntity.ok("Notification marked as read");
 	}
@@ -81,9 +81,9 @@ public class NotificationController {
 	}
 
 	// 알림 변경
-	@PutMapping("/{notificationId}/modify")
+	@PutMapping("/{notification-id}/modify")
 	public ResponseEntity<String> modifyNotification(
-			@PathVariable(name = "notificationId") Long notificationId,
+			@PathVariable(name = "notification-id") Long notificationId,
 			@RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
 		Notification notification = notificationService.updateNotification(
 				notificationId, modifyNotificationReqBody.message, modifyNotificationReqBody.notificationTime);
@@ -92,8 +92,8 @@ public class NotificationController {
 	}
 
 	// 알림 삭제
-	@DeleteMapping("/{notificationId}")
-	public ResponseEntity<String> deleteNotification(@PathVariable(name = "notificationId") Long notificationId) {
+	@DeleteMapping("/{notification-id}")
+	public ResponseEntity<String> deleteNotification(@PathVariable(name = "notification-id") Long notificationId) {
 		notificationService.deleteNotification(notificationId);
 		return ResponseEntity.ok("Notification deleted");
 	}
