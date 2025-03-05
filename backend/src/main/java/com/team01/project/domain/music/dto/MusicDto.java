@@ -10,30 +10,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.team01.project.domain.music.entity.Music;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class MusicDto {
-
-	private String id;
-	private String name;
-	private String singer;
+public record MusicDto(
+	String id,
+	String name,
+	String singer,
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@JsonDeserialize(using = LocalDateDeserializer.class)
-	private LocalDate releaseDate;
+	LocalDate releaseDate,
 
-	private String albumImage;
-	private String genre;
-
+	String albumImage,
+	String genre
+) {
 	public static MusicDto fromSpotifyResponse(SpotifyTrackResponse track, List<String> artistGenres) {
 		// 여러 아티스트 이름을 ','로 결합
 		String singer = track.getArtists().stream()
@@ -43,36 +31,36 @@ public class MusicDto {
 		// 중복 제거 후 여러 장르를 ','로 결합
 		String genre = String.join(", ", artistGenres);
 
-		return MusicDto.builder()
-			.id(track.getId())
-			.name(track.getName())
-			.singer(singer)
-			.releaseDate(LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE))
-			.albumImage(track.getAlbum().getImages().get(0).getUrl())
-			.genre(genre)
-			.build();
+		return new MusicDto(
+			track.getId(),
+			track.getName(),
+			singer,
+			LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),
+			track.getAlbum().getImages().get(0).getUrl(),
+			genre
+		);
 	}
 
 	public static MusicDto fromEntity(Music music) {
-		return MusicDto.builder()
-			.id(music.getId())
-			.name(music.getName())
-			.singer(music.getSinger())
-			.releaseDate(music.getReleaseDate())
-			.albumImage(music.getAlbumImage())
-			.genre(music.getGenre())
-			.build();
+		return new MusicDto(
+			music.getId(),
+			music.getName(),
+			music.getSinger(),
+			music.getReleaseDate(),
+			music.getAlbumImage(),
+			music.getGenre()
+		);
 	}
 
 	public Music toEntity() {
-		return Music.builder()
-			.id(this.id)
-			.name(this.name)
-			.singer(this.singer)
-			.releaseDate(this.releaseDate)
-			.albumImage(this.albumImage)
-			.genre(this.genre)
-			.build();
+		return new Music(
+			id,
+			name,
+			singer,
+			releaseDate,
+			albumImage,
+			genre
+		);
 	}
 
 }
