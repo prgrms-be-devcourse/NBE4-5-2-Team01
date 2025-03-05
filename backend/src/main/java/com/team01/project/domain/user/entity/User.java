@@ -1,12 +1,14 @@
 package com.team01.project.domain.user.entity;
 
-import java.util.UUID;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -22,9 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "USER")
 public class User {
 	@Id
-	@Column(name = "USER_UUID")
-	@Builder.Default
-	private final String id = "user-" + UUID.randomUUID();
+	@Column(name = "USER_ID")
+	private String id;
 
 	@Email
 	@Column(name="USER_EMAIL")
@@ -48,5 +49,8 @@ public class User {
 
 	@Column(name = "follow_id")
 	private long followId;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RefreshToken> refreshTokens;
 
 }
