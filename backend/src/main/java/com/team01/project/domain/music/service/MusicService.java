@@ -19,13 +19,9 @@ public class MusicService {
 	private final MusicRepository musicRepository;
 
 	@Transactional
-	public MusicDto saveMusic(MusicDto musicDto) {
-		return musicRepository.findById(musicDto.id())
-			.map(MusicDto::fromEntity)
-			.orElseGet(() -> {
-				Music savedMusic = musicRepository.save(musicDto.toEntity());
-				return MusicDto.fromEntity(savedMusic);
-			});
+	public Music saveMusic(Music music) {
+		return musicRepository.findById(music.getId())
+			.orElseGet(() -> musicRepository.save(music));
 	}
 
 	@Transactional(readOnly = true)

@@ -78,7 +78,7 @@ public class ApiV1MusicControllerTest {
 
 		for (MusicDto music : testMusicList) {
 			when(musicService.getMusicById(music.id())).thenReturn(music);
-			when(musicService.saveMusic(any())).thenReturn(music);
+			when(musicService.saveMusic(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		}
 
 		when(musicService.getAllMusic()).thenReturn(testMusicList);

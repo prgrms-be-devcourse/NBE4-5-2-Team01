@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team01.project.domain.music.dto.MusicDto;
+import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
 
@@ -41,8 +42,9 @@ public class ApiV1MusicController {
 	) {
 		MusicDto musicDto = spotifyService.getTrackWithGenre(id, accessToken);
 		if (musicDto != null) {
-			MusicDto savedMusic = musicService.saveMusic(musicDto);
-			return ResponseEntity.ok(savedMusic);
+			Music music = musicDto.toEntity();
+			Music savedMusic = musicService.saveMusic(music);
+			return ResponseEntity.ok(MusicDto.fromEntity(savedMusic));
 		}
 		return ResponseEntity.badRequest().build();
 	}
