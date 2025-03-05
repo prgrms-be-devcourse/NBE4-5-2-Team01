@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/notifications")
 @CrossOrigin(origins = "http://localhost:3000")  // 클라이언트 URL을 지정
-public class ApiV1NotificationController {
+public class NotificationController {
 	private final NotificationService notificationService;
 
 	// 전체 알림 목록 조회
