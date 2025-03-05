@@ -11,12 +11,14 @@ public class NotificationDto {
 	Long userId;
 	String message;
 	LocalTime notificationTime;
+	boolean isRead;
 
 	public NotificationDto(Notification notification) {
 		this.id = notification.getId();
 		this.userId = notification.getUser().getId();
 		this.message = notification.getMessage();
 		this.notificationTime = notification.getNotificationTime();
+		this.isRead = notification.isRead();
 
 	}
 }
