@@ -8,9 +8,8 @@ import java.time.LocalTime;
 
 @Entity
 @Getter
-@Setter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Notification {
 
@@ -29,4 +28,15 @@ public class Notification {
 
 	private boolean isRead = false;
 
+	public void updateMessage(String message) {
+		this.message = message;
+	}
+
+	public void updateNotificationTime(LocalTime notificationTime) {
+		this.notificationTime = notificationTime;
+	}
+
+	public void markAsRead() {
+		this.isRead = true;
+	}
 }

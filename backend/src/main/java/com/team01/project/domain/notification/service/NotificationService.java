@@ -46,7 +46,7 @@ public class NotificationService {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
 
-		notification.setRead(true);
+		notification.markAsRead();
 		notificationRepository.save(notification);
 	}
 
@@ -54,8 +54,8 @@ public class NotificationService {
 	public Notification updateNotification(Long notificationId, String message, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
-		notification.setMessage(message);
-		notification.setNotificationTime(notificationTime);
+		notification.updateMessage(message);
+		notification.updateNotificationTime(notificationTime);
 		return notificationRepository.save(notification);
 	}
 
