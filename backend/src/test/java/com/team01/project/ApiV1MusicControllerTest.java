@@ -15,15 +15,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.team01.project.domain.music.controller.ApiV1MusicController;
 import com.team01.project.domain.music.dto.MusicDto;
+import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
 
+@ActiveProfiles("test")
 public class ApiV1MusicControllerTest {
 
 	private MockMvc mvc;
@@ -78,7 +81,7 @@ public class ApiV1MusicControllerTest {
 
 		for (MusicDto music : testMusicList) {
 			when(musicService.getMusicById(music.id())).thenReturn(music);
-			when(musicService.saveMusic(any())).thenAnswer(invocation -> invocation.getArgument(0));
+			when(musicService.saveMusic(any())).thenReturn(music.toEntity());
 		}
 
 		when(musicService.getAllMusic()).thenReturn(testMusicList);
@@ -124,7 +127,7 @@ public class ApiV1MusicControllerTest {
 		});
 
 		when(musicService.saveMusic(any())).thenAnswer(invocation -> {
-			MusicDto saved = invocation.getArgument(0);
+			Music saved = invocation.getArgument(0);
 			System.out.println("🛠 saveMusic() 저장된 데이터: " + saved);
 			return saved;
 		});
