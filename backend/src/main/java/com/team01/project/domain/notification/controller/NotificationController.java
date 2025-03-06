@@ -68,7 +68,7 @@ public class NotificationController {
 	public ResponseEntity<String> modifyNotification(
 			@PathVariable(name = "notification-id") Long notificationId,
 			@RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
-		Notification notification = notificationService.updateNotification(
+		notificationService.updateNotification(
 				notificationId, modifyNotificationReqBody.message(), modifyNotificationReqBody.notificationTime());
 
 		return ResponseEntity.ok("Notification modified");

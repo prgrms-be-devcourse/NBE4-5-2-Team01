@@ -16,6 +16,11 @@ public class NotificationScheduler {
 	private final NotificationService notificationService;
 	private final NotificationSender notificationSender; // 알림을 보내는 클래스
 
+	@EventListener
+	public void handleNotificationUpdated(NotificationUpdatedEvent event) {
+		System.out.println("🔔 알림 변경 감지됨! 스케줄링을 다시 설정합니다.");
+		scheduleNotifications();
+	}
 
 	@Scheduled(cron = "0 * * * * *") // 매 분 0초마다 실행
 	public void sendNotifications() {
