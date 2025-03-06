@@ -1,10 +1,12 @@
 package com.team01.project.domain.notification.service;
 
 import com.team01.project.domain.notification.entity.Notification;
+import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
 import com.team01.project.domain.notification.repository.NotificationRepository;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationService {
 	private final NotificationRepository notificationRepository;
+	private final ApplicationEventPublisher eventPublisher;    // 🔥 이벤트 발행기 추가
 
 	private final UserRepository userRepository; // User 조회를 위해 필요
 
@@ -38,7 +41,11 @@ public class NotificationService {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-		notificationRepository.save(Notification.builder().user(user).notificationTime(notificationTime).message(message).build());
+		notificationRepository.save(Notification.builder()
+				.user(user).notificationTime(notificationTime).message(message).build());
+
+		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
+		eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notificationTime));
 	}
 
 	@Transactional
@@ -51,12 +58,15 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public Notification updateNotification(Long notificationId, String message, LocalTime notificationTime) {
+	public void updateNotification(Long notificationId, String message, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
 		notification.updateMessage(message);
 		notification.updateNotificationTime(notificationTime);
-		return notificationRepository.save(notification);
+		notificationRepository.save(notification);
+
+		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
+		eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notification.getNotificationTime()));
 	}
 
 	@Transactional
@@ -64,7 +74,14 @@ public class NotificationService {
 		notificationRepository.deleteById(notificationId);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Notification> getNotificationsByTime(LocalTime time) {
 		return notificationRepository.findByNotificationTime(time);
 	}
+
+	@Transactional(readOnly = true)
+	public List<Notification> getNotificationsBetween(LocalTime now, LocalTime plusMinutes) {
+		return notificationRepository.findNotificationsBetween(now, plusMinutes);
+	}
+
 }
