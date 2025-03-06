@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "@/components/style/notification.module.css";
+import styles from "@/components/style/notificationSetting.module.css";
 
 interface NotificationDto {
   id: number;
