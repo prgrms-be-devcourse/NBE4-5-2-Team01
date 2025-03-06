@@ -1,4 +1,4 @@
-package com.team01.project.follow.domain.repository;
+package com.team01.project.follow.repository;
 
 import java.util.Optional;
 
