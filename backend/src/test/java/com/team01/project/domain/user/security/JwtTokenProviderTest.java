@@ -1,0 +1,49 @@
+package com.team01.project.domain.user.security;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.team01.project.security.JwtTokenProvider;
+
+@SpringBootTest
+public class JwtTokenProviderTest {
+
+	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
+	@Test
+	void testCreateToken(){
+		String userId = "asdf1234";
+		String spotifyAccessToken = "spotifyTestToken";
+
+		String token = jwtTokenProvider.createToken(userId, spotifyAccessToken);
+		String extractedUserId = jwtTokenProvider.getUserIdFromToken(token);
+
+		assertNotNull(token);
+		assertEquals(userId, extractedUserId);
+	}
+
+	@Test
+	void testValidateTokenValid(){
+		String userId = "validUser";
+		String spotifyAccessToken = "spotifyTestToken";
+		String token = jwtTokenProvider.createToken(userId,spotifyAccessToken);
+
+		boolean isValid = jwtTokenProvider.validateToken(token);
+
+		assertTrue(isValid);
+	}
+
+	@Test
+	void testValidateTokenInvaild(){
+
+		String invalidToken = "invalid.token.value";
+
+		boolean isValid = jwtTokenProvider.validateToken(invalidToken);
+
+		assertFalse(isValid);
+	}
+}

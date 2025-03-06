@@ -1,9 +1,12 @@
 package com.team01.project.security;
 
+import java.security.Key;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -14,17 +17,19 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JWtTokenProvider {
-	private static final String SECRET_KEY = "secret-key";
+public class JwtTokenProvider {
+	private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 	private static final long VALIDITY_IN_MS = 3600000L; // 1시간\
 	private User user;
 
 	//jwt 토큰 생성
-	public String createToken(String userId, String spotifyAccessToken){
-		Claims claims = Jwts.claims().setSubject(userId).build();
-		claims.put("spotifyToken", spotifyAccessToken);
+	public String createToken(String userId, String spotifyAccessToken) {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("sub", userId); // subject 설정
+		claims.put("spotifyToken", spotifyAccessToken); // ✅ 추가 Claims
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime validity = now.plus(Duration.ofMillis(VALIDITY_IN_MS));
@@ -33,11 +38,10 @@ public class JWtTokenProvider {
 		Date expiration = Date.from(validity.atZone(ZoneId.systemDefault()).toInstant());
 
 		return Jwts.builder()
-			.setClaims(claims)
-			//.setSubject(user.getNickName())
+			.addClaims(claims) // ✅ Immutable 오류 방지
 			.setIssuedAt(issuedAt)
 			.setExpiration(expiration)
-			.signWith(SignatureAlgorithm.ES256, SECRET_KEY)
+			.signWith(SignatureAlgorithm.HS256, SECRET_KEY) // ✅ ES256 → HS256으로 변경
 			.compact();
 	}
 
@@ -45,7 +49,7 @@ public class JWtTokenProvider {
 	public String getUserIdFromToken(String token){
 
 		JwtParser parser = Jwts.parser().setSigningKey(SECRET_KEY).build();
-		Claims claims = parser.parseClaimsJwt(token).getBody();
+		Claims claims = parser.parseClaimsJws(token).getBody();
 		return claims.getSubject();
 	}
 
@@ -53,7 +57,7 @@ public class JWtTokenProvider {
 	public boolean validateToken(String token) {
 		try {
 			JwtParser parser = Jwts.parser().setSigningKey(SECRET_KEY).build();
-			parser.parseClaimsJwt(token);
+			parser.parseClaimsJws(token);
 			return true;
 		} catch (JwtException e) {
 			return false;
