@@ -82,7 +82,7 @@ const NotificationSettings = () => {
                 </div>
                 <div>
                   <Link
-                    href="/notifications/settings/create"
+                    href="/notifications/settings/edit"
                     className={`${styles.linkb} ${styles.kaxeyf}`}
                   >
                     <div className={styles.kMKjYE}></div>
