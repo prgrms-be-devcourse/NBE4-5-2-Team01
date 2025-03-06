@@ -1,5 +1,7 @@
 package com.team01.project.domain.user.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -38,11 +40,11 @@ public class User {
 	private String nickName;
 
 	@Column(name="birthday")
-	private String birthDay;
+	private LocalDate birthDay;
 
 	@CreatedDate
 	@Column(name ="CREATED_AT")
-	private String createdDate;
+	private LocalDateTime createdDate;
 
 	@Column(name = "Field")
 	private String field;

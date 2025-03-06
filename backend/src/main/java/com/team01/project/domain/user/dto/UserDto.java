@@ -1,5 +1,8 @@
 package com.team01.project.domain.user.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.team01.project.domain.user.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -16,8 +19,8 @@ public class UserDto {
 	private String email;
 	private String name;
 	private String nickName;
-	private String birthDay;
-	private String createdDate;
+	private LocalDate birthDay;
+	private LocalDateTime createdDate;
 	private String field;
 	private long followId;
 
