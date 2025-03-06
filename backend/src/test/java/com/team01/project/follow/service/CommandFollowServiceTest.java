@@ -1,8 +1,9 @@
 package com.team01.project.follow.service;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +25,7 @@ public class CommandFollowServiceTest extends ServiceTest {
 		commandFollowService.create(1L);
 
 		// then
-		Assertions.assertThat(팔로우_조회(1L).isPresent()).isEqualTo(true);
+		assertThat(팔로우_조회(1L).isPresent()).isEqualTo(true);
 	}
 
 	@Test
@@ -35,7 +36,7 @@ public class CommandFollowServiceTest extends ServiceTest {
 		commandFollowService.delete(저장된_팔로우.getToUserId());
 
 		// then
-		Assertions.assertThat(팔로우_조회(저장된_팔로우.getToUserId())
+		assertThat(팔로우_조회(저장된_팔로우.getToUserId())
 			.isPresent()).isEqualTo(false);
 	}
 

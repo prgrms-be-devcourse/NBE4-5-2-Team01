@@ -37,9 +37,16 @@ public class FollowController {
 		commandFollowService.delete(userId);
 	}
 
-	@GetMapping("/follower/{from-user-id}")
-	public List<FollowResponse> getFollowings(@PathVariable(name = "from-user-id") Long fromUserId) {
-		return queryFollowService.findFollowing(fromUserId).stream()
+	@GetMapping("/following/{user-id}")
+	public List<FollowResponse> getFollowings(@PathVariable(name = "user-id") Long userId) {
+		return queryFollowService.findFollowing(userId).stream()
+			.map(FollowResponse::from)
+			.toList();
+	}
+
+	@GetMapping("/follwer/{user-id}")
+	public List<FollowResponse> getFollowers(@PathVariable(name = "user-id") Long userId) {
+		return queryFollowService.findFollower(userId).stream()
 			.map(FollowResponse::from)
 			.toList();
 	}

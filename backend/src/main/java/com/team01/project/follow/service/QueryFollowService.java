@@ -17,7 +17,11 @@ public class QueryFollowService {
 
 	private final FollowRepository followRepository;
 
-	public List<Follow> findFollowing(Long fromUserId) {
-		return followRepository.findByFromUserId(fromUserId);
+	public List<Follow> findFollowing(Long userId) {
+		return followRepository.findByFromUserId(userId);
+	}
+
+	public List<Follow> findFollower(Long userId) {
+		return followRepository.findByToUserId(userId);
 	}
 }
