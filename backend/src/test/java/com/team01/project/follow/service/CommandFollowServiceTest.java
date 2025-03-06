@@ -27,6 +27,22 @@ public class CommandFollowServiceTest extends ServiceTest {
 		Assertions.assertThat(팔로우_조회(1L).isPresent()).isEqualTo(true);
 	}
 
+	@Test
+	void 팔로우를_삭제한다() {
+		// given
+		Follow 저장된_팔로우 = 팔로우_저장(new Follow(1L, 0L));
+		// when
+		commandFollowService.delete(저장된_팔로우.getToUserId());
+
+		// then
+		Assertions.assertThat(팔로우_조회(저장된_팔로우.getToUserId())
+			.isPresent()).isEqualTo(false);
+	}
+
+	private Follow 팔로우_저장(Follow follow) {
+		return followRepository.save(follow);
+	}
+
 	private Optional<Follow> 팔로우_조회(Long toUserId) {
 		return followRepository.findByToUserIdAndFromUserId(toUserId, 0L);
 	}
