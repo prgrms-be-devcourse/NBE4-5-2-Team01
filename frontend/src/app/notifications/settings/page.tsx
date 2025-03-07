@@ -3,6 +3,7 @@
 import "@/components/style/global.css";
 import styles from "@/components/style/notificationSetting.module.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const NotificationSettings = () => {
   return (
@@ -11,6 +12,26 @@ const NotificationSettings = () => {
         <div className={styles.container}>
           <div className={styles.content}>
             <div className={styles.wrapper}>
+              <div className={styles.btn1}>
+                <Link href="/notifications">
+                  <button className={styles.btn2}>
+                    <span className={styles.baseline}>
+                      <span aria-hidden="true" className={styles.btn_icon}>
+                        <svg
+                          data-encore-id="icon"
+                          role="img"
+                          aria-label="Back"
+                          aria-hidden="false"
+                          className={styles.icon}
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M15.957 2.793a1 1 0 0 1 0 1.414L8.164 12l7.793 7.793a1 1 0 1 1-1.414 1.414L5.336 12l9.207-9.207a1 1 0 0 1 1.414 0z"></path>
+                        </svg>
+                      </span>
+                    </span>
+                  </button>
+                </Link>
+              </div>
               <h2
                 className={styles.header}
                 style={{
@@ -19,7 +40,18 @@ const NotificationSettings = () => {
                   color: "rgb(255, 210, 215)",
                 }}
               >
-                SETTING
+                Setting
+                <Image
+                  src="/setting.svg"
+                  alt="설정 아이콘"
+                  width={30}
+                  height={30}
+                  style={{
+                    filter: "invert(1)",
+                    marginLeft: "10px",
+                    paddingTop: "4px",
+                  }}
+                />
               </h2>
               <div className={styles.menu}>
                 <h1
