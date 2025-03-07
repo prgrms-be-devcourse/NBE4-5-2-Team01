@@ -27,12 +27,61 @@
   row-gap: 24px;
 }
 
+.btn1 {
+  margin-bottom: -24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn2 {
+  align-self: center;
+  min-inline-size: 0;
+  padding: 0;
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+.baseline {
+  align-items: center;
+  background-color: #333333;
+  border-radius: 9999px;
+  color: #fff;
+  display: flex;
+  font-size: inherit;
+  justify-content: center;
+  position: relative;
+  transition-duration: inherit;
+  transition-property: background-color, transform, -webkit-transform;
+  block-size: 48px;
+  inline-size: 48px;
+  overflow-wrap: anywhere;
+}
+
+.baseline:hover {
+  background-color: #262626;
+}
+
+/* Active 상태 (클릭 시) */
+.baseline:active {
+  background-color: #1a1a1a; /* 클릭 시 배경색 */
+}
+
+.btn_icon {
+  position: static;
+  display: flex;
+}
+
 /* 헤더 스타일 */
 .header {
   text-align: center;
   font-size: 28px;
   margin-bottom: 30px;
   color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .menu {
@@ -140,58 +189,6 @@
   fill: rgb(179, 179, 179);
   height: 16px;
   width: 16px;
-}
-
-/* 탭 메뉴 스타일 */
-.tab-menu {
-  display: flex;
-  justify-content: center;
-  border-bottom: 1px solid #404040;
-  margin-bottom: 20px;
-}
-
-.tab-menu button {
-  background: none;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #b3b3b3;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.tab-menu button:hover,
-.tab-menu .active {
-  color: #1db954;
-  border-bottom: 2px solid #1db954;
-}
-
-/* 콘텐츠 영역 스타일 */
-.tab-content {
-  padding: 20px;
-  background-color: #282828;
-  border-radius: 8px;
-}
-
-/* 입력 폼 스타일 */
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: #b3b3b3;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #404040;
-  border-radius: 4px;
-  background-color: #121212;
-  color: #ffffff;
 }
 
 /* 버튼 스타일 */
