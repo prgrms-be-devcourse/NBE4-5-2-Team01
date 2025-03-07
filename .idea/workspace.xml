@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/RedirectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/dto/UserDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/repository/RefreshTokenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/repository/RefreshTokenRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/service/CustomOAuth2UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/service/CustomOAuth2UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/global/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/global/security/JwtTokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/global/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/global/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/MusicControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/MusicControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/repository/RefreshTokenRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/repository/RefreshTokenRepositoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/repository/UserRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/repository/UserRepositoryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/security/JwtTokenProviderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/security/JwtTokenProviderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/service/CustomOAuth2UserServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/service/CustomOAuth2UserServiceTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -270,7 +253,7 @@
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
       <workItem from="1740722692969" duration="2904000" />
-      <workItem from="1741327794961" duration="7557000" />
+      <workItem from="1741327794961" duration="7870000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
