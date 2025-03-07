@@ -55,47 +55,15 @@
   background-color: #0056b3;
 }
 
-.notificationCard {
-  padding: 15px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.notificationDetails {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.notificationDetails h4 {
-  margin: 0;
-  font-size: 18px;
-  color: #333;
-}
-
-.notificationDetails p {
-  margin: 0;
-  color: #555;
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.editForm {
-  display: flex;
-  flex-direction: column;
-}
-
-.editButtons {
-  display: flex;
-  gap: 10px;
-}
-
-.editButtons button {
-  padding: 8px 16px;
+.setting {
   font-size: 14px;
+  font-weight: 700;
+  padding: 10px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.setting:hover {
+  transform: translateY(var(--bg-inset-change-press, -4px));
 }
