@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +27,6 @@ import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
 
-@ActiveProfiles("test")
 public class MusicControllerTest {
 
 	private MockMvc mvc;
