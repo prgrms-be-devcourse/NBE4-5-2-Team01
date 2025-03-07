@@ -1,6 +1,7 @@
 package com.team01.project.domain.music.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team01.project.domain.music.dto.MusicDto;
+import com.team01.project.domain.music.dto.MusicRequest;
+import com.team01.project.domain.music.dto.MusicResponse;
 import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
@@ -29,38 +31,44 @@ public class MusicController {
 
 	@GetMapping("/spotify/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public MusicDto getMusicFromSpotify(
+	public MusicResponse getMusicFromSpotify(
 		@PathVariable String id,
 		@RequestHeader(value = "Authorization") String accessToken
 	) {
-		return spotifyService.getTrackWithGenre(id, accessToken);
+		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
+		if (musicRequest != null) {
+			Music music = musicRequest.toEntity(id);
+			return MusicResponse.fromEntity(music);
+		}
+		throw new IllegalArgumentException("Invalid music data");
 	}
 
 	@PostMapping("/spotify/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public MusicDto saveMusicFromSpotify(
+	public MusicResponse saveMusicFromSpotify(
 		@PathVariable String id,
 		@RequestHeader("Authorization") String accessToken
 	) {
-		MusicDto musicDto = spotifyService.getTrackWithGenre(id, accessToken);
-		if (musicDto != null) {
-			Music music = musicDto.toEntity();
-			Music savedMusic = musicService.saveMusic(music);
-			return MusicDto.fromEntity(savedMusic);
+		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
+		if (musicRequest != null) {
+			Music savedMusic = musicService.saveMusic(musicRequest.toEntity(id));
+			return MusicResponse.fromEntity(savedMusic);
 		}
 		throw new IllegalArgumentException("Invalid music data");
 	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<MusicDto> getAllMusic() {
-		return musicService.getAllMusic();
+	public List<MusicResponse> getAllMusic() {
+		return musicService.getAllMusic().stream()
+			.map(MusicResponse::fromEntity)
+			.collect(Collectors.toList());
 	}
 
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public MusicDto getMusicById(@PathVariable String id) {
-		return musicService.getMusicById(id);
+	public MusicResponse getMusicById(@PathVariable String id) {
+		return MusicResponse.fromEntity(musicService.getMusicById(id));
 	}
 
 	@DeleteMapping("/{id}")

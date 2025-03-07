@@ -1,6 +1,7 @@
 package com.team01.project.domain.music.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -41,5 +42,11 @@ public class SpotifyTrackResponse {
 	@Setter
 	public static class Image {
 		private String url;
+	}
+
+	public String getArtistsAsString() {
+		return artists.stream()
+			.map(Artist::getName)
+			.collect(Collectors.joining(", "));
 	}
 }

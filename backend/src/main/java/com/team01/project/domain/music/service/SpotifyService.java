@@ -1,5 +1,7 @@
 package com.team01.project.domain.music.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -7,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.team01.project.domain.music.dto.MusicDto;
+import com.team01.project.domain.music.dto.MusicRequest;
 import com.team01.project.domain.music.dto.SpotifyArtistResponse;
 import com.team01.project.domain.music.dto.SpotifyTrackResponse;
 
@@ -46,7 +48,7 @@ public class SpotifyService {
 		return response != null ? response.getGenres() : List.of();
 	}
 
-	public MusicDto getTrackWithGenre(String trackId, String accessToken) {
+	public MusicRequest getTrackWithGenre(String trackId, String accessToken) {
 		SpotifyTrackResponse track = getTrackInfo(trackId, accessToken);
 		if (track == null) {
 			return null;
@@ -60,6 +62,12 @@ public class SpotifyService {
 			.flatMap(id -> getArtistGenres(id, accessToken).stream())
 			.collect(Collectors.toSet());
 
-		return MusicDto.fromSpotifyResponse(track, allGenres.stream().toList());
+		return new MusicRequest(
+			track.getName(),
+			track.getArtistsAsString(),
+			LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),
+			track.getAlbum().getImages().get(0).getUrl(),
+			String.join(", ", allGenres)
+		);
 	}
 }
