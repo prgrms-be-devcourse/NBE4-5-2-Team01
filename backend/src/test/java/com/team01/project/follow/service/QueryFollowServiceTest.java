@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.team01.project.common.service.ServiceTest;
-import com.team01.project.follow.domain.Follow;
-import com.team01.project.follow.repository.FollowRepository;
+import com.team01.project.domain.follow.domain.Follow;
+import com.team01.project.domain.follow.repository.FollowRepository;
+import com.team01.project.domain.follow.service.QueryFollowService;
 
 public class QueryFollowServiceTest extends ServiceTest {
 

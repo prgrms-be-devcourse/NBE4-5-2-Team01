@@ -1,4 +1,4 @@
-package com.team01.project.follow;
+package com.team01.project.follow.controller;
 
 import static io.restassured.RestAssured.*;
 import static org.springframework.http.HttpStatus.*;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.team01.project.common.acceptance.AcceptanceTest;
-import com.team01.project.follow.domain.Follow;
-import com.team01.project.follow.repository.FollowRepository;
+import com.team01.project.domain.follow.domain.Follow;
+import com.team01.project.domain.follow.repository.FollowRepository;
 
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;

@@ -1,4 +1,4 @@
-package com.team01.project.follow.controller;
+package com.team01.project.domain.follow.controller;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.team01.project.follow.controller.dto.FollowResponse;
-import com.team01.project.follow.service.CommandFollowService;
-import com.team01.project.follow.service.QueryFollowService;
+import com.team01.project.domain.follow.controller.dto.FollowResponse;
+import com.team01.project.domain.follow.service.CommandFollowService;
+import com.team01.project.domain.follow.service.QueryFollowService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
-package com.team01.project.follow.controller.dto;
+package com.team01.project.domain.follow.controller.dto;
 
-import com.team01.project.follow.domain.Follow;
+import com.team01.project.domain.follow.domain.Follow;
 
 public record FollowResponse(
 	Long toUserId,

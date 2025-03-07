@@ -1,4 +1,4 @@
-package com.team01.project.follow.domain;
+package com.team01.project.domain.follow.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

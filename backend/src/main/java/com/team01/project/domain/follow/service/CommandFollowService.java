@@ -1,10 +1,10 @@
-package com.team01.project.follow.service;
+package com.team01.project.domain.follow.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.team01.project.follow.domain.Follow;
-import com.team01.project.follow.repository.FollowRepository;
+import com.team01.project.domain.follow.domain.Follow;
+import com.team01.project.domain.follow.repository.FollowRepository;
 
 import lombok.RequiredArgsConstructor;
 
