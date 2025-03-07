@@ -37,7 +37,6 @@ dependencies {
 	testImplementation 'com.h2database:h2'
 	testRuntimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-<<<<<<< HEAD
 	//OAuth, security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -47,9 +46,7 @@ dependencies {
 
 	//mokito test
 	testImplementation 'org.mockito:mockito-core:5.2.0'
-=======
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'	// WebClient 사용
->>>>>>> main
 }
 
 tasks.named('test') {
