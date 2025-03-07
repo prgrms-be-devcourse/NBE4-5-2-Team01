@@ -186,7 +186,7 @@ const Notifications = () => {
             </div>
           ))
         ) : (
-          <p>알림이 없습니다.</p>
+          <p className="m-4 text-center font-bold text-xl">No Notification!!</p>
         )}
       </div>
     </div>
