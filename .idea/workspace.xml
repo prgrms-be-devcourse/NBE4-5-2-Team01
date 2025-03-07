@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Feat : 팔로워 목록 조회 기능">
+    <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Test : QueryFollowServiceTest 작성">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/controller/FollowController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/controller/FollowController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/repository/FollowRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/repository/FollowRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/service/QueryFollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/follow/service/QueryFollowService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/follow/service/CommandFollowServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/follow/service/CommandFollowServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/common/service/ServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/common/service/ServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,6 +110,8 @@
     "Gradle.backend [checkstyleMain].executor": "Run",
     "JUnit.CommandFollowServiceTest.팔로우를_삭제한다.executor": "Run",
     "JUnit.CommandFollowServiceTest.팔로우를_생성한다.executor": "Run",
+    "JUnit.FollowControllerTest.executor": "Run",
+    "JUnit.FollowControllerTest.팔로우_생성하면_201을_반환한다.executor": "Run",
     "JUnit.QueryFollowServiceTest.executor": "Run",
     "JUnit.QueryFollowServiceTest.팔로워_목록을_조회한다.executor": "Run",
     "RequestMappingsPanelOrder0": "0",
@@ -142,45 +143,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.QueryFollowServiceTest">
-    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="CommandFollowServiceTest.팔로우를_생성한다" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.follow.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.follow.service" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.follow.service.CommandFollowServiceTest" />
-      <option name="METHOD_NAME" value="팔로우를_생성한다" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.FollowControllerTest">
     <configuration name="CommandFollowServiceTest.팔로우를_삭제한다" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend.test" />
       <extension name="coverage">
@@ -192,6 +155,37 @@
       <option name="PACKAGE_NAME" value="com.team01.project.follow.service" />
       <option name="MAIN_CLASS_NAME" value="com.team01.project.follow.service.CommandFollowServiceTest" />
       <option name="METHOD_NAME" value="팔로우를_삭제한다" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FollowControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.team01.project.follow.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.team01.project.follow" />
+      <option name="MAIN_CLASS_NAME" value="com.team01.project.follow.FollowControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FollowControllerTest.팔로우_생성하면_201을_반환한다" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.team01.project.follow.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.team01.project.follow" />
+      <option name="MAIN_CLASS_NAME" value="com.team01.project.follow.FollowControllerTest" />
+      <option name="METHOD_NAME" value="팔로우_생성하면_201을_반환한다" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -242,20 +236,20 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Gradle.backend [build]" />
       <item itemvalue="JUnit.CommandFollowServiceTest.팔로우를_삭제한다" />
-      <item itemvalue="JUnit.CommandFollowServiceTest.팔로우를_생성한다" />
+      <item itemvalue="JUnit.FollowControllerTest" />
+      <item itemvalue="JUnit.FollowControllerTest.팔로우_생성하면_201을_반환한다" />
       <item itemvalue="JUnit.QueryFollowServiceTest" />
       <item itemvalue="JUnit.QueryFollowServiceTest.팔로워_목록을_조회한다" />
       <item itemvalue="Spring Boot.ProjectApplication" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.FollowControllerTest" />
+        <item itemvalue="JUnit.FollowControllerTest.팔로우_생성하면_201을_반환한다" />
         <item itemvalue="JUnit.QueryFollowServiceTest" />
         <item itemvalue="JUnit.QueryFollowServiceTest.팔로워_목록을_조회한다" />
         <item itemvalue="JUnit.CommandFollowServiceTest.팔로우를_삭제한다" />
-        <item itemvalue="JUnit.CommandFollowServiceTest.팔로우를_생성한다" />
-        <item itemvalue="Gradle.backend [build]" />
       </list>
     </recent_temporary>
   </component>
@@ -284,7 +278,7 @@
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
       <workItem from="1740722692969" duration="3959000" />
-      <workItem from="1740727634113" duration="35017000" />
+      <workItem from="1740727634113" duration="48047000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
@@ -374,7 +368,23 @@
       <option name="project" value="LOCAL" />
       <updated>1741238886671</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Feat : 팔로워 목록 조회 기능">
+      <option name="closed" value="true" />
+      <created>1741246421950</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1741246421950</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Test : QueryFollowServiceTest 작성">
+      <option name="closed" value="true" />
+      <created>1741246454534</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1741246454534</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +403,8 @@
     <MESSAGE value="Test : Follow 삭제 기능 테스트 작성" />
     <MESSAGE value="Feat : Following 목록 조회 기능" />
     <MESSAGE value="Feat : 팔로워 목록 조회 기능" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat : 팔로워 목록 조회 기능" />
+    <MESSAGE value="Test : QueryFollowServiceTest 작성" />
+    <option name="LAST_COMMIT_MESSAGE" value="Test : QueryFollowServiceTest 작성" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

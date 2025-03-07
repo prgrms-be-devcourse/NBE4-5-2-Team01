@@ -44,7 +44,7 @@ public class FollowController {
 			.toList();
 	}
 
-	@GetMapping("/follwer/{user-id}")
+	@GetMapping("/follower/{user-id}")
 	public List<FollowResponse> getFollowers(@PathVariable(name = "user-id") Long userId) {
 		return queryFollowService.findFollower(userId).stream()
 			.map(FollowResponse::from)
