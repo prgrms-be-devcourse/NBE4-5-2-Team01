@@ -17,7 +17,7 @@ import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
-import com.team01.project.security.JwtTokenProvider;
+import com.team01.project.global.security.JwtTokenProvider;
 
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {

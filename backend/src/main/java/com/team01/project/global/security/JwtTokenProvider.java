@@ -1,4 +1,4 @@
-package com.team01.project.security;
+package com.team01.project.global.security;
 
 import java.security.Key;
 import java.time.Duration;

@@ -1,4 +1,4 @@
-package com.team01.project.security;
+package com.team01.project.global.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

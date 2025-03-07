@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
-import com.team01.project.security.JwtTokenProvider;
+import com.team01.project.global.security.JwtTokenProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
