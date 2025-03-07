@@ -39,6 +39,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
   testImplementation 'io.rest-assured:rest-assured'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'	// WebClient 사용
+    implementation 'org.springframework.boot:spring-boot-starter-mail'  // email
 }
 
 tasks.named('test') {
