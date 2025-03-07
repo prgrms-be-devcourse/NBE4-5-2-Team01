@@ -86,8 +86,8 @@ public class MusicControllerTest {
 
 		// when - 실제 요청 실행
 		ResultActions resultActions = mvc.perform(
-			get("/music/spotify/" + id)
-				.header("Authorization", "Bearer " + token))
+				get("/music/spotify/" + id)
+					.header("Authorization", "Bearer " + token))
 			.andDo(print());
 
 		// then - 결과 검증
@@ -128,8 +128,8 @@ public class MusicControllerTest {
 
 		// when - 실제 요청 실행
 		ResultActions resultActions = mvc.perform(
-			post("/music/spotify/" + id)
-				.header("Authorization", "Bearer " + token))
+				post("/music/spotify/" + id)
+					.header("Authorization", "Bearer " + token))
 			.andDo(print());
 
 		// then - 결과 검증

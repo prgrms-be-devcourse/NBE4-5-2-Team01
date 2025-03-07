@@ -20,7 +20,7 @@ import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
-import com.team01.project.security.JwtTokenProvider;
+import com.team01.project.global.security.JwtTokenProvider;
 
 @ExtendWith(MockitoExtension.class)
 public class CustomOAuth2UserServiceTest {
@@ -53,7 +53,7 @@ public class CustomOAuth2UserServiceTest {
 	}
 
 	@Test
-	void testLoadUser_success(){
+	void testLoadUser_success() {
 
 		//테스트 데이터
 		String userId = "asdf1234";

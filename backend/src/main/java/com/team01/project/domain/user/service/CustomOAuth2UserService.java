@@ -17,7 +17,7 @@ import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
-import com.team01.project.security.JwtTokenProvider;
+import com.team01.project.global.security.JwtTokenProvider;
 
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -44,7 +44,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 		OAuth2User user = delegate.loadUser(userRequest);
 		String accessToken = userRequest.getAccessToken().getTokenValue();
-		System.out.println("access token:"+ accessToken);
+		System.out.println("access token:" + accessToken);
 		System.out.println("User Attributes: " + user.getAttributes()); // OAuth 사용자 정보 확인
 
 		//리프레시 토큰 저장 ( DB에 저장 )
@@ -53,12 +53,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			throw new RuntimeException("OAuth2 사용자 ID를 찾을 수 없습니다.");
 		}
 
-
 		System.out.println("OAuth2 User ID: " + userId);
 		User foundUser = userRepository.findById(userId).orElse(null);
 
 		//db에 사용자 없을 시 생성
-		if(foundUser == null){
+		if (foundUser == null) {
 			foundUser = User.builder()
 				.id(userId)
 				.name(user.getAttribute("display_name"))
@@ -67,7 +66,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 				.build();
 
 			userRepository.save(foundUser);
-			System.out.println("최초 로그인 사용자 저장:"+userId);
+			System.out.println("최초 로그인 사용자 저장:" + userId);
 		}
 
 		RefreshToken refreshToken = RefreshToken.builder()
