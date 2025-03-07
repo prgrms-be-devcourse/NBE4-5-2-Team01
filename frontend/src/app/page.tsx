@@ -6,7 +6,12 @@ export default function Home() {
       <h1 className="text-4xl font-bold text-center">
         Welcome to the Next.js Starter
       </h1>
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-4 mt-8">
+        <Link href="/calendar">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Calendar 바로가기
+          </button>
+        </Link>
         <Link href="/notifications">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Notifications
