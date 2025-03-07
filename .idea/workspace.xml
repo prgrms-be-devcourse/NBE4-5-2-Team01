@@ -53,7 +53,8 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="backend" type="f1a62948:ProjectNode" />
-                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -62,15 +63,12 @@
       </state>
     </system>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-        <option value="HTML File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feat#8/shinwoos" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -79,10 +77,17 @@
     &quot;assignee&quot;: &quot;Woongbin06&quot;
   }
 }</component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value=".*.*\/.*.*" />
+      </list>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/prgrms-be-devcourse/NBE4-5-2-Team01.git&quot;,
-    &quot;accountId&quot;: &quot;9fe690d2-e4e5-4709-8991-19095b085802&quot;
+    &quot;url&quot;: &quot;https://github.com/prgrms-be-devcourse/NBE-4-5-2-Team01.git&quot;,
+    &quot;accountId&quot;: &quot;6053ace1-1b9a-4523-a89e-32468913f41b&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -97,159 +102,105 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle.executor": "Run",
-    "Gradle.backend [build].executor": "Run",
-    "Gradle.backend [checkstyleMain].executor": "Run",
-    "Gradle.backend [clean].executor": "Run",
-    "JUnit.CustomOAuth2UserServiceTest.executor": "Run",
-    "JUnit.JwtTokenProviderTest.executor": "Run",
-    "JUnit.RefreshTokenRepositoryTest.executor": "Run",
-    "JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken.executor": "Run",
-    "JUnit.UserRepositoryTest.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.ProjectApplication.executor": "Run",
-    "git-widget-placeholder": "feat#8/shinwoos",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/dev/dev_back4/devcourse_2_project/NBE4-5-2-Team01",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/wwd02/spring/project/backend/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [checkstyleMain].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ProjectApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat#8/shinwoos&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/dev/dev_back4/devcourse_1_project/NBE-4-5-1-Team2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/wwd02/spring/project/backend/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\dev\dev_back4\devcourse_2_project\NBE4-5-2-Team01\backend\src\main\resources\templates" />
-    </key>
-  </component>
+}</component>
   <component name="RunManager" selected="Spring Boot.ProjectApplication">
-    <configuration name="CustomOAuth2UserServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.domain.user.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.service" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.service.CustomOAuth2UserServiceTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
-        <env name="USER" value="root" />
-      </envs>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend/build.gradle" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
-    <configuration name="JwtTokenProviderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.domain.user.security.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.security" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.security.JwtTokenProviderTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
-        <env name="USER" value="root" />
-      </envs>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
-    <configuration name="RefreshTokenRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.domain.user.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.repository" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.repository.RefreshTokenRepositoryTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
-        <env name="USER" value="root" />
-      </envs>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RefreshTokenRepositoryTest.testCreateRefreshToken" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.domain.user.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.repository" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.repository.RefreshTokenRepositoryTest" />
-      <option name="METHOD_NAME" value="testCreateRefreshToken" />
-      <option name="TEST_OBJECT" value="method" />
-      <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
-        <env name="USER" value="root" />
-      </envs>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="UserRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="backend.test" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.team01.project.domain.user.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.repository" />
-      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.repository.UserRepositoryTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
-        <env name="USER" value="root" />
-      </envs>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="backend [checkstyleMain]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="checkstyleMain" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
     </configuration>
     <configuration name="ProjectApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <envs>
-        <env name="PASSWORD" value="lldj123414" />
-        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
+        <env name="URL" value="jdbc:mysql://localhost:3306/music_db1" />
         <env name="USER" value="root" />
+        <env name="PASSWORD" value="lldj123414" />
       </envs>
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="backend.main" />
@@ -259,28 +210,24 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="JUnit.CustomOAuth2UserServiceTest" />
-      <item itemvalue="JUnit.JwtTokenProviderTest" />
-      <item itemvalue="JUnit.UserRepositoryTest" />
-      <item itemvalue="JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken" />
-      <item itemvalue="JUnit.RefreshTokenRepositoryTest" />
+      <item itemvalue="Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" />
+      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="Gradle.backend [checkstyleMain]" />
       <item itemvalue="Spring Boot.ProjectApplication" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.CustomOAuth2UserServiceTest" />
-        <item itemvalue="JUnit.JwtTokenProviderTest" />
-        <item itemvalue="JUnit.UserRepositoryTest" />
-        <item itemvalue="JUnit.RefreshTokenRepositoryTest" />
-        <item itemvalue="JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken" />
+        <item itemvalue="Gradle.backend [build]" />
+        <item itemvalue="Gradle.backend [checkstyleMain]" />
+        <item itemvalue="Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
       </set>
     </attachedChunks>
   </component>
@@ -301,10 +248,6 @@
       <workItem from="1740715585568" duration="38000" />
       <workItem from="1740715825029" duration="2023000" />
       <workItem from="1740722692969" duration="2904000" />
-      <workItem from="1741070697460" duration="610000" />
-      <workItem from="1741324179183" duration="644000" />
-      <workItem from="1741326611266" duration="677000" />
-      <workItem from="1741327335016" duration="31000" />
     </task>
     <task id="LOCAL-00001" summary="Feat : naver-checkstyle 린트 적용">
       <option name="closed" value="true" />
