@@ -29,7 +29,7 @@ public class JwtTokenProvider {
 	public String createToken(String userId, String spotifyAccessToken) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("sub", userId); // subject 설정
-		claims.put("spotifyToken", spotifyAccessToken); // ✅ 추가 Claims
+		claims.put("spotifyToken", spotifyAccessToken); //추가 Claims
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime validity = now.plus(Duration.ofMillis(VALIDITY_IN_MS));
@@ -38,10 +38,10 @@ public class JwtTokenProvider {
 		Date expiration = Date.from(validity.atZone(ZoneId.systemDefault()).toInstant());
 
 		return Jwts.builder()
-			.addClaims(claims) // ✅ Immutable 오류 방지
+			.addClaims(claims) // Immutable 오류 방지
 			.setIssuedAt(issuedAt)
 			.setExpiration(expiration)
-			.signWith(SignatureAlgorithm.HS256, SECRET_KEY) // ✅ ES256 → HS256으로 변경
+			.signWith(SignatureAlgorithm.HS256, SECRET_KEY) // ES256 → HS256으로 변경
 			.compact();
 	}
 

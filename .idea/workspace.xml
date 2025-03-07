@@ -5,9 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9d440aca-61c1-44f6-931e-10e9b4e05477" name="Changes" comment="Chore : 오타 수정">
-      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/security/JwtTokenProviderTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/service/CustomOAuth2UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/resources/templates/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/service/CustomOAuth2UserServiceTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/JWtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/repository/RefreshTokenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/domain/user/repository/RefreshTokenRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/team01/project/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/security/JwtTokenProviderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/team01/project/domain/user/security/JwtTokenProviderTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +76,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -100,10 +109,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "Gradle.C:/Users/Woongbin/Desktop/NBE-4-5-2-Team01/backend/build.gradle.executor": "Run",
     "Gradle.backend [build].executor": "Run",
     "Gradle.backend [checkstyleMain].executor": "Run",
     "Gradle.backend [clean].executor": "Run",
+    "JUnit.CustomOAuth2UserServiceTest.executor": "Run",
     "JUnit.JwtTokenProviderTest.executor": "Run",
     "JUnit.RefreshTokenRepositoryTest.executor": "Run",
     "JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken.executor": "Run",
@@ -132,28 +143,32 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.JwtTokenProviderTest">
-    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\dev\dev_back4\devcourse_2_project\NBE4-5-2-Team01\backend\src\main\resources\templates" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.ProjectApplication">
+    <configuration name="CustomOAuth2UserServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="backend.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.team01.project.domain.user.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.team01.project.domain.user.service" />
+      <option name="MAIN_CLASS_NAME" value="com.team01.project.domain.user.service.CustomOAuth2UserServiceTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <envs>
+        <env name="PASSWORD" value="lldj123414" />
+        <env name="URL" value="jdbc:mysql://127.0.0.1:3306/music_db1" />
+        <env name="USER" value="root" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="JwtTokenProviderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="backend.test" />
@@ -253,7 +268,7 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Gradle.backend [build]" />
+      <item itemvalue="JUnit.CustomOAuth2UserServiceTest" />
       <item itemvalue="JUnit.JwtTokenProviderTest" />
       <item itemvalue="JUnit.UserRepositoryTest" />
       <item itemvalue="JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken" />
@@ -262,11 +277,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.CustomOAuth2UserServiceTest" />
         <item itemvalue="JUnit.JwtTokenProviderTest" />
         <item itemvalue="JUnit.UserRepositoryTest" />
         <item itemvalue="JUnit.RefreshTokenRepositoryTest" />
         <item itemvalue="JUnit.RefreshTokenRepositoryTest.testCreateRefreshToken" />
-        <item itemvalue="Gradle.backend [build]" />
       </list>
     </recent_temporary>
   </component>

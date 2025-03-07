@@ -22,6 +22,8 @@ public class JwtTokenProviderTest {
 		String token = jwtTokenProvider.createToken(userId, spotifyAccessToken);
 		String extractedUserId = jwtTokenProvider.getUserIdFromToken(token);
 
+		System.out.println("토큰:"+ token);
+		System.out.println("토큰에서 추출한 사용자 ID:"+ extractedUserId);
 		assertNotNull(token);
 		assertEquals(userId, extractedUserId);
 	}
