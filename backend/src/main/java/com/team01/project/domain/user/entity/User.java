@@ -30,20 +30,20 @@ public class User {
 	private String id;
 
 	@Email
-	@Column(name="USER_EMAIL")
+	@Column(name = "USER_EMAIL")
 	private String email;
 
-	@Column(name="NAME")
+	@Column(name = "NAME")
 	private String name;
 
-	@Column(name="Nickname")
+	@Column(name = "Nickname")
 	private String nickName;
 
-	@Column(name="birthday")
+	@Column(name = "birthday")
 	private LocalDate birthDay;
 
 	@CreatedDate
-	@Column(name ="CREATED_AT")
+	@Column(name = "CREATED_AT")
 	private LocalDateTime createdDate;
 
 	@Column(name = "Field")

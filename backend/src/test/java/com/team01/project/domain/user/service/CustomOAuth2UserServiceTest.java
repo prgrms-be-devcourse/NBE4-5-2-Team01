@@ -53,7 +53,7 @@ public class CustomOAuth2UserServiceTest {
 	}
 
 	@Test
-	void testLoadUser_success(){
+	void testLoadUser_success() {
 
 		//테스트 데이터
 		String userId = "asdf1234";

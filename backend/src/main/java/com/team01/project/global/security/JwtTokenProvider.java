@@ -46,7 +46,7 @@ public class JwtTokenProvider {
 	}
 
 	//jwt 토큰 검증 및 사용자 정보 추출
-	public String getUserIdFromToken(String token){
+	public String getUserIdFromToken(String token) {
 
 		JwtParser parser = Jwts.parser().setSigningKey(SECRET_KEY).build();
 		Claims claims = parser.parseClaimsJws(token).getBody();

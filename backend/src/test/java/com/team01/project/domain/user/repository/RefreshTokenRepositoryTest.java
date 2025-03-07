@@ -20,16 +20,16 @@ public class RefreshTokenRepositoryTest {
 	private UserRepository userRepository;
 
 	@Test
-	public void testCreateRefreshToken(){
+	public void testCreateRefreshToken() {
 		Optional<User> userOptional = userRepository.findById("1234");
-		if(userOptional.isEmpty()){
+		if (userOptional.isEmpty()) {
 			System.out.println("유저 아이디 중 1234가 없음.");
 			return;
 		}
 
 		User user = userOptional.get();
 
-		if(user != null){
+		if (user != null) {
 			RefreshToken refreshToken = RefreshToken.builder()
 				.user(user)
 				.refreshToken("sampleRefreshToken")
@@ -37,7 +37,7 @@ public class RefreshTokenRepositoryTest {
 				.build();
 
 			RefreshToken saveToken = refreshTokenRepository.save(refreshToken);
-			System.out.println("리프레시 토큰 저장 완료:"+saveToken.getRefreshToken());
+			System.out.println("리프레시 토큰 저장 완료:" + saveToken.getRefreshToken());
 		}
 	}
 }

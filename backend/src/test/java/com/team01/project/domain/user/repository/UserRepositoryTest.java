@@ -17,11 +17,11 @@ public class UserRepositoryTest {
 	private UserRepository userRepository;
 
 	@Test
-	public void testCreateUser(){
+	public void testCreateUser() {
 
 		LocalDate localDate = LocalDate
 			.parse("2000-01-02", DateTimeFormatter
-			.ofPattern("yyyy-MM-dd"));
+				.ofPattern("yyyy-MM-dd"));
 
 		User user = User.builder()
 			.id("asdf1234")
