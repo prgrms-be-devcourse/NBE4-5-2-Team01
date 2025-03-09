@@ -2,6 +2,7 @@ package com.team01.project.domain.music.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team01.project.domain.music.dto.MusicRequest;
 import com.team01.project.domain.music.dto.SpotifyArtistResponse;
 import com.team01.project.domain.music.dto.SpotifyTrackResponse;
@@ -17,9 +20,11 @@ import com.team01.project.domain.music.dto.SpotifyTrackResponse;
 public class SpotifyService {
 
 	private final WebClient webClient;
+	private final ObjectMapper objectMapper;
 
 	public SpotifyService() {
 		this.webClient = WebClient.builder().baseUrl("https://api.spotify.com/v1").build();
+		this.objectMapper = new ObjectMapper();
 	}
 
 	public SpotifyTrackResponse getTrackInfo(String trackId, String accessToken) {
@@ -69,5 +74,40 @@ public class SpotifyService {
 			track.getAlbum().getImages().get(0).getUrl(),
 			String.join(", ", allGenres)
 		);
+	}
+
+	public List<MusicRequest> searchByKeyword(String keyword, String accessToken) {
+		String url = String.format("/search?q=%s&type=track&limit=10&market=KO", keyword);
+		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+
+		String jsonResponse = webClient.get()
+			.uri(url)
+			.headers(headers -> headers.setBearerAuth(token))
+			.retrieve()
+			.bodyToMono(String.class)
+			.block();
+
+		if (jsonResponse == null) return List.of();
+
+		try {
+			JsonNode root = objectMapper.readTree(jsonResponse);
+			JsonNode items = root.path("tracks").path("items");
+
+			if (!items.isArray()) return List.of();
+
+			List<SpotifyTrackResponse> tracks = new ArrayList<>();
+			for (JsonNode item : items) {
+				SpotifyTrackResponse track = objectMapper.treeToValue(item, SpotifyTrackResponse.class);
+				tracks.add(track);
+			}
+
+			return tracks.stream()
+				.map(track -> getTrackWithGenre(track.getId(), accessToken))
+				.collect(Collectors.toList());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return List.of();
+		}
 	}
 }

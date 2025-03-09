@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +56,18 @@ public class MusicController {
 			return MusicResponse.fromEntity(savedMusic);
 		}
 		throw new IllegalArgumentException("Invalid music data");
+	}
+
+	@GetMapping("/spotify/search")
+	@ResponseStatus(HttpStatus.OK)
+	public List<MusicResponse> searchTracks(
+		@RequestParam String keyword,
+		@RequestHeader("Authorization") String accessToken
+	) {
+		List<MusicRequest> tracks = spotifyService.searchByKeyword(keyword, accessToken);
+		return tracks.stream()
+			.map(request -> MusicResponse.fromEntity(request.toEntity(request.name())))
+			.collect(Collectors.toList());
 	}
 
 	@GetMapping
