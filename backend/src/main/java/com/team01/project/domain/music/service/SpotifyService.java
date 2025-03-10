@@ -8,13 +8,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team01.project.domain.music.dto.MusicRequest;
 import com.team01.project.domain.music.dto.SpotifyArtistResponse;
 import com.team01.project.domain.music.dto.SpotifyTrackResponse;
+import com.team01.project.global.exception.SpotifyApiException;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class SpotifyService {
@@ -23,7 +29,13 @@ public class SpotifyService {
 	private final ObjectMapper objectMapper;
 
 	public SpotifyService() {
-		this.webClient = WebClient.builder().baseUrl("https://api.spotify.com/v1").build();
+		this.webClient = WebClient.builder()
+			.baseUrl("https://api.spotify.com/v1")
+			.filter(errorHandlingFilter())
+			.exchangeStrategies(ExchangeStrategies.builder()
+				.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024))
+				.build())
+			.build();
 		this.objectMapper = new ObjectMapper();
 	}
 
@@ -31,36 +43,55 @@ public class SpotifyService {
 		return accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
 	}
 
+	private ExchangeFilterFunction errorHandlingFilter() {
+		return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+			if (clientResponse.statusCode().is5xxServerError()) {
+				return Mono.error(new RuntimeException("Spotify API 서버 오류 발생"));
+			} else if (clientResponse.statusCode().is4xxClientError()) {
+				return Mono.error(new RuntimeException("Spotify API 요청 오류 발생"));
+			}
+			return Mono.just(clientResponse);
+		});
+	}
+
 	public SpotifyTrackResponse getTrackInfo(String trackId, String accessToken) {
 		String url = "/tracks/" + trackId + "?market=KR";
 		String token = extractToken(accessToken);
 
-		return webClient.get()
-			.uri(url)
-			.headers(headers -> headers.setBearerAuth(token))
-			.retrieve()
-			.bodyToMono(SpotifyTrackResponse.class)
-			.block();
+		try {
+			return webClient.get()
+				.uri(url)
+				.headers(headers -> headers.setBearerAuth(token))
+				.retrieve()
+				.bodyToMono(SpotifyTrackResponse.class)
+				.block();
+		} catch (Exception e) {
+			throw new SpotifyApiException("트랙 정보를 가져오는 중 오류 발생", e);
+		}
 	}
 
 	public List<String> getArtistGenres(String artistId, String accessToken) {
 		String url = "/artists/" + artistId;
 		String token = extractToken(accessToken);
 
-		SpotifyArtistResponse response = webClient.get()
-			.uri(url)
-			.headers(headers -> headers.setBearerAuth(token))
-			.retrieve()
-			.bodyToMono(SpotifyArtistResponse.class)
-			.block();
+		try {
+			SpotifyArtistResponse response = webClient.get()
+				.uri(url)
+				.headers(headers -> headers.setBearerAuth(token))
+				.retrieve()
+				.bodyToMono(SpotifyArtistResponse.class)
+				.block();
 
-		return response != null ? response.getGenres() : List.of();
+			return response != null ? response.getGenres() : List.of();
+		} catch (Exception e) {
+			throw new SpotifyApiException("아티스트 장르 정보를 가져오는 중 오류 발생", e);
+		}
 	}
 
 	public MusicRequest getTrackWithGenre(String trackId, String accessToken) {
 		SpotifyTrackResponse track = getTrackInfo(trackId, accessToken);
 		if (track == null) {
-			return null;
+			throw new SpotifyApiException("트랙 정보를 찾을 수 없습니다.");
 		}
 
 		List<String> artistIds = track.getArtists().stream()
@@ -85,20 +116,24 @@ public class SpotifyService {
 		String url = String.format("/search?q=%s&type=track&limit=10&market=KR", keyword);
 		String token = extractToken(accessToken);
 
-		String jsonResponse = webClient.get()
-			.uri(url)
-			.headers(headers -> headers.setBearerAuth(token))
-			.retrieve()
-			.bodyToMono(String.class)
-			.block();
-
-		if (jsonResponse == null) return List.of();
-
 		try {
+			String jsonResponse = webClient.get()
+				.uri(url)
+				.headers(headers -> headers.setBearerAuth(token))
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
+
+			if (jsonResponse == null) {
+				throw new SpotifyApiException("Spotify API 응답이 없습니다.");
+			}
+
 			JsonNode root = objectMapper.readTree(jsonResponse);
 			JsonNode items = root.path("tracks").path("items");
 
-			if (!items.isArray()) return List.of();
+			if (!items.isArray()) {
+				throw new SpotifyApiException("Spotify API 응답에서 트랙 정보를 찾을 수 없습니다.");
+			}
 
 			List<SpotifyTrackResponse> tracks = new ArrayList<>();
 
@@ -111,9 +146,10 @@ public class SpotifyService {
 				.map(track -> getTrackWithGenre(track.getId(), accessToken))
 				.collect(Collectors.toList());
 
+		} catch (WebClientResponseException e) {
+			throw new SpotifyApiException("Spotify API 요청 오류: " + e.getResponseBodyAsString(), e);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return List.of();
+			throw new SpotifyApiException("검색 결과를 처리하는 중 오류 발생: " + e.getMessage(), e);
 		}
 	}
 
@@ -121,20 +157,24 @@ public class SpotifyService {
 		String url = "/artists/" + artistId + "/top-tracks?market=KR";
 		String token = extractToken(accessToken);
 
-		String jsonResponse = webClient.get()
-			.uri(url)
-			.headers(headers -> headers.setBearerAuth(token))
-			.retrieve()
-			.bodyToMono(String.class)
-			.block();
-
-		if (jsonResponse == null) return List.of();
-
 		try {
+			String jsonResponse = webClient.get()
+				.uri(url)
+				.headers(headers -> headers.setBearerAuth(token))
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
+
+			if (jsonResponse == null) {
+				throw new SpotifyApiException("Spotify API 응답이 없습니다.");
+			}
+
 			JsonNode root = objectMapper.readTree(jsonResponse);
 			JsonNode tracks = root.path("tracks");
 
-			if (!tracks.isArray()) return List.of();
+			if (!tracks.isArray()) {
+				throw new SpotifyApiException("Spotify에서 트랙 정보를 가져오지 못했습니다.");
+			}
 
 			List<SpotifyTrackResponse> topTracks = new ArrayList<>();
 
@@ -147,9 +187,10 @@ public class SpotifyService {
 				.map(track -> getTrackWithGenre(track.getId(), accessToken))
 				.collect(Collectors.toList());
 
+		} catch (WebClientResponseException e) {
+			throw new SpotifyApiException("Spotify API 요청 오류: " + e.getResponseBodyAsString(), e);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return List.of();
+			throw new SpotifyApiException("알 수 없는 오류 발생: " + e.getMessage(), e);
 		}
 	}
 }
