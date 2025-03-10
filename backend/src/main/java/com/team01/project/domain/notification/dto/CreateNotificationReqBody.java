@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 public record CreateNotificationReqBody(
-		@NotNull Long userId,
+		@NotNull String userId,
 		@NotBlank String message,
 		@NotNull LocalTime notificationTime
 ) {

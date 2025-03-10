@@ -21,22 +21,31 @@ public class Notification {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	private LocalTime notificationTime; // 시:분만 저장
+	@Column(nullable = false)
+	private String title;
 
 	@Column(nullable = false)
 	private String message;
 
-	private boolean isRead = false;
+	private LocalTime notificationTime;
 
-	public void updateMessage(String message) {
-		this.message = message;
-	}
+	@Column(nullable = false)
+	private boolean isEmailEnabled = true;
+
+	@Column(nullable = false)
+	private boolean isPushEnabled = true;
+
 
 	public void updateNotificationTime(LocalTime notificationTime) {
 		this.notificationTime = notificationTime;
 	}
 
-	public void markAsRead() {
-		this.isRead = true;
+	public void updateNotificationSettings(Boolean emailEnabled, Boolean pushEnabled) {
+		if (emailEnabled != null) {
+			this.isEmailEnabled = emailEnabled;
+		}
+		if (pushEnabled != null) {
+			this.isPushEnabled = pushEnabled;
+		}
 	}
 }

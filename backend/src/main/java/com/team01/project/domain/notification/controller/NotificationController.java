@@ -19,7 +19,7 @@ import java.util.List;
 public class NotificationController {
 	private final NotificationService notificationService;
 
-	// 전체 알림 목록 조회
+	// 전체 알림 목록 조회 (알림 설정 페이지에서 보여줄 목록)
 	@GetMapping
 	public ResponseEntity<List<NotificationDto>> getNotifications() {
 		return ResponseEntity.ok(notificationService.getAllNotifications()
@@ -30,7 +30,7 @@ public class NotificationController {
 
 	// 특정 사용자의 알림 목록 조회
 	@GetMapping("/{user-id}/lists")
-	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "user-id") Long userId) {
+	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "user-id") String userId) {
 		return ResponseEntity.ok(notificationService.getUserNotifications(userId)
 				.stream()
 				.map(NotificationDto::new)

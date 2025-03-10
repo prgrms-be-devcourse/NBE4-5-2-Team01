@@ -26,7 +26,7 @@ public class NotificationService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Notification> getUserNotifications(Long userId) {
+	public List<Notification> getUserNotifications(String userId) {
 		return notificationRepository.findByUserId(userId);
 	}
 
@@ -37,7 +37,7 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void createNotification(Long userId, String message, LocalTime notificationTime) {
+	public void createNotification(String userId, String message, LocalTime notificationTime) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
@@ -49,19 +49,9 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void markAsRead(Long notificationId) {
+	public void updateNotification(Long notificationId, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
-
-		notification.markAsRead();
-		notificationRepository.save(notification);
-	}
-
-	@Transactional
-	public void updateNotification(Long notificationId, String message, LocalTime notificationTime) {
-		Notification notification = notificationRepository.findById(notificationId)
-				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
-		notification.updateMessage(message);
 		notification.updateNotificationTime(notificationTime);
 		notificationRepository.save(notification);
 

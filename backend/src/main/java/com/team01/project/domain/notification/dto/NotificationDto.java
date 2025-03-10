@@ -6,18 +6,18 @@ import java.time.LocalTime;
 
 public record NotificationDto(
 		Long id,
-		Long userId,
+		String userId,
+		String title,
 		String message,
-		LocalTime notificationTime,
-		boolean isRead
+		LocalTime notificationTime
 ) {
 	public NotificationDto(Notification notification) {
 		this(
 				notification.getId(),
 				notification.getUser().getId(),
+				notification.getTitle(),
 				notification.getMessage(),
-				notification.getNotificationTime(),
-				notification.isRead()
+				notification.getNotificationTime()
 		);
 	}
 }

@@ -10,11 +10,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-	List<Notification> findByUserId(Long userId);
+	List<Notification> findByUserId(String userId);
 
 	@EntityGraph(attributePaths = {"user"})
 	List<Notification> findByNotificationTime(LocalTime notificationTime);
 
 	@Query("SELECT n FROM Notification n WHERE n.notificationTime >= :now AND n.notificationTime < :plusMinutes")
-	List<Notification> findNotificationsBetween(@Param("now") LocalTime now, @Param("plusMinutes") LocalTime plusMinutes);
+	List<Notification> findNotificationsBetween(@Param("now") LocalTime now,
+												@Param("plusMinutes") LocalTime plusMinutes);
 }
