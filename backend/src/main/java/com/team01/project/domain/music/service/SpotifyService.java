@@ -27,9 +27,13 @@ public class SpotifyService {
 		this.objectMapper = new ObjectMapper();
 	}
 
+	private String extractToken(String accessToken) {
+		return accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+	}
+
 	public SpotifyTrackResponse getTrackInfo(String trackId, String accessToken) {
-		String url = "/tracks/" + trackId + "?market=KO";
-		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String url = "/tracks/" + trackId + "?market=KR";
+		String token = extractToken(accessToken);
 
 		return webClient.get()
 			.uri(url)
@@ -41,7 +45,7 @@ public class SpotifyService {
 
 	public List<String> getArtistGenres(String artistId, String accessToken) {
 		String url = "/artists/" + artistId;
-		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String token = extractToken(accessToken);
 
 		SpotifyArtistResponse response = webClient.get()
 			.uri(url)
@@ -77,8 +81,8 @@ public class SpotifyService {
 	}
 
 	public List<MusicRequest> searchByKeyword(String keyword, String accessToken) {
-		String url = String.format("/search?q=%s&type=track&limit=10&market=KO", keyword);
-		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String url = String.format("/search?q=%s&type=track&limit=10&market=KR", keyword);
+		String token = extractToken(accessToken);
 
 		String jsonResponse = webClient.get()
 			.uri(url)
@@ -114,7 +118,7 @@ public class SpotifyService {
 
 	public List<MusicRequest> getTopTracksByArtist(String artistId, String accessToken) {
 		String url = "/artists/" + artistId + "/top-tracks?market=KR";
-		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String token = extractToken(accessToken);
 
 		String jsonResponse = webClient.get()
 			.uri(url)
