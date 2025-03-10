@@ -1,14 +1,16 @@
 package com.team01.project.domain.notification.service;
 
-import com.team01.project.domain.notification.entity.NotificationList;
-import com.team01.project.domain.notification.repository.NotificationListRepository;
-import com.team01.project.domain.user.entity.User;
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.team01.project.domain.notification.entity.NotificationList;
+import com.team01.project.domain.notification.repository.NotificationListRepository;
+import com.team01.project.domain.user.entity.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +26,8 @@ public class NotificationListService {
 	@Transactional
 	public void markAsRead(Long notificationListId) {
 		NotificationList notificationList = notificationListRepository.findById(notificationListId)
-				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationListId));
+				.orElseThrow(() ->
+						new IllegalArgumentException("Notification not found with ID: " + notificationListId));
 
 		notificationList.markAsRead();
 		notificationListRepository.save(notificationList);

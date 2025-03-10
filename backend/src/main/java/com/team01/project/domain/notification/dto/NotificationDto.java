@@ -1,8 +1,8 @@
 package com.team01.project.domain.notification.dto;
 
-import com.team01.project.domain.notification.entity.Notification;
-
 import java.time.LocalTime;
+
+import com.team01.project.domain.notification.entity.Notification;
 
 public record NotificationDto(
 		Long id,

@@ -1,15 +1,5 @@
 package com.team01.project.domain.notification.service;
 
-
-import com.team01.project.domain.notification.entity.Notification;
-import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -17,6 +7,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
+
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.stereotype.Service;
+
+import com.team01.project.domain.notification.entity.Notification;
+import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
+
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor
@@ -74,11 +76,13 @@ public class NotificationScheduler {
 
 		Date scheduledTime = Date.from(notificationDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-		List<Notification> notifications = notificationService.getNotificationsByTime(nextNotificationTime);    // 다음 알림 시간에 해당하는 알림들 찾기
+		// 다음 알림 시간에 해당하는 알림들 찾기
+		List<Notification> notifications = notificationService.getNotificationsByTime(nextNotificationTime);
 
 		// 알림 설정에 따라 전송 여부를 결정
 		List<Notification> finalNotifications = notifications.stream()
-				.filter(notification -> notification.isEmailEnabled() || notification.isPushEnabled()) // 이메일 또는 푸시 알림이 활성화된 경우에만
+				// 이메일 또는 푸시 알림이 활성화된 경우에만
+				.filter(notification -> notification.isEmailEnabled() || notification.isPushEnabled())
 				.collect(Collectors.toList());
 
 		// 알림이 하나도 없으면 작업을 종료
@@ -91,7 +95,8 @@ public class NotificationScheduler {
 			futureTask.cancel(false); // 기존 예약된 작업 취소
 		}
 		// 예약된 시간에 알림을 전송하는 작업을 스케줄링
-		futureTask = taskScheduler.schedule(() -> sendNotifications(finalNotifications, notificationDateTime), scheduledTime);
+		futureTask = taskScheduler.schedule(() ->
+				sendNotifications(finalNotifications, notificationDateTime), scheduledTime);
 		System.out.println("알림 전송 예약 시각: " + scheduledTime);
 	}
 
@@ -100,10 +105,12 @@ public class NotificationScheduler {
 		for (Notification notification : notifications) {
 			// 이메일과 푸시알림을 각각 확인해서 전송
 			if (notification.isEmailEnabled()) {
-				notificationSender.sendEmail(notification.getUser(), notification.getTitle(), notification.getMessage());
+				notificationSender.sendEmail(
+						notification.getUser(), notification.getTitle(), notification.getMessage());
 			}
 			if (notification.isPushEnabled()) {
-				notificationSender.sendPush(notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
+				notificationSender.sendPush(
+						notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
 
 			}
 		}

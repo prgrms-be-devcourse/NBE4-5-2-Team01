@@ -1,9 +1,11 @@
 package com.team01.project.domain.notification.event;
 
-import lombok.Getter;
+import java.time.LocalTime;
+
 import org.springframework.context.ApplicationEvent;
 
-import java.time.LocalTime;
+import lombok.Getter;
+
 
 @Getter
 public class NotificationUpdatedEvent extends ApplicationEvent {
