@@ -1,5 +1,7 @@
 package com.team01.project.domain.notification.service;
 
+import com.team01.project.domain.notification.constants.NotificationMessages;
+import com.team01.project.domain.notification.dto.NotificationUpdateDto;
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
 import com.team01.project.domain.notification.repository.NotificationRepository;
@@ -60,11 +62,6 @@ public class NotificationService {
 		eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notification.getNotificationTime()));
 	}
 
-	@Transactional
-	public void deleteNotification(Long notificationId) {
-		notificationRepository.deleteById(notificationId);
-	}
-
 	@Transactional(readOnly = true)
 	public List<Notification> getNotificationsByTime(LocalTime time) {
 		return notificationRepository.findByNotificationTime(time);
@@ -104,5 +101,14 @@ public class NotificationService {
 		notificationRepository.saveAll(notifications);
 	}
 
-
+	@Transactional
+	public void updateNotifications(List<NotificationUpdateDto> notifications) {
+		for (NotificationUpdateDto dto : notifications) {
+			notificationRepository.findById(dto.notificationId())
+					.ifPresent(notification -> notification.updateNotificationSettings(
+							dto.isEmailNotificationEnabled(),
+							dto.isPushNotificationEnabled()
+					));
+		}
+	}
 }

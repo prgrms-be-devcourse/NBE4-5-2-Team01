@@ -1,12 +1,13 @@
 package com.team01.project.domain.notification.controller;
 
-import com.team01.project.domain.notification.dto.CreateNotificationReqBody;
 import com.team01.project.domain.notification.dto.ModifyNotificationReqBody;
 import com.team01.project.domain.notification.dto.NotificationDto;
+import com.team01.project.domain.notification.dto.NotificationUpdateRequest;
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.service.NotificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,38 +47,21 @@ public class NotificationController {
 	}
 
 
-	// 알림 생성
-	@PostMapping("/create")
-	public ResponseEntity<String> createNotification(
-			@RequestBody @Valid CreateNotificationReqBody reqBody) {
-
-		notificationService.createNotification(reqBody.userId(), reqBody.message(), reqBody.notificationTime());
-		return ResponseEntity.ok("알림이 설정되었습니다.");
-	}
-
-	// 알림 읽음 처리
-	@PutMapping("/{notification-id}/read")
-	public ResponseEntity<String> markNotificationAsRead(@PathVariable(name = "notification-id") Long notificationId) {
-		notificationService.markAsRead(notificationId);
-		return ResponseEntity.ok("Notification marked as read");
-	}
-
-
-	// 알림 변경
+	// 알림 변경 (시간만 변경 가능)
 	@PutMapping("/{notification-id}/modify")
 	public ResponseEntity<String> modifyNotification(
 			@PathVariable(name = "notification-id") Long notificationId,
 			@RequestBody @Valid ModifyNotificationReqBody modifyNotificationReqBody) {
 		notificationService.updateNotification(
-				notificationId, modifyNotificationReqBody.message(), modifyNotificationReqBody.notificationTime());
+				notificationId, modifyNotificationReqBody.notificationTime());
 
 		return ResponseEntity.ok("Notification modified");
 	}
 
-	// 알림 삭제
-	@DeleteMapping("/{notification-id}")
-	public ResponseEntity<String> deleteNotification(@PathVariable(name = "notification-id") Long notificationId) {
-		notificationService.deleteNotification(notificationId);
-		return ResponseEntity.ok("Notification deleted");
+	// 알림 설정 업데이트 (이메일, 푸시알림)
+	@PutMapping("/update")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateNotifications(@RequestBody NotificationUpdateRequest request) {
+		notificationService.updateNotifications(request.notifications());
 	}
 }
