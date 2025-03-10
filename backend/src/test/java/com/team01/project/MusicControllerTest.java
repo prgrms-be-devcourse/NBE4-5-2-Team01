@@ -67,8 +67,8 @@ public class MusicControllerTest {
 	void testGetMusicFromSpotify() throws Exception {
 		// given - 테스트 데이터 설정
 		Music testMusic = musicList.get(1);
-		String id = testMusic.getId();
 		MusicRequest musicRequest = new MusicRequest(
+			testMusic.getId(),
 			testMusic.getName(),
 			testMusic.getSinger(),
 			testMusic.getReleaseDate(),
@@ -77,14 +77,14 @@ public class MusicControllerTest {
 		);
 
 		// SpotifyService Mock 설정
-		when(spotifyService.getTrackWithGenre(eq(id), any())).thenReturn(musicRequest);
+		when(spotifyService.getTrackWithGenre(eq(musicRequest.id()), any())).thenReturn(musicRequest);
 
 		// 컨트롤러에서 변환되는 응답 예상
-		MusicResponse expectedResponse = MusicResponse.fromEntity(musicRequest.toEntity(id));
+		MusicResponse expectedResponse = MusicResponse.fromEntity(musicRequest.toEntity());
 
 		// when - 실제 요청 실행
 		ResultActions resultActions = mvc.perform(
-			get("/music/spotify/" + id)
+			get("/music/spotify/" + musicRequest.id())
 				.header("Authorization", "Bearer " + token))
 			.andDo(print());
 
@@ -103,8 +103,8 @@ public class MusicControllerTest {
 	@DisplayName("Spotify API에서 음악 정보를 가져와 저장")
 	void testSaveMusicFromSpotify() throws Exception {
 		// given - 테스트 데이터 설정
-		String id = "6uPnrBgweGOcwjFL4ItAvV";
 		MusicRequest musicRequest = new MusicRequest(
+			"6uPnrBgweGOcwjFL4ItAvV",
 			"Whiplash",
 			"aespa",
 			LocalDate.of(2024, 10, 21),
@@ -113,10 +113,10 @@ public class MusicControllerTest {
 		);
 
 		// SpotifyService Mock 설정
-		when(spotifyService.getTrackWithGenre(eq(id), any())).thenReturn(musicRequest);
+		when(spotifyService.getTrackWithGenre(eq(musicRequest.id()), any())).thenReturn(musicRequest);
 
 		// 컨트롤러에서 변환되는 예상 데이터
-		Music expectedMusic = musicRequest.toEntity(id);
+		Music expectedMusic = musicRequest.toEntity();
 
 		// musicService.saveMusic() Mock 설정
 		when(musicService.saveMusic(any())).thenReturn(expectedMusic);
@@ -126,7 +126,7 @@ public class MusicControllerTest {
 
 		// when - 실제 요청 실행
 		ResultActions resultActions = mvc.perform(
-			post("/music/spotify/" + id)
+			post("/music/spotify/" + musicRequest.id())
 				.header("Authorization", "Bearer " + token))
 			.andDo(print());
 

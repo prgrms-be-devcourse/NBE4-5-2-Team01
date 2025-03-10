@@ -72,6 +72,7 @@ public class SpotifyService {
 			.collect(Collectors.toSet());
 
 		return new MusicRequest(
+			track.getId(),
 			track.getName(),
 			track.getArtistsAsString(),
 			LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),

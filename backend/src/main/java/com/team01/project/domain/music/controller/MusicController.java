@@ -38,7 +38,7 @@ public class MusicController {
 	) {
 		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
 		if (musicRequest != null) {
-			Music music = musicRequest.toEntity(id);
+			Music music = musicRequest.toEntity();
 			return MusicResponse.fromEntity(music);
 		}
 		throw new IllegalArgumentException("Invalid music data");
@@ -52,7 +52,7 @@ public class MusicController {
 	) {
 		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
 		if (musicRequest != null) {
-			Music savedMusic = musicService.saveMusic(musicRequest.toEntity(id));
+			Music savedMusic = musicService.saveMusic(musicRequest.toEntity());
 			return MusicResponse.fromEntity(savedMusic);
 		}
 		throw new IllegalArgumentException("Invalid music data");
@@ -66,7 +66,7 @@ public class MusicController {
 	) {
 		List<MusicRequest> tracks = spotifyService.searchByKeyword(keyword, accessToken);
 		return tracks.stream()
-			.map(request -> MusicResponse.fromEntity(request.toEntity(request.name())))
+			.map(request -> MusicResponse.fromEntity(request.toEntity()))
 			.collect(Collectors.toList());
 	}
 
@@ -77,7 +77,7 @@ public class MusicController {
 	) {
 		List<MusicRequest> topTracks = spotifyService.getTopTracksByArtist(artistId, accessToken);
 		return topTracks.stream()
-			.map(request -> MusicResponse.fromEntity(request.toEntity(request.name())))
+			.map(request -> MusicResponse.fromEntity(request.toEntity()))
 			.collect(Collectors.toList());
 	}
 
