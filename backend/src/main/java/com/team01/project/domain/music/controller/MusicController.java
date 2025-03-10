@@ -70,7 +70,7 @@ public class MusicController {
 			.collect(Collectors.toList());
 	}
 
-	@GetMapping("/spotify/top-tracks/{artistId}")
+	@GetMapping("/spotify/artist/{artistId}/top-tracks")
 	public List<MusicResponse> getTopTracksByArtist(
 		@PathVariable String artistId,
 		@RequestHeader("Authorization") String accessToken
