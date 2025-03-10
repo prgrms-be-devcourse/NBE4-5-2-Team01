@@ -30,6 +30,7 @@ public class NotificationList {
 	@Column(nullable = false)
 	private LocalDateTime notificationTime; // 저장된 시간 기록
 
+	@Builder.Default
 	private boolean isRead = false;
 
 	public NotificationList(User user, String message) {

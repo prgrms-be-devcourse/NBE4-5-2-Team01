@@ -29,10 +29,10 @@ public class Notification {
 
 	private LocalTime notificationTime;
 
-	@Column(nullable = false)
+	@Builder.Default
 	private boolean isEmailEnabled = true;
 
-	@Column(nullable = false)
+	@Builder.Default
 	private boolean isPushEnabled = true;
 
 

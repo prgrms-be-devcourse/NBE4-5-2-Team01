@@ -92,8 +92,6 @@ public class NotificationService {
 							.notificationTime(notificationTime)
 							.title(entry.getKey())
 							.message(String.format(entry.getValue(), user.getName()))
-							.isEmailEnabled(true)
-							.isPushEnabled(true)
 							.build();
 				})
 				.collect(Collectors.toList());
