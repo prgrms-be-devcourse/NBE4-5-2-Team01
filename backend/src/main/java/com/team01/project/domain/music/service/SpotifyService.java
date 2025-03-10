@@ -96,12 +96,49 @@ public class SpotifyService {
 			if (!items.isArray()) return List.of();
 
 			List<SpotifyTrackResponse> tracks = new ArrayList<>();
+
 			for (JsonNode item : items) {
 				SpotifyTrackResponse track = objectMapper.treeToValue(item, SpotifyTrackResponse.class);
 				tracks.add(track);
 			}
 
 			return tracks.stream()
+				.map(track -> getTrackWithGenre(track.getId(), accessToken))
+				.collect(Collectors.toList());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return List.of();
+		}
+	}
+
+	public List<MusicRequest> getTopTracksByArtist(String artistId, String accessToken) {
+		String url = "/artists/" + artistId + "/top-tracks?market=KR";
+		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+
+		String jsonResponse = webClient.get()
+			.uri(url)
+			.headers(headers -> headers.setBearerAuth(token))
+			.retrieve()
+			.bodyToMono(String.class)
+			.block();
+
+		if (jsonResponse == null) return List.of();
+
+		try {
+			JsonNode root = objectMapper.readTree(jsonResponse);
+			JsonNode tracks = root.path("tracks");
+
+			if (!tracks.isArray()) return List.of();
+
+			List<SpotifyTrackResponse> topTracks = new ArrayList<>();
+
+			for (JsonNode trackNode : tracks) {
+				SpotifyTrackResponse topTrack = objectMapper.treeToValue(trackNode, SpotifyTrackResponse.class);
+				topTracks.add(topTrack);
+			}
+
+			return topTracks.stream()
 				.map(track -> getTrackWithGenre(track.getId(), accessToken))
 				.collect(Collectors.toList());
 

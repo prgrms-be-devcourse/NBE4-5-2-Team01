@@ -70,6 +70,17 @@ public class MusicController {
 			.collect(Collectors.toList());
 	}
 
+	@GetMapping("/spotify/top-tracks/{artistId}")
+	public List<MusicResponse> getTopTracksByArtist(
+		@PathVariable String artistId,
+		@RequestHeader("Authorization") String accessToken
+	) {
+		List<MusicRequest> topTracks = spotifyService.getTopTracksByArtist(artistId, accessToken);
+		return topTracks.stream()
+			.map(request -> MusicResponse.fromEntity(request.toEntity(request.name())))
+			.collect(Collectors.toList());
+	}
+
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<MusicResponse> getAllMusic() {
