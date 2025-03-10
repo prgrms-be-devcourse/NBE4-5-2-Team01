@@ -25,4 +25,12 @@ public class NotificationListController {
 				.map(NotificationListDto::new)
 				.toList());
 	}
+
+	// 알림 읽음 처리
+	@PutMapping("/{notificationList-id}")
+	public ResponseEntity<String> markNotificationAsRead(
+			@PathVariable(name = "notificationList-id") Long notificationListId) {
+		notificationListService.markAsRead(notificationListId);
+		return ResponseEntity.ok("Notification marked as read");
+	}
 }

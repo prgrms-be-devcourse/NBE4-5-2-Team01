@@ -19,4 +19,12 @@ public class NotificationListService {
 		return notificationListRepository.findByUserId(userId);
 	}
 
+	@Transactional
+	public void markAsRead(Long notificationListId) {
+		NotificationList notificationList = notificationListRepository.findById(notificationListId)
+				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationListId));
+
+		notificationList.markAsRead();
+		notificationListRepository.save(notificationList);
+	}
 }
