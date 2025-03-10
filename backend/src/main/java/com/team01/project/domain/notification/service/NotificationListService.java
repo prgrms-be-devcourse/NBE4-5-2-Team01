@@ -2,10 +2,12 @@ package com.team01.project.domain.notification.service;
 
 import com.team01.project.domain.notification.entity.NotificationList;
 import com.team01.project.domain.notification.repository.NotificationListRepository;
+import com.team01.project.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,5 +33,15 @@ public class NotificationListService {
 	@Transactional
 	public void deleteNotification(Long notificationListId) {
 		notificationListRepository.deleteById(notificationListId);
+	}
+
+	@Transactional
+	public void addNotification(User user, String title, String message, LocalDateTime notificationTime) {
+		notificationListRepository.save(NotificationList.builder()
+				.user(user)
+				.title(title)
+				.message(message)
+				.notificationTime(notificationTime)
+				.build());
 	}
 }

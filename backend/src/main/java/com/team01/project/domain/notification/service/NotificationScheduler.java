@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class NotificationScheduler {
 	@Scheduled(cron = "0 0/30 * * * *") // 매 30분마다 실행
 	public void scheduleNotifications() {
 		// 현재 시간 기준으로 다음 1시간 동안 알림이 있는지 확인
-		LocalTime now = LocalTime.now();
+		LocalTime now = LocalTime.from(LocalDateTime.now());
 		LocalTime plusMinutes = now.plusMinutes(30);
 
 		List<Notification> notifications = notificationService.getNotificationsBetween(now, plusMinutes);
@@ -75,18 +76,36 @@ public class NotificationScheduler {
 
 		List<Notification> notifications = notificationService.getNotificationsByTime(nextNotificationTime);    // 다음 알림 시간에 해당하는 알림들 찾기
 
+		// 알림 설정에 따라 전송 여부를 결정
+		List<Notification> finalNotifications = notifications.stream()
+				.filter(notification -> notification.isEmailEnabled() || notification.isPushEnabled()) // 이메일 또는 푸시 알림이 활성화된 경우에만
+				.collect(Collectors.toList());
+
+		// 알림이 하나도 없으면 작업을 종료
+		if (finalNotifications.isEmpty()) {
+			System.out.println("활성화된 알림이 없습니다. 알림 전송을 취소합니다.");
+			return; // 알림이 없으면 종료
+		}
+
 		if (futureTask != null) {
 			futureTask.cancel(false); // 기존 예약된 작업 취소
 		}
 		// 예약된 시간에 알림을 전송하는 작업을 스케줄링
-		futureTask = taskScheduler.schedule(() -> sendNotifications(notifications), scheduledTime);
+		futureTask = taskScheduler.schedule(() -> sendNotifications(finalNotifications, notificationDateTime), scheduledTime);
 		System.out.println("알림 전송 예약 시각: " + scheduledTime);
 	}
 
-	private void sendNotifications(List<Notification> notifications) {
+	private void sendNotifications(List<Notification> notifications, LocalDateTime notificationTime) {
 		// 알림을 전송
 		for (Notification notification : notifications) {
-			notificationSender.send(notification.getUser(), notification.getMessage());
+			// 이메일과 푸시알림을 각각 확인해서 전송
+			if (notification.isEmailEnabled()) {
+				notificationSender.sendEmail(notification.getUser(), notification.getTitle(), notification.getMessage());
+			}
+			if (notification.isPushEnabled()) {
+				notificationSender.sendPush(notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
+
+			}
 		}
 		scheduleNotifications();    // 다음 알림이 있나 확인
 	}
