@@ -33,4 +33,12 @@ public class NotificationListController {
 		notificationListService.markAsRead(notificationListId);
 		return ResponseEntity.ok("Notification marked as read");
 	}
+
+	// 알림 리스트에서 알림 삭제
+	@DeleteMapping("/{notificationList-id}")
+	public ResponseEntity<String> deleteNotification(
+			@PathVariable(name = "notificationList-id") Long notificationListId) {
+		notificationListService.deleteNotification(notificationListId);
+		return ResponseEntity.ok("Notification deleted");
+	}
 }

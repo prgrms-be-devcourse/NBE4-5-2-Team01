@@ -27,4 +27,9 @@ public class NotificationListService {
 		notificationList.markAsRead();
 		notificationListRepository.save(notificationList);
 	}
+
+	@Transactional
+	public void deleteNotification(Long notificationListId) {
+		notificationListRepository.deleteById(notificationListId);
+	}
 }
