@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +74,35 @@ public class NotificationService {
 	public List<Notification> getNotificationsBetween(LocalTime now, LocalTime plusMinutes) {
 		return notificationRepository.findNotificationsBetween(now, plusMinutes);
 	}
+
+	// 유저가 회원가입할 때 생성
+	@Transactional
+	public void createDefaultNotifications(User user) {
+		List<Notification> notifications = NotificationMessages.DEFAULT_MESSAGES.entrySet().stream()
+				.map(entry -> {
+					// 메시지 타입에 따라 알림 시간 설정
+					LocalTime notificationTime = null;
+					if ("DAILY_CHALLENGE".equals(entry.getKey())) {
+						notificationTime = LocalTime.of(21, 0);
+					} else if ("YEAR_HISTORY".equals(entry.getKey())) {
+						notificationTime = LocalTime.of(9, 0);
+					} else if ("BUILD_PLAYLIST".equals(entry.getKey())) {
+						notificationTime = LocalTime.of(18, 0);
+					}
+
+					return Notification.builder()
+							.user(user)
+							.notificationTime(notificationTime)
+							.title(entry.getKey())
+							.message(String.format(entry.getValue(), user.getName()))
+							.isEmailEnabled(true)
+							.isPushEnabled(true)
+							.build();
+				})
+				.collect(Collectors.toList());
+
+		notificationRepository.saveAll(notifications);
+	}
+
 
 }
