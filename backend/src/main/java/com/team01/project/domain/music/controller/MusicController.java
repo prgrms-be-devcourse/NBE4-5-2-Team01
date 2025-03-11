@@ -36,7 +36,8 @@ public class MusicController {
 	private final RefreshTokenRepository refreshTokenRepository;
 
 	private String getAccessToken(String userId) {
-		Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
+		Optional<RefreshToken> refreshTokenOptional = refreshTokenRepository
+			.findTopByUserIdOrderByCreatedAtDesc(userId);
 		return refreshTokenOptional.map(RefreshToken::getRefreshToken)
 			.orElseThrow(() -> new RuntimeException("Access token not found for user: " + userId));
 	}
