@@ -40,8 +40,10 @@ public class NotificationListController {
 	// 알림 읽음 처리
 	@PutMapping("/{notificationList-id}")
 	public ResponseEntity<String> markNotificationAsRead(
-			@PathVariable(name = "notificationList-id") Long notificationListId) {
-		notificationListService.markAsRead(notificationListId);
+			@PathVariable(name = "notificationList-id") Long notificationListId,
+			@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
+		notificationListService.markAsRead(notificationListId, userId);
 		return ResponseEntity.ok("Notification marked as read");
 	}
 

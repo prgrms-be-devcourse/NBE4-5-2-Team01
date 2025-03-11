@@ -24,10 +24,16 @@ public class NotificationListService {
 	}
 
 	@Transactional
-	public void markAsRead(Long notificationListId) {
+	public void markAsRead(Long notificationListId, String userId) {
 		NotificationList notificationList = notificationListRepository.findById(notificationListId)
 				.orElseThrow(() ->
 						new IllegalArgumentException("Notification not found with ID: " + notificationListId));
+
+		// 현재 로그인한 사용자의 알림인지 검증
+		if (!notificationList.getUser().getId().equals(userId)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+					"You do not have permission to delete this notification.");
+		}
 
 		notificationList.markAsRead();
 		notificationListRepository.save(notificationList);
