@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/notificationLists")
+@RequestMapping("/notification-lists")
 @CrossOrigin(origins = "http://localhost:3000")  // 클라이언트 URL을 지정
 public class NotificationListController {
 
