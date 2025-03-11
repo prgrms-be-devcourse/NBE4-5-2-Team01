@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.team01.project.domain.notification.constants.NotificationMessages;
 import com.team01.project.domain.notification.dto.NotificationUpdateDto;
@@ -55,9 +57,15 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void updateNotification(Long notificationId, LocalTime notificationTime) {
+	public void updateNotification(String userId, Long notificationId, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
+
+		if (!notification.getUser().getId().equals(userId)) { // 유저가 동일한지 확인
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+					"You do not have permission to update this notification.");
+		}
+
 		notification.updateNotificationTime(notificationTime);
 		notificationRepository.save(notification);
 
