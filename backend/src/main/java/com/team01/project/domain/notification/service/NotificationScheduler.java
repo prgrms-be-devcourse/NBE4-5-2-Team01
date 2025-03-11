@@ -107,13 +107,24 @@ public class NotificationScheduler {
 			return; // 알림이 없으면 종료
 		}
 
-		if (futureTask != null) {
-			futureTask.cancel(false); // 기존 예약된 작업 취소
-		}
-		// 예약된 시간에 알림을 전송하는 작업을 스케줄링
-		futureTask = taskScheduler.schedule(() ->
+		// 알림 전송 작업을 예약
+		ScheduledFuture<?> futureTask = taskScheduler.schedule(() ->
 				sendNotifications(finalNotifications, notificationDateTime), scheduledTime);
+
+		// 새 알림을 시간에 맞게 리스트에 삽입
+		insertTaskInOrder(futureTask, notificationTime);
 		System.out.println("알림 전송 예약 시각: " + scheduledTime);
+	}
+
+	// 알림을 시간에 맞게 리스트에 삽입하는 메서드
+	private void insertTaskInOrder(ScheduledFuture<?> futureTask, LocalTime notificationTime) {
+		CustomScheduledTask scheduledTask = new CustomScheduledTask(futureTask, notificationTime);
+		// scheduledTasks 리스트에서 알림 전송 시간을 기준으로 올바른 위치에 삽입
+		int index = 0;
+		while (index < scheduledTasks.size() && scheduledTasks.get(index).scheduledTime().isBefore(notificationTime)) {
+			index++;
+		}
+		scheduledTasks.add(index, scheduledTask); // 시간 순으로 삽입
 	}
 
 	private void sendNotifications(List<Notification> notifications, LocalDateTime notificationTime) {
@@ -130,6 +141,5 @@ public class NotificationScheduler {
 
 			}
 		}
-		scheduleNotifications();    // 다음 알림이 있나 확인
 	}
 }
