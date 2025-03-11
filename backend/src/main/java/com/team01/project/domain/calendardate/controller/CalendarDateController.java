@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team01.project.domain.calendardate.controller.dto.request.CalendarDateMemoSaveRequest;
+import com.team01.project.domain.calendardate.controller.dto.request.CalendarDateMusicSaveRequest;
 import com.team01.project.domain.calendardate.service.CalendarDateService;
+import com.team01.project.domain.musicrecord.service.MusicRecordService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,17 @@ import lombok.RequiredArgsConstructor;
 public class CalendarDateController {
 
 	private final CalendarDateService calendarDateService;
+	private final MusicRecordService musicRecordService;
+
+	@PostMapping("/{calendar-date-id}/music")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void saveMusicToCalendarDate(
+		@PathVariable(name = "calendar-date-id") Long calendarDateId,
+		@RequestBody CalendarDateMusicSaveRequest request,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		musicRecordService.updateMusicRecords(calendarDateId, request.musicIds());
+	}
 
 	@PostMapping("/{calendar-date-id}/memo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
