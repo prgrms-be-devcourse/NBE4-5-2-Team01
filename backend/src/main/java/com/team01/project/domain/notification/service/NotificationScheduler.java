@@ -17,7 +17,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import com.team01.project.domain.notification.entity.Notification;
+import com.team01.project.domain.notification.event.NotificationInitEvent;
 import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
+import com.team01.project.domain.user.entity.User;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -141,5 +143,56 @@ public class NotificationScheduler {
 
 			}
 		}
+	}
+
+	@EventListener
+	public void handleNotificationInit(NotificationInitEvent event) {
+		System.out.println("🔔 새로운 유저 로그인!");
+		scheduleNotificationInitSending(event.getTime(), event.getUser());
+	}
+
+	private void scheduleNotificationInitSending(LocalTime notificationTime, User user) {
+		// 첫 번째 알림 예약
+		scheduleSingleNotification(
+				user,
+				notificationTime,
+				"WELCOME",
+				"%s님, 환영합니다! 🎉".formatted(user.getName())
+		);
+
+		// 두 번째 알림 예약 (1분 후)
+		scheduleSingleNotification(
+				user,
+				notificationTime.plusMinutes(1),
+				"START_RECORDING",
+				"%s님, 음악 기록을 시작해보세요! 🎵".formatted(user.getName())
+		);
+	}
+
+	private void scheduleSingleNotification(User user, LocalTime notificationTime, String title, String message) {
+		LocalDateTime notificationDateTime = LocalDateTime.now().withHour(notificationTime.getHour())
+				.withMinute(notificationTime.getMinute())
+				.withSecond(0)
+				.withNano(0);
+
+		Date scheduledTime = Date.from(notificationDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+		List<Notification> notificationList = List.of(
+				Notification.builder()
+						.user(user)
+						.notificationTime(notificationTime)
+						.title(title)
+						.message(message)
+						.build()
+		);
+
+		// 알림 전송 작업을 예약
+		ScheduledFuture<?> futureTask = taskScheduler.schedule(() ->
+				sendNotifications(notificationList, notificationDateTime), scheduledTime);
+
+		// 새 알림을 시간에 맞게 리스트에 삽입
+		insertTaskInOrder(futureTask, notificationTime);
+
+		System.out.println("알림 전송 예약 시각: " + scheduledTime);
 	}
 }
