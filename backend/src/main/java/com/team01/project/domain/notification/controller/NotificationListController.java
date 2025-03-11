@@ -3,6 +3,8 @@ package com.team01.project.domain.notification.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +26,11 @@ public class NotificationListController {
 
 	private final NotificationListService notificationListService;
 
-	// 사용자의 알림 목록 조회
-	@GetMapping("/{user-id}")
+	// 현재 로그인한 사용자의 알림 목록 조회
+	@GetMapping
 	public ResponseEntity<List<NotificationListDto>> getUserNotifications(
-			@PathVariable(name = "user-id") String userId) {
+			@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
 		return ResponseEntity.ok(notificationListService.getUserNotificationLists(userId)
 				.stream()
 				.map(NotificationListDto::new)
