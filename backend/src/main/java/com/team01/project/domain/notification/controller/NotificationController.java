@@ -76,7 +76,10 @@ public class NotificationController {
 	// 알림 설정 업데이트 (이메일, 푸시알림)
 	@PutMapping("/update")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateNotifications(@RequestBody NotificationUpdateRequest request) {
-		notificationService.updateNotifications(request.notifications());
+	public void updateNotifications(
+			@RequestBody NotificationUpdateRequest request,
+			@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
+		notificationService.updateNotifications(request.notifications(), userId);
 	}
 }

@@ -99,13 +99,21 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void updateNotifications(List<NotificationUpdateDto> notifications) {
+	public void updateNotifications(List<NotificationUpdateDto> notifications, String userId) {
 		for (NotificationUpdateDto dto : notifications) {
-			notificationRepository.findById(dto.notificationId())
-					.ifPresent(notification -> notification.updateNotificationSettings(
-							dto.isEmailNotificationEnabled(),
-							dto.isPushNotificationEnabled()
-					));
+			Notification notification = notificationRepository.findById(dto.notificationId())
+					.orElseThrow(() ->
+							new IllegalArgumentException("Notification not found with ID: " + dto.notificationId()));
+
+			if (!notification.getUser().getId().equals(userId)) {    // 유저가 동일한지 확인
+				throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+						"You do not have permission to update this notification.");
+			}
+
+			notification.updateNotificationSettings(
+					dto.isEmailNotificationEnabled(),
+					dto.isPushNotificationEnabled()
+			);
 		}
 	}
 }
