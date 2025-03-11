@@ -1,6 +1,7 @@
 package com.team01.project.domain.notification.service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,23 @@ public class NotificationService {
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));
 	}
 
+	@Transactional(readOnly = true)
+	public List<Notification> getModifiableNotification(String userId) {
+		List<Notification> notifications = notificationRepository.findByUserId(userId);
+		List<Notification> modifiableNotifications = new ArrayList<>();
+
+		for (Notification notification : notifications) {
+			if (notification.getTitle().equals("DAILY_CHALLENGE")
+					|| notification.getTitle().equals("BUILD_PLAYLIST")
+					|| notification.getTitle().equals("YEAR_HISTORY")) {
+				modifiableNotifications.add(notification);
+			}
+		}
+
+
+		return modifiableNotifications;
+	}
+
 	@Transactional
 	public void updateNotification(String userId, Long notificationId, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
@@ -58,8 +76,10 @@ public class NotificationService {
 		notification.updateNotificationTime(notificationTime);
 		notificationRepository.save(notification);
 
-		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
-		eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notification.getNotificationTime()));
+		if (notification.getNotificationTime().isBefore(LocalTime.now().plusMinutes(30))) {
+			// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록) 설정한 시각이 30분 이내라면
+			eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notification.getNotificationTime()));
+		}
 	}
 
 	@Transactional(readOnly = true)

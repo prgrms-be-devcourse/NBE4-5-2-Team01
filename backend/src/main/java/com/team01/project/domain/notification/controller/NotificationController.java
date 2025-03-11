@@ -59,6 +59,17 @@ public class NotificationController {
 		return ResponseEntity.ok(new NotificationDto(notification));
 	}
 
+	// 알림 시간 변경 가능한 목록만 조회
+	@GetMapping("/modify")
+	public ResponseEntity<List<NotificationDto>> getUserModifiableNotification(
+			@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
+		return ResponseEntity.ok(notificationService.getModifiableNotification(userId)
+				.stream()
+				.map(NotificationDto::new)
+				.toList());
+	}
+
 
 	// 알림 변경 (시간만 변경 가능)
 	@PutMapping("/{notification-id}/modify")
