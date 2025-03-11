@@ -3,7 +3,10 @@ package com.team01.project.domain.notification.service;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
@@ -27,7 +30,7 @@ public class NotificationScheduler {
 	private final NotificationService notificationService;
 	private final NotificationSender notificationSender; // 알림을 보내는 클래스
 	private final ThreadPoolTaskScheduler taskScheduler;
-	private ScheduledFuture<?> futureTask; // 현재 예약된 작업
+	private final List<CustomScheduledTask> scheduledTasks = new ArrayList<>(); // 여러 예약 작업을 저장할 리스트
 
 	@PostConstruct
 	public void init() {
@@ -44,7 +47,7 @@ public class NotificationScheduler {
 
 	@Scheduled(cron = "0 0/30 * * * *") // 매 30분마다 실행
 	public void scheduleNotifications() {
-		// 현재 시간 기준으로 다음 1시간 동안 알림이 있는지 확인
+		// 현재 시간 기준으로 다음 30분 동안 알림이 있는지 확인
 		LocalTime now = LocalTime.from(LocalDateTime.now());
 		LocalTime plusMinutes = now.plusMinutes(30);
 
@@ -56,28 +59,41 @@ public class NotificationScheduler {
 			return;
 		}
 
-		// 가장 가까운 알림 시간을 찾기
-		LocalTime nextNotificationTime = notifications.stream()
-				.map(Notification::getNotificationTime)
-				.min(LocalTime::compareTo)
-				.orElse(plusMinutes);
-		System.out.println("30분내에 다음 알림 시간 : " + nextNotificationTime);
+		// 시간 기준으로 알림 정렬 (가장 가까운 시간부터)
+		notifications.sort(Comparator.comparing(Notification::getNotificationTime));
 
-		// 알림을 해당 시간에 보내는 작업을 예약
-		scheduleNotificationSending(nextNotificationTime);
+		// 기존 예약된 작업 중 완료된 것들만 삭제하고, 나머지는 그대로 두기
+		cancelCompletedScheduledTasks();
+
+		// 알림을 해당 시간에 전송하는 작업 예약
+		for (Notification notification : notifications) {
+			LocalTime notificationTime = notification.getNotificationTime();
+			scheduleNotificationSending(notificationTime);
+		}
 	}
 
-	private void scheduleNotificationSending(LocalTime nextNotificationTime) {
+	private void cancelCompletedScheduledTasks() {
+		// 예약된 작업들 중 시간이 이미 지나거나 완료된 작업만 취소
+		Iterator<CustomScheduledTask> iterator = scheduledTasks.iterator();
+		while (iterator.hasNext()) {
+			CustomScheduledTask task = iterator.next();
+			if (task.futureTask().isDone() || LocalTime.now().isAfter(task.scheduledTime())) {
+				iterator.remove();
+			}
+		}
+	}
+
+	private void scheduleNotificationSending(LocalTime notificationTime) {
 		// 알림을 전송할 정확한 시간을 계산
-		LocalDateTime notificationDateTime = LocalDateTime.now().withHour(nextNotificationTime.getHour())
-				.withMinute(nextNotificationTime.getMinute())
+		LocalDateTime notificationDateTime = LocalDateTime.now().withHour(notificationTime.getHour())
+				.withMinute(notificationTime.getMinute())
 				.withSecond(0)
 				.withNano(0);
 
 		Date scheduledTime = Date.from(notificationDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
 		// 다음 알림 시간에 해당하는 알림들 찾기
-		List<Notification> notifications = notificationService.getNotificationsByTime(nextNotificationTime);
+		List<Notification> notifications = notificationService.getNotificationsByTime(notificationTime);
 
 		// 알림 설정에 따라 전송 여부를 결정
 		List<Notification> finalNotifications = notifications.stream()
