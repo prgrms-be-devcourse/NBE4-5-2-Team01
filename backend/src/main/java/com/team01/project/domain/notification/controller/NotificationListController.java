@@ -50,8 +50,10 @@ public class NotificationListController {
 	// 알림 리스트에서 알림 삭제
 	@DeleteMapping("/{notificationList-id}")
 	public ResponseEntity<String> deleteNotification(
-			@PathVariable(name = "notificationList-id") Long notificationListId) {
-		notificationListService.deleteNotification(notificationListId);
+			@PathVariable(name = "notificationList-id") Long notificationListId,
+			@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
+		notificationListService.deleteNotification(notificationListId, userId);
 		return ResponseEntity.ok("Notification deleted");
 	}
 }
