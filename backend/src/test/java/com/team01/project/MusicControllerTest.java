@@ -142,6 +142,43 @@ public class MusicControllerTest {
 	}
 
 	@Test
+	@DisplayName("Spotify API에서 키워드로 음악 검색")
+	void testSearchTracks() throws Exception {
+		// given - 테스트 데이터 설정
+		String keyword = "chill";
+		List<MusicRequest> searchResults = Arrays.asList(
+			new MusicRequest("5fr7VBuNTiXAq4rH1e3v3q", "OIIA OIIA (Spinning Cat)", "W&W", LocalDate.parse("2025-01-17"), "https://i.scdn.co/image/ab67616d0000b273f7f925f54f91e7772ceea291", "big room, edm"),
+			new MusicRequest("1QIUF20HdqMA0CJvkBOHNb", "Chill", "LISA", LocalDate.parse("2025-02-28"), "https://i.scdn.co/image/ab67616d0000b2738034090e4afb5b053cd3e067", "k-pop"),
+			new MusicRequest("23UBSdCPcsloNVmQZ508Zv", "Sigma Boy - Сигма Бой", "Betsy, Maria Iankovskaia", LocalDate.parse("2024-10-04"), "https://i.scdn.co/image/ab67616d0000b2736ce12c2b594aeff5e118cb38", ""),
+			new MusicRequest("4YUiJ6Av2Hp1hiWE9eeAjO", "Chill Kill", "Red Velvet", LocalDate.parse("2023-11-13"), "https://i.scdn.co/image/ab67616d0000b273d907428ecc02da4077c208d4", "k-pop"),
+			new MusicRequest("24QnH4LamDh2UhhmHyXjE8", "Hinoki Wood", "Gia Margaret", LocalDate.parse("2023-05-26"), "https://i.scdn.co/image/ab67616d0000b273abc81056347f57e2f048b452", ""),
+			new MusicRequest("54mb2ZBAefP8WosY4iEVAB", "Oi Oi Oi", "INSXMNIA", LocalDate.parse("2024-04-23"), "https://i.scdn.co/image/ab67616d0000b2733ef9d16dbd92079e6f208f12", ""),
+			new MusicRequest("0jLunknItK9AujRCUYkVhn", "Chill", "LISA", LocalDate.parse("2025-02-26"), "https://i.scdn.co/image/ab67616d0000b273dcae25e8cad19fd2a0671b25", "k-pop"),
+			new MusicRequest("0qpdzfTxAkOREtvvGO5oew", "Chill Baby", "SZA", LocalDate.parse("2024-12-20"), "https://i.scdn.co/image/ab67616d0000b2737f5a318e3ff35defa8d0e4af", "r&b"),
+			new MusicRequest("4ppKM7xnkSAwSyKqD4QTY4", "Chill Bae", "Lil Uzi Vert", LocalDate.parse("2024-11-01"), "https://i.scdn.co/image/ab67616d0000b2730e4e16d910115fead3e83496", "melodic rap"),
+			new MusicRequest("5WypvnM3Xfl5y9SWzUMgvq", "Chill Bae", "Lil Uzi Vert", LocalDate.parse("2024-10-31"), "https://i.scdn.co/image/ab67616d0000b2737ccc74188937fc7294ab2a69", "melodic rap")
+		);
+
+		// SpotifyService Mock 설정
+		when(spotifyService.searchByKeyword(eq(keyword), any())).thenReturn(searchResults);
+
+		// when - 실제 요청 실행
+		ResultActions resultActions = mvc.perform(
+				get("/music/spotify/search").param("keyword", keyword)
+					.header("Authorization", "Bearer " + token))
+			.andDo(print());
+
+		// then - 결과 검증
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.size()").value(10));
+
+		for (int i = 0; i < searchResults.size(); i++) {
+			resultActions.andExpect(jsonPath("$[" + i + "].id").value(searchResults.get(i).id()));
+		}
+	}
+
+	@Test
 	@DisplayName("저장된 모든 음악 조회")
 	void testGetAllMusic() throws Exception {
 		// given - 테스트 데이터 설정
