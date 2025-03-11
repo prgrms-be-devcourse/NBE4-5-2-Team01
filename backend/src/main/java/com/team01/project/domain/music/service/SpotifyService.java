@@ -113,7 +113,7 @@ public class SpotifyService {
 	}
 
 	public List<MusicRequest> searchByKeyword(String keyword, String accessToken) {
-		String url = String.format("/search?q=%s&type=track&limit=10&market=KR", keyword);
+		String url = String.format("/search?q=%s&type=track&limit=5&market=KR", keyword);
 		String token = extractToken(accessToken);
 
 		try {
@@ -184,6 +184,7 @@ public class SpotifyService {
 			}
 
 			return topTracks.stream()
+				.limit(5)
 				.map(track -> getTrackWithGenre(track.getId(), accessToken))
 				.collect(Collectors.toList());
 
