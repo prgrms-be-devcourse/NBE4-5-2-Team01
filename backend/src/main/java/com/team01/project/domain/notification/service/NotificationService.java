@@ -122,6 +122,6 @@ public class NotificationService {
 	@Transactional
 	public void initLoginNotifications(LocalTime time, User user) {
 		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
-		eventPublisher.publishEvent(new NotificationInitEvent(this, time.plusMinutes(1), user));
+		eventPublisher.publishEvent(new NotificationInitEvent(this, time, user));
 	}
 }

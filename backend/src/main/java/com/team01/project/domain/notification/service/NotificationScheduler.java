@@ -155,7 +155,7 @@ public class NotificationScheduler {
 		// 첫 번째 알림 예약
 		scheduleSingleNotification(
 				user,
-				notificationTime,
+				notificationTime.plusMinutes(2),
 				"WELCOME",
 				"%s님, 환영합니다! 🎉".formatted(user.getName())
 		);
@@ -163,7 +163,7 @@ public class NotificationScheduler {
 		// 두 번째 알림 예약 (1분 후)
 		scheduleSingleNotification(
 				user,
-				notificationTime.plusMinutes(1),
+				notificationTime.plusMinutes(3),
 				"START_RECORDING",
 				"%s님, 음악 기록을 시작해보세요! 🎵".formatted(user.getName())
 		);
