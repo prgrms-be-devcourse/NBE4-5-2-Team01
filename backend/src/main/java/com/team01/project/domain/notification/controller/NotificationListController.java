@@ -1,5 +1,6 @@
 package com.team01.project.domain.notification.controller;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class NotificationListController {
 		return ResponseEntity.ok(notificationListService.getUserNotificationLists(userId)
 				.stream()
 				.map(NotificationListDto::new)
+				.sorted(Comparator.comparing(NotificationListDto::notificationTime).reversed())
 				.toList());
 	}
 
