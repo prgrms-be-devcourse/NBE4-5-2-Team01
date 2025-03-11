@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.team01.project.domain.notification.constants.NotificationMessages;
 import com.team01.project.domain.notification.dto.NotificationUpdateDto;
 import com.team01.project.domain.notification.entity.Notification;
+import com.team01.project.domain.notification.event.NotificationInitEvent;
 import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
 import com.team01.project.domain.notification.repository.NotificationRepository;
 import com.team01.project.domain.user.entity.User;
@@ -115,5 +116,12 @@ public class NotificationService {
 					dto.isPushNotificationEnabled()
 			);
 		}
+	}
+
+	// 최초 로그인 시 보낼 알림 설정
+	@Transactional
+	public void initLoginNotifications(LocalTime time, User user) {
+		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
+		eventPublisher.publishEvent(new NotificationInitEvent(this, time.plusMinutes(1), user));
 	}
 }
