@@ -39,11 +39,11 @@ public class Music {
 	private String genre;
 
 	public boolean isSameAs(Music other) {
-		return this.name.equals(other.getName()) &&
-			this.singer.equals(other.getSinger()) &&
-			this.releaseDate.equals(other.getReleaseDate()) &&
-			this.albumImage.equals(other.getAlbumImage()) &&
-			Objects.equals(this.genre, other.getGenre());
+		return this.name.equals(other.getName())
+			&& this.singer.equals(other.getSinger())
+			&& this.releaseDate.equals(other.getReleaseDate())
+			&& this.albumImage.equals(other.getAlbumImage())
+			&& Objects.equals(this.genre, other.getGenre());
 	}
 
 	public void updateMusic(Music updatedMusic) {
