@@ -45,18 +45,6 @@ public class NotificationService {
 	}
 
 	@Transactional
-	public void createNotification(String userId, String message, LocalTime notificationTime) {
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
-
-		notificationRepository.save(Notification.builder()
-				.user(user).notificationTime(notificationTime).message(message).build());
-
-		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록)
-		eventPublisher.publishEvent(new NotificationUpdatedEvent(this, notificationTime));
-	}
-
-	@Transactional
 	public void updateNotification(String userId, Long notificationId, LocalTime notificationTime) {
 		Notification notification = notificationRepository.findById(notificationId)
 				.orElseThrow(() -> new IllegalArgumentException("Notification not found with ID: " + notificationId));

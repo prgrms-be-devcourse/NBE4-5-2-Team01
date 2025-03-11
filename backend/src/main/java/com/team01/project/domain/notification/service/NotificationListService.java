@@ -34,7 +34,7 @@ public class NotificationListService {
 		// 현재 로그인한 사용자의 알림인지 검증
 		if (!notificationList.getUser().getId().equals(userId)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-					"You do not have permission to delete this notification.");
+					"You do not have permission to update this notification.");
 		}
 
 		notificationList.markAsRead();
