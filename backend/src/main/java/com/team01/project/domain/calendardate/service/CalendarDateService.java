@@ -1,6 +1,8 @@
 package com.team01.project.domain.calendardate.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,13 @@ public class CalendarDateService {
 
 	private final CalendarDateRepository calendarDateRepository;
 	private final UserRepository userRepository;
+
+	public List<CalendarDate> findAllByYearAndMonth(String userId, YearMonth yearMonth) {
+		LocalDate start = yearMonth.atDay(1);
+		LocalDate end = yearMonth.atEndOfMonth();
+
+		return calendarDateRepository.findByUserIdAndDateBetween(userId, start, end);
+	}
 
 	public CalendarDate findById(Long calendarDateId) {
 		return calendarDateRepository.findById(calendarDateId)

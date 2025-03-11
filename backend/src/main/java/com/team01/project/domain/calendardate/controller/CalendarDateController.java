@@ -1,7 +1,9 @@
 package com.team01.project.domain.calendardate.controller;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +22,11 @@ import com.team01.project.domain.calendardate.controller.dto.request.CalendarDat
 import com.team01.project.domain.calendardate.controller.dto.request.CalendarDateMusicSaveRequest;
 import com.team01.project.domain.calendardate.controller.dto.response.CalendarDateCreateResponse;
 import com.team01.project.domain.calendardate.controller.dto.response.CalendarDateFetchResponse;
+import com.team01.project.domain.calendardate.controller.dto.response.MonthlyFetchResponse;
 import com.team01.project.domain.calendardate.entity.CalendarDate;
 import com.team01.project.domain.calendardate.service.CalendarDateService;
 import com.team01.project.domain.music.entity.Music;
+import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.service.MusicRecordService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,25 @@ public class CalendarDateController {
 
 	private final CalendarDateService calendarDateService;
 	private final MusicRecordService musicRecordService;
+
+	@GetMapping(params = {"year", "month"})
+	@ResponseStatus(HttpStatus.OK)
+	public MonthlyFetchResponse fetchMonthlyCalendar(
+		@RequestParam int year,
+		@RequestParam int month,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		String userId = user.getName();
+		YearMonth yearMonth = YearMonth.of(year, month);
+
+		// CalendarDate 리스트 조회
+		List<CalendarDate> calendarDates = calendarDateService.findAllByYearAndMonth(userId, yearMonth);
+
+		// CalendarDate 리스트를 순회하며 SingleCalendarDate 리스트로 변환
+		List<MonthlyFetchResponse.SingleCalendarDate> monthly = mapToMonthly(calendarDates);
+
+		return new MonthlyFetchResponse(monthly);
+	}
 
 	@GetMapping("/{calendar-date-id}")
 	@ResponseStatus(HttpStatus.OK)
@@ -93,4 +116,18 @@ public class CalendarDateController {
 		calendarDateService.writeMemo(calendarDateId, request.memo());
 	}
 
+	private List<MonthlyFetchResponse.SingleCalendarDate> mapToMonthly(List<CalendarDate> calendarDates) {
+		return calendarDates.stream()
+			.map(this::mapToSingleCalendarDate)
+			.toList();
+	}
+
+	private MonthlyFetchResponse.SingleCalendarDate mapToSingleCalendarDate(CalendarDate calendarDate) {
+		Optional<MusicRecord> optionalMusicRecord = musicRecordService.findOneByCalendarDateId(calendarDate.getId());
+
+		return optionalMusicRecord
+			.map(musicRecord -> MonthlyFetchResponse.SingleCalendarDate.from(calendarDate, musicRecord.getMusic()))
+			.orElseGet(() -> MonthlyFetchResponse.SingleCalendarDate.from(calendarDate));
+	}
+	
 }

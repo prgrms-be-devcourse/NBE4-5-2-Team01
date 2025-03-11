@@ -2,6 +2,7 @@ package com.team01.project.domain.musicrecord.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,10 @@ public class MusicRecordService {
 	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
 		return musicRecordRepository.findByCalendarDateId(calendarDateId)
 			.stream().map(MusicRecord::getMusic).toList();
+	}
+
+	public Optional<MusicRecord> findOneByCalendarDateId(Long calendarDateId) {
+		return musicRecordRepository.findTopByCalendarDateId(calendarDateId);
 	}
 
 	public void updateMusicRecords(Long calendarDateId, List<String> newMusicIds) {
