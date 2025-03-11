@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class NotificationController {
 	private final NotificationService notificationService;
 
-	// 전체 알림 목록 조회 (알림 설정 페이지에서 보여줄 목록)
+	// 전체 알림 목록 조회
 	@GetMapping
 	public ResponseEntity<List<NotificationDto>> getNotifications() {
 		return ResponseEntity.ok(notificationService.getAllNotifications()
@@ -39,9 +39,10 @@ public class NotificationController {
 				.toList());
 	}
 
-	// 특정 사용자의 알림 목록 조회
-	@GetMapping("/{user-id}/lists")
-	public ResponseEntity<List<NotificationDto>> getUserNotifications(@PathVariable(name = "user-id") String userId) {
+	// 사용자의 알림 목록 조회 (알림 설정 페이지에서 보여줄 목록)
+	@GetMapping("/lists")
+	public ResponseEntity<List<NotificationDto>> getUserNotifications(@AuthenticationPrincipal OAuth2User user) {
+		String userId = user.getName();
 		return ResponseEntity.ok(notificationService.getUserNotifications(userId)
 				.stream()
 				.map(NotificationDto::new)
