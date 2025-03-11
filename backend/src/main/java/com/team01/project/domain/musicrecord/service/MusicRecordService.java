@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team01.project.domain.calendardate.repository.CalendarDateRepository;
+import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.repository.MusicRepository;
 import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.entity.MusicRecordId;
@@ -24,6 +25,11 @@ public class MusicRecordService {
 	private final MusicRecordRepository musicRecordRepository;
 	private final CalendarDateRepository calendarDateRepository;
 	private final MusicRepository musicRepository;
+
+	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
+		return musicRecordRepository.findByCalendarDateId(calendarDateId)
+			.stream().map(MusicRecord::getMusic).toList();
+	}
 
 	public void updateMusicRecords(Long calendarDateId, List<String> newMusicIds) {
 

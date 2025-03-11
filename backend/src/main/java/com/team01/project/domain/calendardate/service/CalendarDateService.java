@@ -21,6 +21,11 @@ public class CalendarDateService {
 	private final CalendarDateRepository calendarDateRepository;
 	private final UserRepository userRepository;
 
+	public CalendarDate findById(Long calendarDateId) {
+		return calendarDateRepository.findById(calendarDateId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+	}
+
 	public void writeMemo(Long calendarDateId, String memo) {
 		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
