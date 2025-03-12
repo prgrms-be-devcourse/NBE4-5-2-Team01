@@ -33,10 +33,15 @@ public class MusicRecordService {
 	private final UserRepository userRepository;
 	private final PermissionService permissionService;
 
-	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
+	public List<Music> findMusicsByCalendarDateId(Long calendarDateId, String loggedInUserId) {
+		User loggedInUser = userRepository.findById(loggedInUserId)
+			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
+
 		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
 
+		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
+		
 		return musicRecordRepository.findByCalendarDate(calendarDate)
 			.stream().map(MusicRecord::getMusic).toList();
 	}

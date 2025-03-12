@@ -83,12 +83,15 @@ public class CalendarDateServiceTest {
 
 		// given
 		Long mockCalendarDateId = 1L;
+		String mockUserId = "test-user";
 		CalendarDate mockCalendarDate = getMockCalendarDate();
+		User mockUser = User.builder().id(mockUserId).build();
 
 		when(calendarDateRepository.findById(mockCalendarDateId)).thenReturn(Optional.of(mockCalendarDate));
+		when(userRepository.findById(mockUserId)).thenReturn(Optional.ofNullable(mockUser));
 
 		// when
-		CalendarDate result = calendarDateService.findById(mockCalendarDateId);
+		CalendarDate result = calendarDateService.findById(mockCalendarDateId, mockUserId);
 
 		// then
 		assertNotNull(result);

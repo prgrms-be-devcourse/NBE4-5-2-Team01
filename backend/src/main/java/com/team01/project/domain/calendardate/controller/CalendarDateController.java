@@ -62,13 +62,15 @@ public class CalendarDateController {
 	@ResponseStatus(HttpStatus.OK)
 	public CalendarDateFetchResponse fetchCalendarDate(
 		@PathVariable(name = "calendar-date-id") Long calendarDateId,
-		@AuthenticationPrincipal OAuth2User user
+		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
+		String loggedInUserId = loggedInUser.getName();
+
 		// CalendarDate 조회
-		CalendarDate calendarDate = calendarDateService.findById(calendarDateId);
+		CalendarDate calendarDate = calendarDateService.findById(calendarDateId, loggedInUserId);
 
 		// CalendarDate와 연관된 MusicRecord를 이용해 Music 리스트 조회
-		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
+		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId, loggedInUserId);
 
 		return CalendarDateFetchResponse.of(calendarDate, musics);
 	}

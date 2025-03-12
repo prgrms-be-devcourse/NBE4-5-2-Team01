@@ -37,9 +37,16 @@ public class CalendarDateService {
 		return calendarDateRepository.findByUserAndDateBetween(user, start, end);
 	}
 
-	public CalendarDate findById(Long calendarDateId) {
-		return calendarDateRepository.findById(calendarDateId)
+	public CalendarDate findById(Long calendarDateId, String loggedInUserId) {
+		User loggedInUser = userRepository.findById(loggedInUserId)
+			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
+
+		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+
+		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
+
+		return calendarDate;
 	}
 
 	public void writeMemo(Long calendarDateId, String loggedInUserId, String memo) {

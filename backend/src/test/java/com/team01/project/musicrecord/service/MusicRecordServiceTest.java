@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +29,7 @@ import com.team01.project.domain.user.repository.UserRepository;
 import com.team01.project.global.permission.PermissionService;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MusicRecordServiceTest {
 
 	@Mock
@@ -69,11 +72,15 @@ class MusicRecordServiceTest {
 	void 기록한_음악_목록을_캘린더_아이디로_조회한다() {
 
 		// given
+		String userId = "test-user";
+		User user = User.builder().id(userId).build();
+
 		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
 		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
+		when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
 
 		// when
-		List<Music> result = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
+		List<Music> result = musicRecordService.findMusicsByCalendarDateId(calendarDateId, userId);
 
 		// then
 		assertThat(result).hasSize(musicRecords.size());
