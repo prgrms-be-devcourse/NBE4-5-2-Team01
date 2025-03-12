@@ -44,11 +44,11 @@ public class PermissionService {
 		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 먼슬리 캘린더를 조회할 권한이 없습니다.");
 	}
 
-	public boolean isOwner(Long calendarDateId, User loggedInUser) {
+	private boolean isOwner(Long calendarDateId, User loggedInUser) {
 		return calendarDateRepository.existsByIdAndUser(calendarDateId, loggedInUser);
 	}
 
-	public boolean isMutualFollowing(User user1, User user2) {
+	private boolean isMutualFollowing(User user1, User user2) {
 		return followRepository.existsByToUserAndFromUser(user1, user2)
 			&& followRepository.existsByToUserAndFromUser(user2, user1);
 	}
