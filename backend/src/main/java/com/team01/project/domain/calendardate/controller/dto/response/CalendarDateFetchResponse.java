@@ -24,7 +24,7 @@ public record CalendarDateFetchResponse(
 
 ) {
 
-	public static CalendarDateFetchResponse from(CalendarDate calendarDate, List<Music> musics) {
+	public static CalendarDateFetchResponse of(CalendarDate calendarDate, List<Music> musics) {
 		return new CalendarDateFetchResponse(
 			calendarDate.getId(),
 			calendarDate.getDate(),

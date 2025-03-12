@@ -27,7 +27,7 @@ public record MonthlyFetchResponse(
 
 	) {
 
-		public static SingleCalendarDate from(CalendarDate calendarDate, Music music) {
+		public static SingleCalendarDate of(CalendarDate calendarDate, Music music) {
 			return new SingleCalendarDate(
 				calendarDate.getId(),
 				calendarDate.getDate(),
@@ -36,7 +36,7 @@ public record MonthlyFetchResponse(
 		}
 
 		public static SingleCalendarDate from(CalendarDate calendarDate) {
-			return from(calendarDate, null);
+			return of(calendarDate, null);
 		}
 
 	}

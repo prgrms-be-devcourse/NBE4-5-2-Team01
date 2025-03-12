@@ -70,7 +70,7 @@ public class CalendarDateController {
 		// CalendarDate와 연관된 MusicRecord를 이용해 Music 리스트 조회
 		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
 
-		return CalendarDateFetchResponse.from(calendarDate, musics);
+		return CalendarDateFetchResponse.of(calendarDate, musics);
 	}
 
 	@PostMapping(params = {"year", "month", "day"})
@@ -126,8 +126,8 @@ public class CalendarDateController {
 		Optional<MusicRecord> optionalMusicRecord = musicRecordService.findOneByCalendarDateId(calendarDate.getId());
 
 		return optionalMusicRecord
-			.map(musicRecord -> MonthlyFetchResponse.SingleCalendarDate.from(calendarDate, musicRecord.getMusic()))
+			.map(musicRecord -> MonthlyFetchResponse.SingleCalendarDate.of(calendarDate, musicRecord.getMusic()))
 			.orElseGet(() -> MonthlyFetchResponse.SingleCalendarDate.from(calendarDate));
 	}
-	
+
 }
