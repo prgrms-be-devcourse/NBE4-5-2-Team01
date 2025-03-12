@@ -29,15 +29,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
-		ServletException, IOException{
+		ServletException, IOException {
 
 		System.out.println("======= START JwtTokenFilter.doFilterInternal =======");
 
 		String header = request.getHeader("Authorization");
-		System.out.println("header값:"+header);
+		System.out.println("header값:" + header);
 
 		// Authorization 헤더 확인 (Bearer 토큰 여부)
-		if (header == null || !header.startsWith("Bearer ")){
+		if (header == null || !header.startsWith("Bearer ")) {
 			System.out.println("Authorization 헤더가 없거나 잘못됨");
 			chain.doFilter(request, response);
 			return;
@@ -49,7 +49,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		boolean isValid = jwtTokenProvider.validateToken(token);
 		System.out.println("JWT 검증 결과: " + isValid);
 
-		if(!jwtTokenProvider.validateToken(token)){
+		if (!jwtTokenProvider.validateToken(token)) {
 			response.setContentType("application/json; charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

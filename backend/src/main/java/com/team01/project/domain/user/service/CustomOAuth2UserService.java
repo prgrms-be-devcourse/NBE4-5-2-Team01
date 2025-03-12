@@ -15,15 +15,14 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team01.project.domain.notification.service.NotificationService;
-import org.springframework.transaction.annotation.Transactional;
 import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
 import com.team01.project.global.security.JwtTokenProvider;
-
 
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -42,7 +41,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 	@Autowired
 	private SpotifyRefreshTokenService spotifyRefreshTokenService;
-	
+
 	@Transactional
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -62,8 +61,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		System.out.println("spotify access token:" + spotifyAccessToken);
 		System.out.println("User Attributes: " + user.getAttributes()); // OAuth 사용자 정보 확인
 
-
-
 		//리프레시 토큰 받아오기
 		//spotifyRefreshTokenService.refreshAccessToken(accessToken);
 		//리프레시 토큰 저장 ( DB에 저장 )
@@ -78,11 +75,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		//db에 사용자 없을 시 생성
 		if (foundUser == null) {
 			foundUser = User.builder()
-					.id(userId)
-					.name(user.getAttribute("display_name"))
-					.email(user.getAttribute("email"))
-					.createdDate(LocalDateTime.now())
-					.build();
+				.id(userId)
+				.name(user.getAttribute("display_name"))
+				.email(user.getAttribute("email"))
+				.createdDate(LocalDateTime.now())
+				.build();
 
 			userRepository.save(foundUser);
 			System.out.println("최초 로그인 사용자 저장:" + userId);
@@ -118,7 +115,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		attributes.put("spotifyToken", spotifyAccessToken);
 		attributes.put("jwtToken", jwtToken);
 
-		System.out.println("유저서비스에서 생성된 jwt:"+jwtToken);
+		System.out.println("유저서비스에서 생성된 jwt:" + jwtToken);
 
 		return new DefaultOAuth2User(
 			Collections.singleton(new SimpleGrantedAuthority("USER")),

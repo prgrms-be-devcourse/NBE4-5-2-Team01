@@ -38,7 +38,8 @@ public class SecurityConfig {
 					.anyRequest()
 					.authenticated()) // 모든 요청에 대해 인증 필요
 			//.anyRequest().permitAll()
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용 시 세션 비활성화
+			.sessionManagement(
+				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용 시 세션 비활성화
 			.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class) // JWT필터 추가 ( JWT token 검증 )
 			.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
 					.successHandler(oAuth2SuccessHandler)

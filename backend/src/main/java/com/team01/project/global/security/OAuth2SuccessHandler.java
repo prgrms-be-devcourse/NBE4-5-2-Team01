@@ -26,7 +26,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
 		String userId = oAuth2User.getAttribute("id");
 
-		if(userId == null){
+		if (userId == null) {
 			throw new RuntimeException("OAuth2 사용자 ID를 찾을 수 없습니다.");
 		}
 
@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		}
 		String jwtToken = oAuth2User.getAttribute("jwtToken");
 
-		System.out.println("클라이언트로 전송 될 jwt:"+jwtToken);
+		System.out.println("클라이언트로 전송 될 jwt:" + jwtToken);
 
 		// 프론트엔드로 리다이렉트할 URL 생성
 		String redirectUrl = "http://localhost:3000/login/callback"
