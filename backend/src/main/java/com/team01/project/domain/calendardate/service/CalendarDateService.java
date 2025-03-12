@@ -27,14 +27,23 @@ public class CalendarDateService {
 	private final UserRepository userRepository;
 	private final PermissionService permissionService;
 
-	public List<CalendarDate> findAllByYearAndMonth(String userId, YearMonth yearMonth) {
+	public List<CalendarDate> findAllByYearAndMonth(String ownerId, String loggedInUserId, YearMonth yearMonth) {
 		LocalDate start = yearMonth.atDay(1);
 		LocalDate end = yearMonth.atEndOfMonth();
 
-		User user = userRepository.findById(userId)
+		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
 
-		return calendarDateRepository.findByUserAndDateBetween(user, start, end);
+		if (ownerId == null) {
+			return calendarDateRepository.findByUserAndDateBetween(loggedInUser, start, end);
+		}
+
+		User owner = userRepository.findById(ownerId)
+			.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+
+		permissionService.checkMonthlyFetchPermission(owner, loggedInUser);
+
+		return calendarDateRepository.findByUserAndDateBetween(owner, start, end);
 	}
 
 	public CalendarDate findById(Long calendarDateId, String loggedInUserId) {

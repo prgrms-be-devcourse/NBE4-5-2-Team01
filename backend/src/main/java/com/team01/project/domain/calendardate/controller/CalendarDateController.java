@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -44,13 +45,15 @@ public class CalendarDateController {
 	public MonthlyFetchResponse fetchMonthlyCalendar(
 		@RequestParam int year,
 		@RequestParam int month,
-		@AuthenticationPrincipal OAuth2User user
+		@RequestHeader(name = "Calendar-Owner-Id", required = false) String ownerId,
+		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
-		String userId = user.getName();
+		String loggedInUserId = loggedInUser.getName();
 		YearMonth yearMonth = YearMonth.of(year, month);
 
 		// CalendarDate 리스트 조회
-		List<CalendarDate> calendarDates = calendarDateService.findAllByYearAndMonth(userId, yearMonth);
+		List<CalendarDate> calendarDates =
+			calendarDateService.findAllByYearAndMonth(ownerId, loggedInUserId, yearMonth);
 
 		// CalendarDate 리스트를 순회하며 SingleCalendarDate 리스트로 변환
 		List<MonthlyFetchResponse.SingleCalendarDate> monthly = mapToMonthly(calendarDates);

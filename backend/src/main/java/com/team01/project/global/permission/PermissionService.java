@@ -34,6 +34,16 @@ public class PermissionService {
 		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 캘린더를 조회할 권한이 없습니다.");
 	}
 
+	public void checkMonthlyFetchPermission(User owner, User loggedInUser) {
+		if (owner.getId().equals(loggedInUser.getId())) {
+			return;
+		} else if (isMutualFollowing(owner, loggedInUser)) {
+			return;
+		}
+
+		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 먼슬리 캘린더를 조회할 권한이 없습니다.");
+	}
+
 	public boolean isOwner(Long calendarDateId, User loggedInUser) {
 		return calendarDateRepository.existsByIdAndUser(calendarDateId, loggedInUser);
 	}

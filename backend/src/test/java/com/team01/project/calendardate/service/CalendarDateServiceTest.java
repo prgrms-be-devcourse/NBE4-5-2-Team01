@@ -69,7 +69,7 @@ public class CalendarDateServiceTest {
 			.thenReturn(mockCalendarDates);
 
 		// when
-		List<CalendarDate> result = calendarDateService.findAllByYearAndMonth(mockUserId, yearMonth);
+		List<CalendarDate> result = calendarDateService.findAllByYearAndMonth(mockUserId, mockUserId, yearMonth);
 
 		// then
 		assertThat(result).hasSize(mockCalendarDates.size());
