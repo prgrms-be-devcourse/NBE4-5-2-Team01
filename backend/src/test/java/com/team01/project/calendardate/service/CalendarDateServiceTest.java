@@ -60,7 +60,8 @@ public class CalendarDateServiceTest {
 				.build()
 		);
 
-		when(calendarDateRepository.findByUserIdAndDateBetween(mockUserId, start, end))
+		when(userRepository.findById(mockUserId)).thenReturn(Optional.ofNullable(mockUser));
+		when(calendarDateRepository.findByUserAndDateBetween(mockUser, start, end))
 			.thenReturn(mockCalendarDates);
 
 		// when

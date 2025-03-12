@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team01.project.domain.calendardate.entity.CalendarDate;
 import com.team01.project.domain.calendardate.repository.CalendarDateRepository;
 import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.repository.MusicRepository;
@@ -28,18 +29,26 @@ public class MusicRecordService {
 	private final MusicRepository musicRepository;
 
 	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
-		return musicRecordRepository.findByCalendarDateId(calendarDateId)
+		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+
+		return musicRecordRepository.findByCalendarDate(calendarDate)
 			.stream().map(MusicRecord::getMusic).toList();
 	}
 
 	public Optional<MusicRecord> findOneByCalendarDateId(Long calendarDateId) {
-		return musicRecordRepository.findTopByCalendarDateId(calendarDateId);
+		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+
+		return musicRecordRepository.findTopByCalendarDate(calendarDate);
 	}
 
 	public void updateMusicRecords(Long calendarDateId, List<String> newMusicIds) {
+		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
 
 		// 1. 기존 MusicRecord 조회
-		List<MusicRecord> oldMusicRecords = musicRecordRepository.findByCalendarDateId(calendarDateId);
+		List<MusicRecord> oldMusicRecords = musicRecordRepository.findByCalendarDate(calendarDate);
 
 		// 2. 기존 MusicId 목록 조회
 		Set<String> oldMusicIdset = oldMusicRecords.stream()
@@ -59,7 +68,7 @@ public class MusicRecordService {
 			.filter(musicId -> !oldMusicIdset.contains(musicId))
 			.map(musicId -> new MusicRecord(
 				new MusicRecordId(calendarDateId, musicId),
-				calendarDateRepository.getReferenceById(calendarDateId),
+				calendarDate,
 				musicRepository.getReferenceById(musicId)
 			))
 			.toList();

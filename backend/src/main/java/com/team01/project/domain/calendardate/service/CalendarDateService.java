@@ -27,7 +27,10 @@ public class CalendarDateService {
 		LocalDate start = yearMonth.atDay(1);
 		LocalDate end = yearMonth.atEndOfMonth();
 
-		return calendarDateRepository.findByUserIdAndDateBetween(userId, start, end);
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+
+		return calendarDateRepository.findByUserAndDateBetween(user, start, end);
 	}
 
 	public CalendarDate findById(Long calendarDateId) {

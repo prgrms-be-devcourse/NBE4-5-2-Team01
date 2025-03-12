@@ -6,9 +6,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.team01.project.domain.calendardate.entity.CalendarDate;
+import com.team01.project.domain.user.entity.User;
 
 public interface CalendarDateRepository extends JpaRepository<CalendarDate, Long> {
 
-	List<CalendarDate> findByUserIdAndDateBetween(String userId, LocalDate start, LocalDate end);
+	List<CalendarDate> findByUserAndDateBetween(User user, LocalDate start, LocalDate end);
 
 }

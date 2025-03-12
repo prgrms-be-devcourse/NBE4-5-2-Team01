@@ -60,7 +60,8 @@ class MusicRecordServiceTest {
 	void 기록한_음악_목록을_캘린더_아이디로_조회한다() {
 
 		// given
-		when(musicRecordRepository.findByCalendarDateId(calendarDateId)).thenReturn(musicRecords);
+		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
+		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
 
 		// when
 		List<Music> result = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
@@ -76,7 +77,8 @@ class MusicRecordServiceTest {
 	void 음악_기록_하나를_캘린더_아이디로_조회한다() {
 
 		// given
-		when(musicRecordRepository.findTopByCalendarDateId(calendarDateId)).thenReturn(
+		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
+		when(musicRecordRepository.findTopByCalendarDate(calendarDate)).thenReturn(
 			Optional.of(musicRecords.getFirst()));
 
 		// when
@@ -96,8 +98,8 @@ class MusicRecordServiceTest {
 		String musicIdToAdd = "3";
 		String musicNameToAdd = "Song 3";
 
-		when(musicRecordRepository.findByCalendarDateId(calendarDateId)).thenReturn(musicRecords);
-		when(calendarDateRepository.getReferenceById(calendarDateId)).thenReturn(calendarDate);
+		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
+		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
 		when(musicRepository.getReferenceById(musicIdToAdd))
 			.thenReturn(Music.builder().id(musicIdToAdd).name(musicNameToAdd).build());
 
