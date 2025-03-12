@@ -12,4 +12,6 @@ public interface CalendarDateRepository extends JpaRepository<CalendarDate, Long
 
 	List<CalendarDate> findByUserAndDateBetween(User user, LocalDate start, LocalDate end);
 
+	boolean existsByUserAndDate(User user, LocalDate date);
+
 }

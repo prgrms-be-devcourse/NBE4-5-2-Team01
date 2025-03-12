@@ -120,6 +120,7 @@ public class CalendarDateServiceTest {
 		User mockUser = User.builder().id(mockUserId).build();
 
 		when(userRepository.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+		when(calendarDateRepository.existsByUserAndDate(mockUser, mockDate)).thenReturn(false);
 		when(calendarDateRepository.save(any(CalendarDate.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// when
