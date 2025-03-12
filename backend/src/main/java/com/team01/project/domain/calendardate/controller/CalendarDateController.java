@@ -111,9 +111,10 @@ public class CalendarDateController {
 	public void writeMemoToCalendarDate(
 		@PathVariable(name = "calendar-date-id") Long calendarDateId,
 		@RequestBody CalendarDateMemoSaveRequest request,
-		@AuthenticationPrincipal OAuth2User user
+		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
-		calendarDateService.writeMemo(calendarDateId, request.memo());
+		String loggedInUserId = loggedInUser.getName();
+		calendarDateService.writeMemo(calendarDateId, loggedInUserId, request.memo());
 	}
 
 	private List<MonthlyFetchResponse.SingleCalendarDate> mapToMonthly(List<CalendarDate> calendarDates) {

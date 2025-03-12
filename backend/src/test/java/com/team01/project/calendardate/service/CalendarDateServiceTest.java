@@ -22,6 +22,7 @@ import com.team01.project.domain.calendardate.repository.CalendarDateRepository;
 import com.team01.project.domain.calendardate.service.CalendarDateService;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.permission.PermissionService;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -32,6 +33,9 @@ public class CalendarDateServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private PermissionService permissionService;
 
 	@InjectMocks
 	private CalendarDateService calendarDateService;
@@ -98,12 +102,16 @@ public class CalendarDateServiceTest {
 		// given
 		Long mockCalendarDateId = 1L;
 		String newMemo = "new memo";
-		CalendarDate mockCalendarDate = getMockCalendarDate();
+		String mockUserId = "test-user";
+		LocalDate mockDate = LocalDate.of(2025, 3, 1);
+		CalendarDate mockCalendarDate = getMockCalendarDate(mockDate);
+		User mockUser = User.builder().id(mockUserId).build();
 
+		when(userRepository.findById(mockUserId)).thenReturn(Optional.ofNullable(mockUser));
 		when(calendarDateRepository.findById(mockCalendarDateId)).thenReturn(Optional.of(mockCalendarDate));
 
 		// when
-		calendarDateService.writeMemo(mockCalendarDateId, newMemo);
+		calendarDateService.writeMemo(mockCalendarDateId, mockUserId, newMemo);
 
 		// then
 		assertEquals(newMemo, mockCalendarDate.getMemo());
@@ -138,6 +146,14 @@ public class CalendarDateServiceTest {
 		return CalendarDate.builder()
 			.user(new User())
 			.date(LocalDate.of(2025, 3, 1))
+			.memo("memo 1")
+			.build();
+	}
+
+	CalendarDate getMockCalendarDate(LocalDate date) {
+		return CalendarDate.builder()
+			.user(new User())
+			.date(date)
 			.memo("memo 1")
 			.build();
 	}
