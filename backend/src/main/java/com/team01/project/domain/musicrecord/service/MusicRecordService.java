@@ -33,6 +33,12 @@ public class MusicRecordService {
 	private final UserRepository userRepository;
 	private final PermissionService permissionService;
 
+	/**
+	 * 캘린더에 기록된 음악 리스트 조회
+	 * @param calendarDateId 캘린더 아이디
+	 * @param loggedInUserId 현재 인증된 유저 아이디
+	 * @return 음악 리스트
+	 */
 	public List<Music> findMusicsByCalendarDateId(Long calendarDateId, String loggedInUserId) {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
@@ -41,11 +47,16 @@ public class MusicRecordService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
 
 		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
-		
+
 		return musicRecordRepository.findByCalendarDate(calendarDate)
 			.stream().map(MusicRecord::getMusic).toList();
 	}
 
+	/**
+	 * 캘린더에 기록된 음악 기록 하나 조회
+	 * @param calendarDateId 캘린더 아이디
+	 * @return 음악 기록
+	 */
 	public Optional<MusicRecord> findOneByCalendarDateId(Long calendarDateId) {
 		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
@@ -53,6 +64,12 @@ public class MusicRecordService {
 		return musicRecordRepository.findTopByCalendarDate(calendarDate);
 	}
 
+	/**
+	 * 캘린더에 음악 기록 저장
+	 * @param calendarDateId 캘린더 아이디
+	 * @param loggedInUserId 현재 인증된 유저
+	 * @param newMusicIds 기록할 전체 음악 아이디 리스트
+	 */
 	public void updateMusicRecords(Long calendarDateId, String loggedInUserId, List<String> newMusicIds) {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));

@@ -27,6 +27,9 @@ public class CalendarDateService {
 	private final UserRepository userRepository;
 	private final PermissionService permissionService;
 
+	/**
+	 * 특정 연도와 월에 해당하는 캘린더 리스트 조회
+	 */
 	public List<CalendarDate> findAllByYearAndMonth(String ownerId, String loggedInUserId, YearMonth yearMonth) {
 		LocalDate start = yearMonth.atDay(1);
 		LocalDate end = yearMonth.atEndOfMonth();
@@ -46,6 +49,9 @@ public class CalendarDateService {
 		return calendarDateRepository.findByUserAndDateBetween(owner, start, end);
 	}
 
+	/**
+	 * 캘린더 조회
+	 */
 	public CalendarDate findById(Long calendarDateId, String loggedInUserId) {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
@@ -58,6 +64,9 @@ public class CalendarDateService {
 		return calendarDate;
 	}
 
+	/**
+	 * 메모 작성
+	 */
 	public void writeMemo(Long calendarDateId, String loggedInUserId, String memo) {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
@@ -70,6 +79,9 @@ public class CalendarDateService {
 		calendarDate.writeMemo(memo);
 	}
 
+	/**
+	 * 캘린더 생성
+	 */
 	public CalendarDate create(String userId, LocalDate date, String memo) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
