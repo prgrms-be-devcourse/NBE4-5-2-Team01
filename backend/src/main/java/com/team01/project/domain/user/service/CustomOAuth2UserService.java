@@ -15,13 +15,15 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.team01.project.domain.notification.service.NotificationService;
+import org.springframework.transaction.annotation.Transactional;
 import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
 import com.team01.project.global.security.JwtTokenProvider;
+
 
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -36,8 +38,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	private UserRepository userRepository;
 
 	@Autowired
-	private SpotifyRefreshTokenService spotifyRefreshTokenService;
+	private NotificationService notificationService;
 
+	@Autowired
+	private SpotifyRefreshTokenService spotifyRefreshTokenService;
+	
 	@Transactional
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -73,14 +78,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		//db에 사용자 없을 시 생성
 		if (foundUser == null) {
 			foundUser = User.builder()
-				.id(userId)
-				.name(user.getAttribute("display_name"))
-				.email(user.getAttribute("email"))
-				.createdDate(LocalDateTime.now())
-				.build();
+					.id(userId)
+					.name(user.getAttribute("display_name"))
+					.email(user.getAttribute("email"))
+					.createdDate(LocalDateTime.now())
+					.build();
 
 			userRepository.save(foundUser);
 			System.out.println("최초 로그인 사용자 저장:" + userId);
+
+			notificationService.createDefaultNotifications(foundUser);
+			System.out.println(foundUser.getName() + "님의 알림이 생성되었습니다.");
 		}
 
 		Optional<User> matchId = userRepository.findById(userId);
