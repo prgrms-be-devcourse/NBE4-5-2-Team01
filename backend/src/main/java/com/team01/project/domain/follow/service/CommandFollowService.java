@@ -27,7 +27,7 @@ public class CommandFollowService {
 	public void delete(String fromUserId, String toUserId) {
 		User fromUser = userRepository.getById(fromUserId);
 		User toUser = userRepository.getById(toUserId);
-		Follow follow = followRepository.findByToUserIdAndFromUserId(toUser, fromUser)
+		Follow follow = followRepository.findByToUserAndFromUser(toUser, fromUser)
 			.orElseThrow(() -> new IllegalArgumentException("팔로우를 찾을 수 없습니다."));
 
 		followRepository.delete(follow);

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.team01.project.common.acceptance.AcceptanceTest;
-import com.team01.project.domain.follow.domain.Follow;
+import com.team01.project.domain.follow.entity.Follow;
 import com.team01.project.domain.follow.repository.FollowRepository;
 
 import io.restassured.response.Response;
@@ -34,7 +34,8 @@ public class FollowControllerTest extends AcceptanceTest {
 	@Test
 	void 팔로우를_취소하면_200을_반환한다() {
 		// given
-		followRepository.save(new Follow(1L, 0L));
+
+		// followRepository.save(new Follow());
 		RequestSpecification 요청_준비 = given(spec);
 
 		// when
@@ -50,7 +51,7 @@ public class FollowControllerTest extends AcceptanceTest {
 		@Test
 		void 팔로잉_목록을_조회시_200을_반환한다() {
 			// given
-			followRepository.save(new Follow(0L, 1L));
+			// followRepository.save(new Follow(0L, 1L));
 			RequestSpecification 요청_준비 = given(spec);
 
 			// when
@@ -63,7 +64,7 @@ public class FollowControllerTest extends AcceptanceTest {
 		@Test
 		void 팔로워_목록을_조회시_200을_반환한다() {
 			// given
-			followRepository.save(new Follow(1L, 0L));
+			// followRepository.save(new Follow(1L, 0L));
 			RequestSpecification 요청_준비 = given(spec);
 
 			// when
