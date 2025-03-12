@@ -33,7 +33,8 @@ spring:
       org:
         hibernate:
           SQL: debug
-      org.springframework.security: DEBUG
+        springframework:
+          security: DEBUG
 
   jpa:
     database: mysql

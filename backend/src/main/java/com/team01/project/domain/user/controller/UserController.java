@@ -1,6 +1,5 @@
 package com.team01.project.domain.user.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -15,15 +14,15 @@ import com.team01.project.global.security.JwtTokenProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/user")
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private RefreshTokenRepository refreshTokenRepository;
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+	private final RefreshTokenRepository refreshTokenRepository;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@GetMapping("/login")
 	public String loginPage(Authentication authentication) {
