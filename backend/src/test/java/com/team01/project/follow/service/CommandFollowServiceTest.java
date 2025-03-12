@@ -14,7 +14,6 @@ import com.team01.project.domain.follow.repository.FollowRepository;
 import com.team01.project.domain.follow.service.CommandFollowService;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
-import com.team01.project.user.entity.UserFixture;
 
 public class CommandFollowServiceTest extends ServiceTest {
 
