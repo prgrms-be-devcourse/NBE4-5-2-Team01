@@ -47,16 +47,18 @@ public class FollowController {
 	}
 
 	@GetMapping("/following/{user-id}")
-	public List<FollowResponse> getFollowings(@PathVariable(name = "user-id") String userId) {
-		return queryFollowService.findFollowing(userId).stream()
-			.map(FollowResponse::from)
-			.toList();
+	public List<FollowResponse> getFollowings(
+		@PathVariable(name = "user-id") String userId,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		return queryFollowService.findFollowing(user.getName(), userId);
 	}
 
 	@GetMapping("/follower/{user-id}")
-	public List<FollowResponse> getFollowers(@PathVariable(name = "user-id") String userId) {
-		return queryFollowService.findFollower(userId).stream()
-			.map(FollowResponse::from)
-			.toList();
+	public List<FollowResponse> getFollowers(
+		@PathVariable(name = "user-id") String userId,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		return queryFollowService.findFollower(user.getName(), userId);
 	}
 }
