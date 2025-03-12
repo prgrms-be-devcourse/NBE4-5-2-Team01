@@ -16,6 +16,9 @@ import com.team01.project.domain.music.repository.MusicRepository;
 import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.entity.MusicRecordId;
 import com.team01.project.domain.musicrecord.repository.MusicRecordRepository;
+import com.team01.project.domain.user.entity.User;
+import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.permission.PermissionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +30,8 @@ public class MusicRecordService {
 	private final MusicRecordRepository musicRecordRepository;
 	private final CalendarDateRepository calendarDateRepository;
 	private final MusicRepository musicRepository;
+	private final UserRepository userRepository;
+	private final PermissionService permissionService;
 
 	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
 		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
@@ -43,9 +48,14 @@ public class MusicRecordService {
 		return musicRecordRepository.findTopByCalendarDate(calendarDate);
 	}
 
-	public void updateMusicRecords(Long calendarDateId, List<String> newMusicIds) {
+	public void updateMusicRecords(Long calendarDateId, String loggedInUserId, List<String> newMusicIds) {
+		User loggedInUser = userRepository.findById(loggedInUserId)
+			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
+
 		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+
+		permissionService.checkCalendarDateUpdatePermission(calendarDateId, loggedInUser);
 
 		// 1. 기존 MusicRecord 조회
 		List<MusicRecord> oldMusicRecords = musicRecordRepository.findByCalendarDate(calendarDate);

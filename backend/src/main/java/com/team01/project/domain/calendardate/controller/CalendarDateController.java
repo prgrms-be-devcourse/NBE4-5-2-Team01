@@ -80,18 +80,18 @@ public class CalendarDateController {
 		@RequestParam int month,
 		@RequestParam int day,
 		@RequestBody CalendarDateCreateRequest request,
-		@AuthenticationPrincipal OAuth2User user
+		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
-		String userId = user.getName();
+		String loggedInUserId = loggedInUser.getName();
 		LocalDate date = LocalDate.of(year, month, day);
 
 		// 캘린더 생성
-		CalendarDate calendarDate = calendarDateService.create(userId, date, request.memo());
+		CalendarDate calendarDate = calendarDateService.create(loggedInUserId, date, request.memo());
 
 		Long calendarDateId = calendarDate.getId();
 
 		// 음악 기록 저장
-		musicRecordService.updateMusicRecords(calendarDateId, request.musicIds());
+		musicRecordService.updateMusicRecords(calendarDateId, loggedInUserId, request.musicIds());
 
 		return new CalendarDateCreateResponse(calendarDateId);
 	}
@@ -101,9 +101,10 @@ public class CalendarDateController {
 	public void saveMusicToCalendarDate(
 		@PathVariable(name = "calendar-date-id") Long calendarDateId,
 		@RequestBody CalendarDateMusicSaveRequest request,
-		@AuthenticationPrincipal OAuth2User user
+		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
-		musicRecordService.updateMusicRecords(calendarDateId, request.musicIds());
+		String loggedInUserId = loggedInUser.getName();
+		musicRecordService.updateMusicRecords(calendarDateId, loggedInUserId, request.musicIds());
 	}
 
 	@PostMapping("/{calendar-date-id}/memo")

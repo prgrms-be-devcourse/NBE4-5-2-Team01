@@ -22,6 +22,9 @@ import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.entity.MusicRecordId;
 import com.team01.project.domain.musicrecord.repository.MusicRecordRepository;
 import com.team01.project.domain.musicrecord.service.MusicRecordService;
+import com.team01.project.domain.user.entity.User;
+import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.permission.PermissionService;
 
 @ExtendWith(MockitoExtension.class)
 class MusicRecordServiceTest {
@@ -34,6 +37,12 @@ class MusicRecordServiceTest {
 
 	@Mock
 	private MusicRepository musicRepository;
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PermissionService permissionService;
 
 	@InjectMocks
 	private MusicRecordService musicRecordService;
@@ -97,16 +106,19 @@ class MusicRecordServiceTest {
 		String commonMusicId = musicRecords.getFirst().getMusic().getId();
 		String musicIdToAdd = "3";
 		String musicNameToAdd = "Song 3";
+		String userId = "test-user";
+		User user = User.builder().id(userId).build();
 
 		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
 		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
 		when(musicRepository.getReferenceById(musicIdToAdd))
 			.thenReturn(Music.builder().id(musicIdToAdd).name(musicNameToAdd).build());
+		when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
 
 		List<String> newMusicIds = List.of(commonMusicId, musicIdToAdd);
 
 		// when
-		musicRecordService.updateMusicRecords(calendarDateId, newMusicIds);
+		musicRecordService.updateMusicRecords(calendarDateId, userId, newMusicIds);
 
 		// then
 		verify(musicRecordRepository).deleteAll(any());
