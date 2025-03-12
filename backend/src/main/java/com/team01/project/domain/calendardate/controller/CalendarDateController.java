@@ -40,6 +40,14 @@ public class CalendarDateController {
 	private final CalendarDateService calendarDateService;
 	private final MusicRecordService musicRecordService;
 
+	/**
+	 * 먼슬리 캘린더 조회
+	 * @param year 연도
+	 * @param month 월
+	 * @param ownerId 캘린더 소유자 아이디
+	 * @param loggedInUser 현재 인증된 유저
+	 * @return 먼슬리 캘린더
+	 */
 	@GetMapping(params = {"year", "month"})
 	@ResponseStatus(HttpStatus.OK)
 	public MonthlyFetchResponse fetchMonthlyCalendar(
@@ -61,6 +69,12 @@ public class CalendarDateController {
 		return new MonthlyFetchResponse(monthly);
 	}
 
+	/**
+	 * 캘린더 조회
+	 * @param calendarDateId 캘린더 아이디
+	 * @param loggedInUser 현재 인증된 유저
+	 * @return 캘린더
+	 */
 	@GetMapping("/{calendar-date-id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CalendarDateFetchResponse fetchCalendarDate(
@@ -78,6 +92,15 @@ public class CalendarDateController {
 		return CalendarDateFetchResponse.of(calendarDate, musics);
 	}
 
+	/**
+	 * 캘린더 생성
+	 * @param year 연도
+	 * @param month 월
+	 * @param day 일
+	 * @param request 메모, 음악 아이디 리스트
+	 * @param loggedInUser 현재 인증된 유저
+	 * @return 생성된 캘린더 아이디
+	 */
 	@PostMapping(params = {"year", "month", "day"})
 	@ResponseStatus(HttpStatus.CREATED)
 	public CalendarDateCreateResponse createCalendarDate(
@@ -101,6 +124,12 @@ public class CalendarDateController {
 		return new CalendarDateCreateResponse(calendarDateId);
 	}
 
+	/**
+	 * 음악 기록 저장
+	 * @param calendarDateId 캘린더 아이디
+	 * @param request 음악 아이디 리스트
+	 * @param loggedInUser 현재 인증된 유저
+	 */
 	@PostMapping("/{calendar-date-id}/music")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void saveMusicToCalendarDate(
@@ -112,6 +141,12 @@ public class CalendarDateController {
 		musicRecordService.updateMusicRecords(calendarDateId, loggedInUserId, request.musicIds());
 	}
 
+	/**
+	 * 메모 작성
+	 * @param calendarDateId 캘린더 아이디
+	 * @param request 새로운 메모
+	 * @param loggedInUser 현재 인증된 유저
+	 */
 	@PostMapping("/{calendar-date-id}/memo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void writeMemoToCalendarDate(
