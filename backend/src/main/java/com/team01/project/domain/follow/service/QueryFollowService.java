@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team01.project.domain.follow.controller.dto.CountFollowResponse;
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
 import com.team01.project.domain.follow.repository.FollowRepository;
 import com.team01.project.domain.user.entity.User;
@@ -43,7 +44,16 @@ public class QueryFollowService {
 			.toList();
 	}
 
+	public CountFollowResponse findCount(String userId) {
+		User user = userRepository.getById(userId);
+		Long followingCount = followRepository.countByFromUser(user);
+		Long followerCount = followRepository.countByToUser(user);
+
+		return CountFollowResponse.of(followingCount, followerCount);
+	}
+
 	private boolean checkFollow(User user, User currentUser) {
 		return followRepository.existsByToUserAndFromUser(user, currentUser);
 	}
+
 }
