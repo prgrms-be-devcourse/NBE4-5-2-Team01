@@ -47,7 +47,8 @@ public class SecurityConfig {
 				//.anyRequest().permitAll()
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용 시 세션 비활성화
-				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class) // JWT필터 추가 ( JWT token 검증 )
+				// JWT필터 추가 ( JWT token 검증 )
+				.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
 								.successHandler(oAuth2SuccessHandler)
 								//	.defaultSuccessUrl("http://localhost:3000/login/callback", true) // 로그인 성공 시 리다이렉트 url
