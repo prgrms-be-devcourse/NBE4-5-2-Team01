@@ -43,8 +43,7 @@ public class MusicRecordService {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
 
-		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
 		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
 
@@ -58,8 +57,7 @@ public class MusicRecordService {
 	 * @return 음악 기록
 	 */
 	public Optional<MusicRecord> findOneByCalendarDateId(Long calendarDateId) {
-		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
 		return musicRecordRepository.findTopByCalendarDate(calendarDate);
 	}
@@ -74,8 +72,7 @@ public class MusicRecordService {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
 
-		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
 		permissionService.checkCalendarDateUpdatePermission(calendarDateId, loggedInUser);
 
@@ -108,7 +105,6 @@ public class MusicRecordService {
 		// 6. MusicRecord 업데이트
 		musicRecordRepository.deleteAll(musicRecordsToDelete);
 		musicRecordRepository.saveAll(musicRecordsToAdd);
-
 	}
 
 }

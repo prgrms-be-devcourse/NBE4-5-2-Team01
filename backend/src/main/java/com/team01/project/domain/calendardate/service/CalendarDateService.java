@@ -56,8 +56,7 @@ public class CalendarDateService {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
 
-		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
 		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
 
@@ -71,8 +70,7 @@ public class CalendarDateService {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 			.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
 
-		CalendarDate calendarDate = calendarDateRepository.findById(calendarDateId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 캘린더 날짜 기록을 찾을 수 없습니다: " + calendarDateId));
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
 		permissionService.checkCalendarDateUpdatePermission(calendarDateId, loggedInUser);
 

@@ -16,4 +16,9 @@ public interface CalendarDateRepository extends JpaRepository<CalendarDate, Long
 
 	boolean existsByIdAndUser(Long calendarDateId, User user);
 
+	default CalendarDate findByIdOrThrow(Long calendarDateId) {
+		return findById(calendarDateId).orElseThrow(()
+			-> new IllegalArgumentException("해당 ID의 캘린더 기록을 찾을 수 없습니다: " + calendarDateId));
+	}
+
 }
