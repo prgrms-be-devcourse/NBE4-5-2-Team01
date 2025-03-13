@@ -122,21 +122,25 @@ public class NotificationService {
 	@Transactional
 	public void updateNotifications(List<NotificationUpdateDto> notifications, String userId) {
 		for (NotificationUpdateDto dto : notifications) {
+			// 알림이 존재하는지 확인
 			Notification notification = notificationRepository.findById(dto.notificationId())
-					.orElseThrow(() ->
-							new IllegalArgumentException("Notification not found with ID: " + dto.notificationId()));
+					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+							"Notification not found with ID: " + dto.notificationId()));
 
-			if (!notification.getUser().getId().equals(userId)) {    // 유저가 동일한지 확인
+			// 유저가 동일한지 확인
+			if (!notification.getUser().getId().equals(userId)) {
 				throw new ResponseStatusException(HttpStatus.FORBIDDEN,
 						"You do not have permission to update this notification.");
 			}
 
+			// 알림 설정 업데이트
 			notification.updateNotificationSettings(
 					dto.isEmailNotificationEnabled(),
 					dto.isPushNotificationEnabled()
 			);
 		}
 	}
+
 
 	// 최초 로그인 시 보낼 알림 설정
 	@Transactional
