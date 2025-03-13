@@ -67,4 +67,12 @@ public class FollowController {
 	public CountFollowResponse getCount(@PathVariable(name = "user-id") String userId) {
 		return queryFollowService.findCount(userId);
 	}
+
+	@GetMapping("/check/{user-id}")
+	public Boolean checkMutualFollow(
+		@PathVariable(name = "user-id") String userId,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		return queryFollowService.checkMutualFollow(user.getName(), userId);
+	}
 }
