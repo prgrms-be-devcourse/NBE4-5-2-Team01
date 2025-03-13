@@ -87,7 +87,7 @@ public class CalendarDateServiceTest {
 		CalendarDate mockCalendarDate = getMockCalendarDate();
 		User mockUser = User.builder().id(mockUserId).build();
 
-		when(calendarDateRepository.findById(mockCalendarDateId)).thenReturn(Optional.of(mockCalendarDate));
+		when(calendarDateRepository.findByIdOrThrow(mockCalendarDateId)).thenReturn(mockCalendarDate);
 		when(userRepository.findById(mockUserId)).thenReturn(Optional.ofNullable(mockUser));
 
 		// when
@@ -111,7 +111,7 @@ public class CalendarDateServiceTest {
 		User mockUser = User.builder().id(mockUserId).build();
 
 		when(userRepository.findById(mockUserId)).thenReturn(Optional.ofNullable(mockUser));
-		when(calendarDateRepository.findById(mockCalendarDateId)).thenReturn(Optional.of(mockCalendarDate));
+		when(calendarDateRepository.findByIdOrThrow(mockCalendarDateId)).thenReturn(mockCalendarDate);
 
 		// when
 		calendarDateService.writeMemo(mockCalendarDateId, mockUserId, newMemo);

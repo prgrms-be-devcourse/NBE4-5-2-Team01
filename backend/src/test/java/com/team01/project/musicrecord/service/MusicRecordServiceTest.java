@@ -75,7 +75,7 @@ class MusicRecordServiceTest {
 		String userId = "test-user";
 		User user = User.builder().id(userId).build();
 
-		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
+		when(calendarDateRepository.findByIdOrThrow(calendarDateId)).thenReturn(calendarDate);
 		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
 		when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
 
@@ -93,7 +93,7 @@ class MusicRecordServiceTest {
 	void 음악_기록_하나를_캘린더_아이디로_조회한다() {
 
 		// given
-		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
+		when(calendarDateRepository.findByIdOrThrow(calendarDateId)).thenReturn(calendarDate);
 		when(musicRecordRepository.findTopByCalendarDate(calendarDate)).thenReturn(
 			Optional.of(musicRecords.getFirst()));
 
@@ -117,7 +117,7 @@ class MusicRecordServiceTest {
 		User user = User.builder().id(userId).build();
 
 		when(musicRecordRepository.findByCalendarDate(calendarDate)).thenReturn(musicRecords);
-		when(calendarDateRepository.findById(calendarDateId)).thenReturn(Optional.ofNullable(calendarDate));
+		when(calendarDateRepository.findByIdOrThrow(calendarDateId)).thenReturn(calendarDate);
 		when(musicRepository.getReferenceById(musicIdToAdd))
 			.thenReturn(Music.builder().id(musicIdToAdd).name(musicNameToAdd).build());
 		when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(user));
