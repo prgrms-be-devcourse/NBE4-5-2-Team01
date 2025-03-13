@@ -59,12 +59,9 @@ public class CalendarDateController {
 		String loggedInUserId = loggedInUser.getName();
 		YearMonth yearMonth = YearMonth.of(year, month);
 
-		// CalendarDate 리스트 조회
-		List<CalendarDate> calendarDates =
-			calendarDateService.findAllByYearAndMonth(ownerId, loggedInUserId, yearMonth);
-
-		// CalendarDate 리스트를 순회하며 SingleCalendarDate 리스트로 변환
-		List<MonthlyFetchResponse.SingleCalendarDate> monthly = mapToMonthly(calendarDates);
+		List<MonthlyFetchResponse.SingleCalendarDate> monthly = mapToMonthly(
+			calendarDateService.findAllByYearAndMonth(ownerId, loggedInUserId, yearMonth)
+		);
 
 		return new MonthlyFetchResponse(monthly);
 	}
