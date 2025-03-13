@@ -121,8 +121,8 @@ public class UserController {
 
 	@ResponseBody
 	@GetMapping("/search")
-	public List<SimpleUserResponse> search(@RequestParam(name = "q") String q) {
-		return userService.search(q).stream()
+	public List<SimpleUserResponse> search(@RequestParam(name = "q") String name) {
+		return userService.search(name).stream()
 			.map(SimpleUserResponse::from)
 			.toList();
 	}

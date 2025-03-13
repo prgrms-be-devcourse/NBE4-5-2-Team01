@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 
-	public List<User> search(String q) {
-		return userRepository.searchUser(q);
+	public List<User> search(String name) {
+		return userRepository.searchUser(name);
 	}
 }

@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	List<User> findAll();
 
 	@Query("SELECT u FROM User u WHERE u.name LIKE %:q% OR u.nickName LIKE %:q%")
-	List<User> searchUser(@Param("q") String q);
+	List<User> searchUser(@Param("q") String name);
 
 	default User getById(String userId) {
 		return findById(userId)
