@@ -135,4 +135,3 @@ public class UserController {
 		return SimpleUserResponse.from(userService.getUserById(userId));
 	}
 }
-
