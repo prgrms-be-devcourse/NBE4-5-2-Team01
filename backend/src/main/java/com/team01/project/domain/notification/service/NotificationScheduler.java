@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.team01.project.domain.notification.entity.Notification;
 import com.team01.project.domain.notification.event.NotificationFollowEvent;
 import com.team01.project.domain.notification.event.NotificationInitEvent;
+import com.team01.project.domain.notification.event.NotificationRecordEvent;
 import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
 import com.team01.project.domain.user.entity.User;
 
@@ -202,6 +203,13 @@ public class NotificationScheduler {
 		System.out.println("🔔 새로운 팔로우 알림!");
 		scheduleNotificationFollowSending(event.getTime(), event.getToUser(),
 				"FOLLOWING", "%s님이 회원님을 팔로우하기 시작했습니다.".formatted(event.getFromUser().getName()));
+	}
+
+	@EventListener
+	public void handleNotificationAsync(NotificationRecordEvent event) {
+		System.out.println("🔔 " + event.getUser().getName() + "님의 새로운 음악 등록 알림!");
+		scheduleNotificationFollowSending(event.getTime(), event.getUser(),
+				"SHARE MUSIC", "%s님, 회원님이 오늘 등록한 음악을 공유해보세요! 🎶".formatted(event.getUser().getName()));
 	}
 
 	private void scheduleNotificationFollowSending(
