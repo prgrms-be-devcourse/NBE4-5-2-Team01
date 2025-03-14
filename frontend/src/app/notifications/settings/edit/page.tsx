@@ -94,22 +94,18 @@ const NotificationEdit = () => {
   };
 
   const titleMap: Record<string, string> = {
-    DAILY_CHALLENGE: "음악 기록",
-    SHARE_MUSIC: "음악 공유",
-    BUILD_PLAYLIST: "나만의 플레이리스트",
-    YEAR_HISTORY: "1년 전 음악",
-    FOLLOW_REQUEST: "팔로우 요청",
-    FOLLOW_ACCEPTED: "팔로우 수락",
+    "DAILY CHALLENGE": "음악 기록",
+    "SHARE MUSIC": "음악 공유",
+    "BUILD PLAYLIST": "나만의 플레이리스트",
+    "YEAR HISTORY": "1년 전 음악",
     FOLLOWING: "팔로워",
   };
 
   const messageMap: Record<string, string> = {
-    DAILY_CHALLENGE: "매일 정해진 시간에 음악을 기록하라고 알려주는 알림",
-    SHARE_MUSIC: "음악을 캘린더에 기록했을 때 알림",
-    BUILD_PLAYLIST: "플레이리스트를 만들어보길 추천하는 알림",
-    YEAR_HISTORY: "작년 오늘 기록한 음악 알림",
-    FOLLOW_REQUEST: "새로운 팔로우 요청이 도착했을 때 알림",
-    FOLLOW_ACCEPTED: "나의 팔로우 요청이 수락되었을 때 알림",
+    "DAILY CHALLENGE": "매일 정해진 시간에 음악을 기록하라고 알려주는 알림",
+    "SHARE MUSIC": "음악을 캘린더에 기록했을 때 알림",
+    "BUILD PLAYLIST": "플레이리스트를 만들어보길 추천하는 알림",
+    "YEAR HISTORY": "작년 오늘 기록한 음악 알림",
     FOLLOWING: "다른 사용자가 나를 팔로우하기 시작할 때 알림",
   };
 
