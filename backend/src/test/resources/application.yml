@@ -43,8 +43,8 @@ spring:
       enabled: true
 
   mail:
-    username: smvision9912@gmail.com
-    password: lwjqpkqrhtoeeoqf
+    username: asdfasdf
+    password: asdfasdf
     host: smtp.gmail.com
     port: 587
     properties:
