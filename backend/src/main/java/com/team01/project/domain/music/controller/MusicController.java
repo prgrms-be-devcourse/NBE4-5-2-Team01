@@ -1,16 +1,26 @@
 package com.team01.project.domain.music.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.team01.project.domain.music.dto.MusicRequest;
 import com.team01.project.domain.music.dto.MusicResponse;
 import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.music.service.MusicService;
 import com.team01.project.domain.music.service.SpotifyService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/music")
