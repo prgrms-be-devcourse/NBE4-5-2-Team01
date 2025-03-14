@@ -63,6 +63,7 @@ const Notifications = () => {
 
       await axios.patch(
         `http://localhost:8080/api/v1/notification-lists/${id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -137,14 +138,14 @@ const Notifications = () => {
   };
 
   return (
-    <div className="w-[800px] h-[800px] mx-auto p-5 bg-gray-100 rounded-lg">
+    <div className="w-[800px] min-h-[800px] mx-auto p-5 bg-gray-100 rounded-lg">
       <div
         style={{
           padding: "10px",
           borderRadius: "10px",
           background: "white",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // 부드러운 그림자 효과
-          height: "760px",
+          minHeight: "760px",
         }}
       >
         <div className="flex justify-between text-center items-center pb-[10px]">
