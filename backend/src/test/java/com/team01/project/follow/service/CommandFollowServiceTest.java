@@ -1,5 +1,9 @@
 package com.team01.project.follow.service;
 
+import static com.team01.project.user.entity.UserFixture.유저;
+import static com.team01.project.user.entity.UserFixture.유저_이메일;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,9 +18,6 @@ import com.team01.project.domain.notification.repository.SubscriptionRepository;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
 
-import static com.team01.project.user.entity.UserFixture.유저;
-import static com.team01.project.user.entity.UserFixture.유저_이메일;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommandFollowServiceTest extends ServiceTest {
 
