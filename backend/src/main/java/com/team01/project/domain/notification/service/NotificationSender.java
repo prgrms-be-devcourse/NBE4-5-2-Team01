@@ -32,7 +32,8 @@ public class NotificationSender {
 			// 이메일 전송
 			javaMailSender.send(mimeMessage);
 
-			System.out.println(user.getName() + "님의 " + user.getEmail() + "로 " + title + " 알림이 전송되었습니다. 내용: " + message);
+			System.out.println(
+					user.getName() + "님의 " + user.getEmail() + "로 " + title + " 알림이 전송되었습니다. 내용: " + message);
 		} catch (Exception e) {
 			// 예외 처리
 			e.printStackTrace();
