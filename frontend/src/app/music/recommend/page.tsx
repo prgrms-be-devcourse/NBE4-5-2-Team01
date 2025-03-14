@@ -11,13 +11,15 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function MusicRecommendation() {
+  const API_URL = "http://localhost:8080/api/v1/music/spotify";
+  const artistName = "aespa";
+
   const [recentTracks, setRecentTracks] = useState([]);
   const [moodTracks, setMoodTracks] = useState([]);
   const [selectedMood, setSelectedMood] = useState("행복");
 
-  const API_URL = "http://localhost:8080/api/v1/music/spotify";
-  const username = "유저";
-  const artistName = "aespa";
+  const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("사용자");
 
   const recentTrackRef = useRef(null);
   const moodTrackRef = useRef(null);
@@ -28,9 +30,33 @@ export default function MusicRecommendation() {
   const [isAtEndMood, setIsAtEndMood] = useState(false);
 
   useEffect(() => {
+    fetchUser();
     fetchRecentTracks("6YVMFz59CuY7ngCxTxjpxE");
     fetchMoodTracks(selectedMood);
   }, [selectedMood]);
+
+  // 1. accessToken을 이용해 userId 가져오기
+  const fetchUser = async () => {
+    try {
+      const jwt = localStorage.getItem("accessToken");
+
+      // userId 가져오기
+      const userRes = await axios.get("http://localhost:8080/api/v1/user/byToken", {
+        headers: { Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json", },
+      });
+
+      const fetchedUserId = userRes.data.userId;
+      const { name, nickName } = userRes.data;
+
+      setUserId(fetchedUserId);
+      setUserName(nickName || name);
+
+      console.log(userRes);
+    } catch (error) {
+      console.error("사용자 정보 조회 실패:", error);
+    }
+  };
 
   const fetchRecentTracks = async (artistId) => {
     try {
@@ -121,10 +147,9 @@ export default function MusicRecommendation() {
     <div className="p-6 space-y-8">
       <div className="space-y-1">
         <h2 className="text-2xl font-bold">음악 추천</h2>
-        <p className="text-gray-500">{username}님 맞춤 노래 추천</p>
+        <p className="text-gray-500">{userName}님 맞춤 노래 추천</p>
       </div>
 
-      {/* 🔹 최근 들은 음악 */}
       <section>
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-xl font-semibold break-words w-full">
@@ -179,7 +204,6 @@ export default function MusicRecommendation() {
         </div>
       </section>
 
-      {/* 🔹 기분별 추천 음악 */}
       <section>
         <div className="flex justify-between items-center">
           <h3 className="text-xl font-semibold mb-2">
