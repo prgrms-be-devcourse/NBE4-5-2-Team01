@@ -58,6 +58,7 @@ public class NotificationSender {
 			);
 
 			notificationListService.addNotification(user, title, message, notificationTime);
+
 			System.out.println(user.getName() + "님에게 " + title + " 푸시알림이 전송되었습니다. 내용: " + message);
 		} catch (Exception e) {
 			// 예외 처리
