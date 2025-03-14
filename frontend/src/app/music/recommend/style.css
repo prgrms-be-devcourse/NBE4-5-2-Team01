@@ -51,3 +51,22 @@ button:disabled {
   -ms-overflow-style: none; /* IE, Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.track-title {
+  font-size: 0.875rem; /* ✅ 적절한 크기로 설정 */
+  font-weight: 500;
+  word-break: break-word; /* ✅ 단어가 길 경우 줄바꿈 허용 */
+  white-space: normal; /* ✅ 줄바꿈 허용 */
+  text-overflow: ellipsis; /* ✅ 넘치는 텍스트는 ... 표시 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* ✅ 최대 2줄까지만 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.track-artist {
+  font-size: 0.75rem; /* ✅ 아티스트 이름 크기 조정 */
+  color: #6b7280; /* ✅ 회색 계열 */
+  word-break: break-word; /* ✅ 긴 이름 줄바꿈 허용 */
+  white-space: normal;
+}

@@ -11,15 +11,21 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function MusicRecommendation() {
-  const API_URL = "http://localhost:8080/api/v1/music/spotify";
-  const artistName = "aespa";
-
-  const [recentTracks, setRecentTracks] = useState([]);
-  const [moodTracks, setMoodTracks] = useState([]);
-  const [selectedMood, setSelectedMood] = useState("행복");
+  const API_URL = "http://localhost:8080/api/v1";
+  const SPOTIFY_URL = "http://localhost:8080/api/v1/music/spotify";
 
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("사용자");
+
+  const [singer, setSinger] = useState("");
+
+  const [recentTracks, setRecentTracks] = useState([]);
+  const [moodTracks, setMoodTracks] = useState([]);
+
+  const moodOptions = ["행복", "슬픔", "에너지", "편안함", "사랑", "우울", "설렘"];
+  const [selectedMood, setSelectedMood] = useState("행복");
+  const [isFetchingMoodTracks, setIsFetchingMoodTracks] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // ✅ 로딩 화면 상태
 
   const recentTrackRef = useRef(null);
   const moodTrackRef = useRef(null);
@@ -30,31 +36,64 @@ export default function MusicRecommendation() {
   const [isAtEndMood, setIsAtEndMood] = useState(false);
 
   useEffect(() => {
-    fetchUser();
-    fetchRecentTracks("6YVMFz59CuY7ngCxTxjpxE");
-    fetchMoodTracks(selectedMood);
+    const fetchAllData = async () => {
+      try {
+        // 1️⃣ fetchUser() 실행 후 userId 가져오기
+        const fetchedUserId = await fetchUser();
+  
+        // 2️⃣ fetchRandomMusic(fetchedUserId) 실행 후 완료되면 fetchRecentTracks() 실행
+        const fetchedArtistId = await fetchRandomMusic(fetchedUserId);
+  
+        // 3️⃣ fetchRecentTracks() 실행 후 fetchMoodTracks(selectedMood) 실행
+        await fetchRecentTracks(fetchedArtistId);
+  
+        // 4️⃣ 마지막으로 fetchMoodTracks(selectedMood) 실행
+        await fetchMoodTracks(selectedMood);
+      } catch (error) {
+        console.error("데이터 로드 중 오류 발생:", error);
+      }
+    };
+  
+    fetchAllData();
   }, [selectedMood]);
-
-  // 1. accessToken을 이용해 userId 가져오기
+  
   const fetchUser = async () => {
     try {
       const jwt = localStorage.getItem("accessToken");
 
-      // userId 가져오기
-      const userRes = await axios.get("http://localhost:8080/api/v1/user/byToken", {
+      const res = await axios.get(`${API_URL}/user/byToken`, {
         headers: { Authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json", },
       });
 
-      const fetchedUserId = userRes.data.userId;
-      const { name, nickName } = userRes.data;
+      const userId = res.data.id;
+      const { name, nickName } = res.data;
 
-      setUserId(fetchedUserId);
+      setUserId(userId);
       setUserName(nickName || name);
 
-      console.log(userRes);
+      return userId;
     } catch (error) {
       console.error("사용자 정보 조회 실패:", error);
+      throw error;
+    }
+  };
+
+  const fetchRandomMusic = async (userId) => {
+    try {
+      const jwt = localStorage.getItem("accessToken");
+      const spotify = localStorage.getItem("spotifyToken");
+
+      const randomRes = await axios.get(`${API_URL}/music/recent/random/${userId}`, {
+        headers: { Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json", },
+      });
+      setSinger(randomRes.data.singer);
+
+      return randomRes.data.singerId;
+    } catch (error) {
+      console.error("랜덤 음악 조회 실패:", error);
+      throw error;
     }
   };
 
@@ -63,8 +102,8 @@ export default function MusicRecommendation() {
       const jwt = localStorage.getItem("accessToken");
       const spotify = localStorage.getItem("spotifyToken");
 
-      const response = await axios.get(
-        `${API_URL}/artist/${artistId}/top-tracks`,
+      const res = await axios.get(
+        `${SPOTIFY_URL}/artist/${artistId}/top-tracks`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -73,39 +112,44 @@ export default function MusicRecommendation() {
           },
         }
       );
-      setRecentTracks(response.data);
+      setRecentTracks(res.data);
     } catch (error) {
-      console.error("Error fetching recent tracks:", error);
+      console.error("최근 음악 조회 실패:", error);
+      throw error;
     }
   };
 
   const fetchMoodTracks = async (mood) => {
+    if (isFetchingMoodTracks) return;
+
     try {
       const jwt = localStorage.getItem("accessToken");
       const spotify = localStorage.getItem("spotifyToken");
 
-      const response = await axios.get(`${API_URL}/search?keyword=${mood}`, {
+      const res = await axios.get(`${SPOTIFY_URL}/search?keyword=${mood}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
           "Spotify-Token": spotify,
           "Content-Type": "application/json",
         },
       });
-      setMoodTracks(response.data);
+      setMoodTracks(res.data);
     } catch (error) {
-      console.error("Error fetching mood tracks:", error);
+      console.error("기분 음악 조회 실패:", error);
+      throw error;
+    } finally {
+      setIsFetchingMoodTracks(false); // ✅ 요청 완료 후 상태 해제
+      setIsLoading(false); // ✅ 로딩 화면 숨기기
     }
   };
 
-  const moodOptions = [
-    "행복",
-    "슬픔",
-    "에너지",
-    "편안함",
-    "사랑",
-    "우울",
-    "설렘",
-  ];
+  const handleMoodChange = (mood) => {
+    if (isFetchingMoodTracks) return;
+    setIsFetchingMoodTracks(true);
+    setIsLoading(true);
+    setSelectedMood(mood);
+    fetchMoodTracks(mood);
+  };
 
   const updateScrollState = (ref, setStart, setEnd) => {
     if (ref.current) {
@@ -143,6 +187,21 @@ export default function MusicRecommendation() {
     }
   };
 
+  const LoadingScreen = () => {
+    return (
+      <div className="absolute inset-0 flex justify-center items-center bg-white z-50"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.7)", // ✅ 투명도 적용
+        }}
+      >
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-800">🎵 추천 음악을 불러오는 중...</p>
+          <div className="w-8 h-8 mt-2 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 space-y-8">
       <div className="space-y-1">
@@ -153,8 +212,8 @@ export default function MusicRecommendation() {
       <section>
         <div className="flex justify-between items-center mb-5">
           <h3 className="text-xl font-semibold break-words w-full">
-            최근 들은 <span className="text-[#3F00FF]">{artistName}</span>에
-            대한 음악
+            최근 들은 <span className="text-[#3F00FF]">{singer}</span>의
+            인기 음악
           </h3>
           <div className="flex space-x-2">
             <button
@@ -194,10 +253,10 @@ export default function MusicRecommendation() {
                   alt={track.name}
                   className="rounded-lg w-full h-auto"
                 />
-                <p className="text-sm font-medium mt-2 break-words">
+                <p className="text-sm font-medium mt-2 break-words track-title">
                   {track.name}
                 </p>
-                <p className="text-xs text-gray-500">{track.singer}</p>
+                <p className="text-xs text-gray-500 track-artist">{track.singer}</p>
               </div>
             ))}
           </div>
@@ -235,18 +294,20 @@ export default function MusicRecommendation() {
         <div className="flex flex-wrap gap-1 mb-5">
           {moodOptions.map((mood) => (
             <Button
-              key={mood}
-              className={`rounded-full px-4 py-2 ${
-                selectedMood === mood ? "mood-button-active" : "mood-button"
-              }`}
-              onClick={() => setSelectedMood(mood)}
-            >
-              #{mood}
-            </Button>
+            key={mood}
+            className={`rounded-full px-4 py-2 ${
+              selectedMood === mood ? "mood-button-active" : "mood-button"
+            } ${isFetchingMoodTracks ? "cursor-not-allowed opacity-50" : ""}`} // ✅ 즉시 UI 변경
+            onClick={() => handleMoodChange(mood)}
+            disabled={isFetchingMoodTracks} // ✅ 즉시 비활성화
+          >
+            #{mood}
+          </Button>
           ))}
         </div>
 
         <div className="relative">
+          {isLoading && <LoadingScreen />} {/* ✅ 로딩 중이면 표시 */}
           <div
             ref={moodTrackRef}
             className="flex gap-4 overflow-x-auto hide-scrollbar whitespace-nowrap"
@@ -262,10 +323,10 @@ export default function MusicRecommendation() {
                   alt={track.name}
                   className="rounded-lg w-full h-auto"
                 />
-                <p className="text-sm font-medium mt-2 break-words">
+                <p className="text-sm font-medium mt-2 break-words track-title">
                   {track.name}
                 </p>
-                <p className="text-xs text-gray-500">{track.singer}</p>
+                <p className="text-xs text-gray-500 track-artist">{track.singer}</p>
               </div>
             ))}
           </div>
