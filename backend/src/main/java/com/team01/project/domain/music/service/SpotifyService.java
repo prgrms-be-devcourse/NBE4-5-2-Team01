@@ -106,6 +106,7 @@ public class SpotifyService {
 			track.getId(),
 			track.getName(),
 			track.getArtistsAsString(),
+			track.getArtistsIdAsString(),
 			LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),
 			track.getAlbum().getImages().get(0).getUrl(),
 			String.join(", ", allGenres)
