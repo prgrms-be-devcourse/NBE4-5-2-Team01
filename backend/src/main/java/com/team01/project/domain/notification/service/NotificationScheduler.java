@@ -133,14 +133,13 @@ public class NotificationScheduler {
 		// 알림을 전송
 		for (Notification notification : notifications) {
 			// 이메일과 푸시알림을 각각 확인해서 전송
-			if (notification.isEmailEnabled()) {
-				notificationSender.sendEmail(
-						notification.getUser(), notification.getTitle(), notification.getMessage());
-			}
 			if (notification.isPushEnabled()) {
 				notificationSender.sendPush(
 						notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
-
+			}
+			if (notification.isEmailEnabled()) {
+				notificationSender.sendEmail(
+						notification.getUser(), notification.getTitle(), notification.getMessage());
 			}
 		}
 	}
@@ -152,7 +151,7 @@ public class NotificationScheduler {
 	}
 
 	private void scheduleNotificationInitSending(LocalTime notificationTime, User user) {
-		// 첫 번째 알림 예약
+		// 첫 번째 알림 예약 (2분 후)
 		scheduleSingleNotification(
 				user,
 				notificationTime.plusMinutes(2),
@@ -160,7 +159,7 @@ public class NotificationScheduler {
 				"%s님, 환영합니다! 🎉".formatted(user.getName())
 		);
 
-		// 두 번째 알림 예약 (1분 후)
+		// 두 번째 알림 예약 (3분 후)
 		scheduleSingleNotification(
 				user,
 				notificationTime.plusMinutes(3),
