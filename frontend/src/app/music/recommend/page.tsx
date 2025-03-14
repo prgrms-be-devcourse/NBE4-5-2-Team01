@@ -22,7 +22,7 @@ export default function MusicRecommendation() {
   const [recentTracks, setRecentTracks] = useState([]);
   const [moodTracks, setMoodTracks] = useState([]);
 
-  const moodOptions = ["행복", "슬픔", "에너지", "편안함", "사랑", "우울", "설렘"];
+  const moodOptions = ["행복", "슬픔", "에너지", "편안", "사랑", "우울", "설렘"];
   const [selectedMood, setSelectedMood] = useState("행복");
   const [isFetchingMoodTracks, setIsFetchingMoodTracks] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // ✅ 로딩 화면 상태

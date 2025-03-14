@@ -158,6 +158,8 @@ public class SpotifyService {
 		String url = "/artists/" + artistId + "/top-tracks?market=KR";
 		String token = extractToken(accessToken);
 
+		System.out.println("🔍 사용한 Access Token: " + token);
+
 		try {
 			String jsonResponse = webClient.get()
 				.uri(url)
