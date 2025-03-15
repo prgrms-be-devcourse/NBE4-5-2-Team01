@@ -77,8 +77,7 @@ public class UserService {
 		String userId = authenticationToken.getName();
 
 		//사용자 찾기
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
+		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다."));
 
 		//리프레시 토큰 찾기
 		RefreshToken storedRefreshToken = refreshTokenRepository.findByUser(user)

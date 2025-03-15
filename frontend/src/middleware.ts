@@ -1,9 +1,8 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 
 // 리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받는 함수
 const refreshAccessToken = async (refreshToken: string) => {
-  const response = await fetch("http://localhost:8080/refresh", {
+  const response = await fetch("http://localhost:8080/api/v1/refresh", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,8 +31,14 @@ const isAccessTokenExpired = (accessToken: string): boolean => {
 };
 
 export async function middleware(req: Request) {
+  console.log("미들웨어 실행");
+
+  // 이미 액세스 토큰이 갱신되어서 처리 중인 요청인지 확인
+  const isTokenRefreshed = req.headers.get("X-Token-Refreshed");
+
+  // 액세스 토큰과 리프레시 토큰을 헤더에서 추출
   const accessToken = req.headers.get("Authorization")?.replace("Bearer ", "");
-  const refreshToken = req.headers.get("refreshToken");  // 예시로 리프레시 토큰을 헤더에 포함했다고 가정
+  const refreshToken = req.headers.get("refreshToken");
 
   if (!accessToken || !refreshToken) {
     return NextResponse.redirect(new URL("/login", req.url)); // 토큰이 없으면 로그인 페이지로 리다이렉트
@@ -42,14 +47,22 @@ export async function middleware(req: Request) {
   // 액세스 토큰이 만료되었으면 리프레시 토큰을 사용하여 갱신
   if (isAccessTokenExpired(accessToken)) {
     try {
+      // 이미 갱신된 요청이 아닌지 확인
+      if (isTokenRefreshed) {
+        // 이미 갱신된 요청이라면 무한루프 방지
+        return NextResponse.next();
+      }
+
+      // 리프레시 토큰을 사용하여 액세스 토큰 갱신
       const newAccessToken = await refreshAccessToken(refreshToken);
       if (!newAccessToken) {
         return NextResponse.redirect(new URL("/login", req.url)); // 리프레시 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
       }
 
-      // 새로운 액세스 토큰을 응답에 추가
+      // 새로운 액세스 토큰을 응답에 추가하고 X-Token-Refreshed 헤더를 추가하여 무한 루프 방지
       const response = NextResponse.next();
       response.headers.set("Authorization", `Bearer ${newAccessToken}`);
+      response.headers.set("X-Token-Refreshed", "true"); // 이 요청은 토큰이 갱신된 요청임을 표시
       return response;
     } catch (error) {
       console.error("Error refreshing token:", error);
