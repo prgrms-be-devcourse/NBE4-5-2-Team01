@@ -11,6 +11,10 @@ button:disabled {
   cursor: default !important;
 }
 
+.point-color {
+  color: #845BFF;
+}
+
 /* 활성화된 버튼 스타일 */
 .mood-button-active {
   background-color: #c8b6ff; /* 연한 보라색 */
