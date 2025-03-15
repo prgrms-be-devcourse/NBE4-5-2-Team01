@@ -1,6 +1,7 @@
 package com.team01.project.domain.user.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.team01.project.domain.user.dto.SimpleUserResponse;
-import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
 import com.team01.project.global.security.JwtTokenProvider;
 
@@ -169,8 +164,6 @@ public class UserService {
 			throw new RuntimeException("json 응답을 받는데 실패했습니다.", e);
 		}
 	}
-	
-	private final UserRepository userRepository;
 
 	public List<User> search(String name) {
 		return userRepository.searchUser(name);
