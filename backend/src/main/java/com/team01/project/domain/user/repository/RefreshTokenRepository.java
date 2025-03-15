@@ -9,7 +9,7 @@ import com.team01.project.domain.user.entity.User;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 	Optional<RefreshToken> findByUserId(String userId);
-
+	Optional<RefreshToken> findByUser(User user);
 	void deleteByUserId(String userId);
 
 	String user(User user);

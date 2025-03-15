@@ -27,11 +27,13 @@ public class JwtTokenProvider {
 	private static final String SECRET_KEY_STRING =
 		"aXlvdXZvLWNvc2VjLXJhbmdvbGV" + "0LXNlY3JldC1rZXkta2V5LWZvci1qd3Q="; // Base64 인코딩된 값
 	private static final Key SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY_STRING));
-	private static final long VALIDITY_IN_MS = 3600000L; // 1시간\
+	// private static final long VALIDITY_IN_MS = 3600000L; // 1시간
+	private static final long VALIDITY_IN_MS = 10000L; // 10초
+	private long refreshTokenValidity = 1000 * 60 * 60 * 24 * 7; // 7일
 	private User user;
 
 	//jwt 토큰 생성
-	public String createToken(String userId, String spotifyAccessToken) {
+	public String generateJwtToken(String userId, String spotifyAccessToken) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("sub", userId); // subject 설정
 		claims.put("spotifyToken", spotifyAccessToken); //추가 Claims
@@ -50,6 +52,16 @@ public class JwtTokenProvider {
 			.compact();
 	}
 
+	// 리프레시 토큰 생성
+	public String generateRefreshToken(String userId) {
+		return Jwts.builder()
+			.setSubject(userId)
+			.setIssuedAt(new Date())
+			.setExpiration(new Date(System.currentTimeMillis() + refreshTokenValidity))
+			.signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+			.compact();
+	}
+
 	//jwt 토큰 검증 및 사용자 정보 추출
 	public String getUserIdFromToken(String token) {
 
@@ -61,10 +73,10 @@ public class JwtTokenProvider {
 	//jwt 토큰 유효한 형식인 지 검증
 	public boolean validateToken(String token) {
 		try {
-			JwtParser parser = Jwts.parser() // ✅ `parserBuilder()` 사용 X → `parser()` 사용
-				.setSigningKey(SECRET_KEY) //
+			JwtParser parser = Jwts.parser()
+				.setSigningKey(SECRET_KEY)
 				.build();
-			parser.parseClaimsJws(token); // `parseClaimsJws()` → `parseSignedClaims()`
+			parser.parseClaimsJws(token);
 			return true;
 		} catch (ExpiredJwtException e) {
 			System.out.println("JWT 만료");
