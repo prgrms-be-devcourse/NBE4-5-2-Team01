@@ -14,7 +14,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Table(name = "user_tbl")
+// @Table(name = "user_tbl")
 public class User {
 	@Id
 	@Column(name = "user_id")
@@ -39,6 +38,10 @@ public class User {
 	private String name;
 
 	private String nickName;
+
+	private String userIntro;
+
+	private String image;
 
 	@Column(name = "birthday")
 	private LocalDate birthDay;

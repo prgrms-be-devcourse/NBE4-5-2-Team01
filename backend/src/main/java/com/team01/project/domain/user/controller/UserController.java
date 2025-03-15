@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team01.project.domain.user.dto.SimpleUserResponse;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
+import com.team01.project.domain.user.service.SpotifyRefreshTokenService;
 import com.team01.project.domain.user.service.UserService;
 import com.team01.project.global.security.JwtTokenProvider;
 
@@ -36,6 +38,7 @@ public class UserController {
 
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final SpotifyRefreshTokenService spotifyRefreshTokenService;
 	private final UserService userService;
 
 	@GetMapping("/login")
@@ -93,20 +96,11 @@ public class UserController {
 	}
 
 	@ResponseBody
-	@GetMapping("/refresh")
-	public String refreshToken(@RequestBody String refreshToken) {
-		//String refreshToken = payload.get("refreshToken").toString();
-		String userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
-		String newAccessToken = getNewSpotifyAccessToken(refreshToken);
-
-		String newJwtToken = jwtTokenProvider.createToken(userId, newAccessToken);
-		System.out.println("토큰: " + newJwtToken);
-		return newJwtToken;
+	@PostMapping("/refresh")
+	public ResponseEntity<?> refreshToken(@RequestBody String refreshToken) {
+		return userService.refreshToken(refreshToken);
 	}
 
-	private String getNewSpotifyAccessToken(String refreshToken) {
-		return refreshToken;
-	}
 
 	@ResponseBody
 	@GetMapping("testApi")
