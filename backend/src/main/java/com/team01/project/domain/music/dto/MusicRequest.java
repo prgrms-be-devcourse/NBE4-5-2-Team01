@@ -9,8 +9,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record MusicRequest(
+	@NotBlank String id,
 	@NotBlank String name,
 	@NotBlank String singer,
+	@NotBlank String singerId,
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -19,7 +21,7 @@ public record MusicRequest(
 	@NotBlank String albumImage,
 	String genre
 ) {
-	public Music toEntity(String id) {
-		return new Music(id, name, singer, releaseDate, albumImage, genre);
+	public Music toEntity() {
+		return new Music(id, name, singer, singerId, releaseDate, albumImage, genre);
 	}
 }
