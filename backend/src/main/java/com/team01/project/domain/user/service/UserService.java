@@ -92,7 +92,8 @@ public class UserService {
 		}
 
 		//스포티파이 토큰 재발급
-		OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken)SecurityContextHolder.getContext()
+		OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken)SecurityContextHolder
+			.getContext()
 			.getAuthentication();
 
 		//  스포티파이 액세스 토큰을 가져오기
@@ -147,7 +148,7 @@ public class UserService {
 
 		if (response.getStatusCode() == HttpStatus.OK) {
 			String responseBody = response.getBody();
-			return extractAccessTokenResponse(responseBody);// 실제 구현에서 반환되는 스포티파이 액세스 토큰
+			return extractAccessTokenResponse(responseBody); // 실제 구현에서 반환되는 스포티파이 액세스 토큰
 		} else {
 			throw new RuntimeException("스포티파이의 액세스 토큰을 재발급 받지 못했습니다.");
 		}
