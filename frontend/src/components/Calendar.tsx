@@ -81,41 +81,56 @@ const Calendar: React.FC = () => {
         );
     };
 
+    const user = {
+        nickname: "홍길동",
+        followers: 3,
+        following: 6
+    };
+
     return (
-        <div className="flex w-full justify-center">
-            <div className="flex w-full px-10 justify-center gap-8">
-                <div className="w-9/12 mt-8">
-                    <FullCalendar
-                        locale={"ko"}
-                        height={"85vh"}
-                        contentHeight="auto"
-                        plugins={[dayGridPlugin, interactionPlugin]}
-                        headerToolbar={{
-                            left: "title",
-                            right: "prevYear,prev,today,next,nextYear"
-                        }}
-                        initialView="dayGridMonth"
-                        editable={false}
-                        selectable={false}
-                        selectMirror={true}
-                        dayCellContent={handleDayCellContent}
-                        datesSet={handleDateChange}
-                        dayMaxEvents={true}
-                        events={monthly.map((arg) => ({
-                            date: arg.date,
-                            borderColor: "#FFFFFF",
-                            backgroundColor: "#FFFFFF",
-                            extendedProps: {
-                                albumImage: arg.albumImage
-                            },
-                        }))}
-                        eventContent={renderEventContent}
-                        stickyHeaderDates={true}
-                        validRange={{
-                            end: new Date(),
-                        }}
-                    />
+        <div className="flex flex-col w-full px-10 justify-center items-center">
+            <div className="w-9/12 flex justify-end mt-4 mb-4">
+                <h2 className="text-xl text-[#393D3F]">{user.nickname}의 캘린더📆</h2>
+                <div className="flex space-x-4 ml-4">
+                    <button className="text-xl text-[#393D3F]">
+                        {user.followers} 팔로워
+                    </button>
+                    <button className="text-xl text-[#393D3F]">
+                        {user.following} 팔로잉
+                    </button>
                 </div>
+            </div>
+            <div className="w-9/12">
+                <FullCalendar
+                    locale={"ko"}
+                    height={"85vh"}
+                    contentHeight="auto"
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    headerToolbar={{
+                        left: "title",
+                        right: "prevYear,prev,today,next,nextYear"
+                    }}
+                    initialView="dayGridMonth"
+                    editable={false}
+                    selectable={false}
+                    selectMirror={true}
+                    dayCellContent={handleDayCellContent}
+                    datesSet={handleDateChange}
+                    dayMaxEvents={true}
+                    events={monthly.map((arg) => ({
+                        date: arg.date,
+                        borderColor: "#FFFFFF",
+                        backgroundColor: "#FFFFFF",
+                        extendedProps: {
+                            albumImage: arg.albumImage
+                        },
+                    }))}
+                    eventContent={renderEventContent}
+                    stickyHeaderDates={true}
+                    validRange={{
+                        end: new Date(),
+                    }}
+                />
             </div>
         </div>
     );
