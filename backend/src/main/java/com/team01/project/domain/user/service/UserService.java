@@ -168,4 +168,9 @@ public class UserService {
 	public List<User> search(String name) {
 		return userRepository.searchUser(name);
 	}
+
+	public User getUserById(String id) {
+		return userRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저 찾을 수 없습니다: " + id));
+	}
 }

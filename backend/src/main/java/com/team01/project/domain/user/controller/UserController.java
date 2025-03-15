@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -120,5 +121,12 @@ public class UserController {
 			.map(SimpleUserResponse::from)
 			.toList();
 	}
-}
 
+	@ResponseBody
+	@GetMapping("/byToken")
+	public SimpleUserResponse getUserByToken(@RequestHeader("Authorization") String accessToken) {
+		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String userId = jwtTokenProvider.getUserIdFromToken(token);
+		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
+}
