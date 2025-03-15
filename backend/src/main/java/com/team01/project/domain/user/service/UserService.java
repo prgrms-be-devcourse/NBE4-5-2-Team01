@@ -49,13 +49,13 @@ public class UserService {
 	private OAuth2AuthorizedClientService authorizedClientService;
 
 	@Value("${spring.security.oauth2.client.registration.spotify.client-id}")
-	private String CLIENT_ID;
+	private String clientId;
 
 	@Value("${spring.security.oauth2.client.registration.spotify.client-secret}")
-	private String CLIENT_SECRET;
+	private String clientSecret;
 
 	@Value("${spring.security.oauth2.client.provider.spotify.token-uri}")
-	private String SPOTIFY_TOKEN_URL;
+	private String spotifyTokenUrl;
 
 	@Transactional
 	public ResponseEntity<?> refreshToken(String refreshTokenValue) {
@@ -130,8 +130,8 @@ public class UserService {
 		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 		body.add("grant_type", "refresh_token");
 		body.add("refresh_token", oAuth2RefreshToken.getTokenValue()); // 리프레시 토큰
-		body.add("client_id", CLIENT_ID);
-		body.add("client_secret", CLIENT_SECRET);
+		body.add("client_id", clientId);
+		body.add("client_secret", clientSecret);
 
 		// 요청 헤더 설정 (Content-Type: application/x-www-form-urlencoded)
 		HttpHeaders headers = new HttpHeaders();
@@ -142,7 +142,7 @@ public class UserService {
 
 		// RestTemplate을 사용하여 POST 요청 보내기
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<String> response = restTemplate.exchange(SPOTIFY_TOKEN_URL, HttpMethod.POST, request,
+		ResponseEntity<String> response = restTemplate.exchange(spotifyTokenUrl, HttpMethod.POST, request,
 			String.class);
 
 		if (response.getStatusCode() == HttpStatus.OK) {
