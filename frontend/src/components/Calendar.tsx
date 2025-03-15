@@ -3,9 +3,52 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import {DatesSetArg} from "@fullcalendar/core";
+
+interface CalendarDate {
+    id: number; // 캘린더 아이디
+    date: string; // 'yyyy-MM-dd' 형식
+    hasMemo: boolean; // 메모 작성 여부
+    albumImage: string; // 앨범 이미지 링크
+}
+
+interface Monthly {
+    monthly: CalendarDate[];
+}
 
 const Calendar: React.FC = () => {
+
+    const [monthly, setMonthly] = useState<CalendarDate[]>([]);
+    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+    const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
+
+    const fetchCalendarData = async (year: number, month: number) => {
+        const token = localStorage.getItem('accessToken');
+
+        const res = await fetch(
+            `http://localhost:8080/api/v1/calendar?year=${year}&month=${month}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : "",
+                },
+            }
+        );
+
+        const data: Monthly = await res.json();
+        setMonthly(data.monthly);
+    };
+
+    useEffect(() => {
+        fetchCalendarData(currentYear, currentMonth);
+    }, [currentYear, currentMonth]);
+
+    const handleDateChange = (arg: DatesSetArg) => {
+        setCurrentYear(arg.view.currentStart.getFullYear());
+        setCurrentMonth(arg.view.currentStart.getMonth() + 1);
+    };
 
     useEffect(() => {
         const style = document.createElement("style");
@@ -40,6 +83,7 @@ const Calendar: React.FC = () => {
                         selectable={false}
                         selectMirror={true}
                         dayCellContent={handleDayCellContent}
+                        datesSet={handleDateChange}
                         dayMaxEvents={true}
                         stickyHeaderDates={true}
                         validRange={{
