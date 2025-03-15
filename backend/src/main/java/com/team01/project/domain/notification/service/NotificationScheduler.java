@@ -17,7 +17,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import com.team01.project.domain.notification.entity.Notification;
+import com.team01.project.domain.notification.event.NotificationFollowEvent;
 import com.team01.project.domain.notification.event.NotificationInitEvent;
+import com.team01.project.domain.notification.event.NotificationRecordEvent;
 import com.team01.project.domain.notification.event.NotificationUpdatedEvent;
 import com.team01.project.domain.user.entity.User;
 
@@ -133,14 +135,13 @@ public class NotificationScheduler {
 		// 알림을 전송
 		for (Notification notification : notifications) {
 			// 이메일과 푸시알림을 각각 확인해서 전송
-			if (notification.isEmailEnabled()) {
-				notificationSender.sendEmail(
-						notification.getUser(), notification.getTitle(), notification.getMessage());
-			}
 			if (notification.isPushEnabled()) {
 				notificationSender.sendPush(
 						notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
-
+			}
+			if (notification.isEmailEnabled()) {
+				notificationSender.sendEmail(
+						notification.getUser(), notification.getTitle(), notification.getMessage());
 			}
 		}
 	}
@@ -152,7 +153,7 @@ public class NotificationScheduler {
 	}
 
 	private void scheduleNotificationInitSending(LocalTime notificationTime, User user) {
-		// 첫 번째 알림 예약
+		// 첫 번째 알림 예약 (2분 후)
 		scheduleSingleNotification(
 				user,
 				notificationTime.plusMinutes(2),
@@ -160,11 +161,11 @@ public class NotificationScheduler {
 				"%s님, 환영합니다! 🎉".formatted(user.getName())
 		);
 
-		// 두 번째 알림 예약 (1분 후)
+		// 두 번째 알림 예약 (3분 후)
 		scheduleSingleNotification(
 				user,
-				notificationTime.plusMinutes(3),
-				"START_RECORDING",
+				notificationTime.plusMinutes(5),
+				"START RECORDING",
 				"%s님, 음악 기록을 시작해보세요! 🎵".formatted(user.getName())
 		);
 	}
@@ -194,5 +195,51 @@ public class NotificationScheduler {
 		insertTaskInOrder(futureTask, notificationTime);
 
 		System.out.println("알림 전송 예약 시각: " + scheduledTime);
+	}
+
+	@EventListener
+	public void handleNotificationAsync(NotificationFollowEvent event) {
+		System.out.println("🔔 새로운 팔로우 알림!");
+		scheduleNotificationFollowSending(event.getTime(), event.getToUser(),
+				"FOLLOWING", "%s님이 회원님을 팔로우하기 시작했습니다.".formatted(event.getFromUser().getName()));
+	}
+
+	@EventListener
+	public void handleNotificationAsync(NotificationRecordEvent event) {
+		System.out.println("🔔 " + event.getUser().getName() + "님의 새로운 음악 등록 알림!");
+		scheduleNotificationFollowSending(event.getTime(), event.getUser(),
+				"SHARE MUSIC", "%s님, 회원님이 오늘 등록한 음악을 공유해보세요! 🎶".formatted(event.getUser().getName()));
+	}
+
+	private void scheduleNotificationFollowSending(
+			LocalTime notificationTime, User user, String title, String message) {
+		LocalDateTime notificationDateTime = LocalDateTime.now().withHour(notificationTime.getHour())
+				.withMinute(notificationTime.getMinute())
+				.withSecond(0)
+				.withNano(0);
+
+		// 알림 생성
+		Notification notification = Notification.builder()
+				.user(user)
+				.notificationTime(notificationTime)
+				.title(title)
+				.message(message)
+				.build();
+
+		sendNotificationAsync(notification, notificationDateTime);
+	}
+
+	private void sendNotificationAsync(Notification notification, LocalDateTime notificationTime) {
+		// 알림을 전송
+		// 이메일과 푸시알림을 각각 확인해서 전송
+		if (notification.isEmailEnabled()) {
+			notificationSender.sendEmail(
+					notification.getUser(), notification.getTitle(), notification.getMessage());
+		}
+		if (notification.isPushEnabled()) {
+			notificationSender.sendPush(
+					notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
+
+		}
 	}
 }
