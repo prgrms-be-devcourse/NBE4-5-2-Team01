@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {useEffect, useState} from "react";
-import {DatesSetArg} from "@fullcalendar/core";
+import {DatesSetArg, EventContentArg} from "@fullcalendar/core";
 
 interface CalendarDate {
     id: number; // 캘린더 아이디
@@ -65,6 +65,22 @@ const Calendar: React.FC = () => {
         return arg.dayNumberText.replace("일", "");
     }
 
+    const renderEventContent = (eventInfo: EventContentArg) => {
+        const imageUrl = eventInfo.event.extendedProps.albumImage;
+
+        return (
+            <div className="relative w-full h-full min-h-[50px] overflow-hidden">
+                {imageUrl && (
+                    <img
+                        src={imageUrl}
+                        alt="event"
+                        className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 object-cover"
+                    />
+                )}
+            </div>
+        );
+    };
+
     return (
         <div className="flex w-full justify-center">
             <div className="flex w-full px-10 justify-center gap-8">
@@ -85,6 +101,15 @@ const Calendar: React.FC = () => {
                         dayCellContent={handleDayCellContent}
                         datesSet={handleDateChange}
                         dayMaxEvents={true}
+                        events={monthly.map((arg) => ({
+                            date: arg.date,
+                            borderColor: "#FFFFFF",
+                            backgroundColor: "#FFFFFF",
+                            extendedProps: {
+                                albumImage: arg.albumImage
+                            },
+                        }))}
+                        eventContent={renderEventContent}
                         stickyHeaderDates={true}
                         validRange={{
                             end: new Date(),
