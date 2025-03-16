@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,11 +16,44 @@ const moodMapping = {
 
 const MoodTracks = ({ mood, tracks }) => {
     const trackRef = useRef(null);
-    const isAtStart = trackRef.current?.scrollLeft === 0;
-    const isAtEnd = trackRef.current?.scrollLeft + trackRef.current?.clientWidth >= trackRef.current?.scrollWidth;
+    const [isAtStart, setIsAtStart] = useState(true);
+    const [isAtEnd, setIsAtEnd] = useState(false);
 
-    const scrollLeft = () => trackRef.current?.scrollTo({ left: 0, behavior: "smooth" });
-    const scrollRight = () => trackRef.current?.scrollTo({ left: trackRef.current.scrollWidth, behavior: "smooth" });
+    // 스크롤 상태 업데이트 함수
+    const updateScrollState = () => {
+        if (trackRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+            setIsAtStart(scrollLeft === 0);
+            setIsAtEnd(scrollLeft + clientWidth >= scrollWidth);
+        }
+    };
+
+    // 스크롤 이벤트 리스너 추가
+    useEffect(() => {
+        const trackElement = trackRef.current;
+        if (trackElement) {
+            trackElement.addEventListener("scroll", updateScrollState);
+            updateScrollState(); // 초기 상태 업데이트
+        }
+
+        return () => {
+            if (trackElement) {
+                trackElement.removeEventListener("scroll", updateScrollState);
+            }
+        };
+    }, []);
+
+    const scrollLeft = () => {
+        if (trackRef.current) {
+            trackRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        }
+    };
+
+    const scrollRight = () => {
+        if (trackRef.current) {
+            trackRef.current.scrollTo({ left: trackRef.current.scrollWidth, behavior: "smooth" });
+        }
+    };
 
     return (
         <section className="mb-7">
@@ -43,7 +76,7 @@ const MoodTracks = ({ mood, tracks }) => {
                         <div key={track.id} className="w-40 flex-shrink-0">
                             <img src={track.albumImage} alt={track.name} className="rounded-lg w-full h-auto" />
                             <p className="text-sm font-medium mt-2 break-words track-title">{track.name}</p>
-                            <p className="text-xs text-gray-500 track-artist">{track.singer}</p>
+                            <p className="text-xs text-gray-500 track-artist singer-name">{track.singer}</p>
                         </div>
                     ))}
                 </div>
