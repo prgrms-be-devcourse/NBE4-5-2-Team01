@@ -72,7 +72,7 @@ public class MusicController {
 			.map(music -> {
 				if (music.getGenre() == null || music.getGenre().isEmpty()) {
 					MusicRequest musicRequest = spotifyService.getTrackWithGenre(music.getId(), spotifyToken);
-					music.setGenre(musicRequest.genre());
+					music.setGenre(musicRequest.getGenre());
 				}
 				return music;
 			})
