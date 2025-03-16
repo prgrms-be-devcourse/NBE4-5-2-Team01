@@ -70,10 +70,10 @@ export default function Sidebar() {
           </Link>
         </div>
         <div className="navbutton">
-          <Link href="/chart">
+          <Link href="/user/recap">
             <div className="navLink">
               <i className="fas fa-solid fa-chart-simple"></i>
-              <span>Chart</span>
+              <span>Recap</span>
             </div>
           </Link>
         </div>
