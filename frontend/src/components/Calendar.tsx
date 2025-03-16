@@ -5,6 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {useEffect, useState} from "react";
 import {DatesSetArg, EventContentArg} from "@fullcalendar/core";
+import {useRouter} from "next/navigation";
 
 interface CalendarDate {
     id: number; // 캘린더 아이디
@@ -22,9 +23,15 @@ const Calendar: React.FC = () => {
     const [monthly, setMonthly] = useState<CalendarDate[]>([]);
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
+    const router = useRouter();
 
     const fetchCalendarData = async (year: number, month: number) => {
         const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+            router.push("/login");
+            return;
+        }
 
         const res = await fetch(
             `http://localhost:8080/api/v1/calendar?year=${year}&month=${month}`,
