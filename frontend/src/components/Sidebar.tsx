@@ -10,7 +10,7 @@ export default function Sidebar() {
     <div id="nav-bar">
       <input id="nav-toggle" type="checkbox" />
       <div id="nav-header">
-        <Link id="nav-title" href="/">
+        <Link id="nav-title" href="/calendar">
           <Image
             src="/music_calendar.png"
             alt="설정 아이콘"
