@@ -64,7 +64,9 @@ const FollowPage = () => {
 
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.user.id === userId ? { ...user, followState: !isFollowing } : user
+          user.user.id === userId
+            ? { ...user, isFollowing: !isFollowing } // 기존 isFollower 값 유지
+            : user
         )
       );
     } catch (error) {
@@ -73,9 +75,8 @@ const FollowPage = () => {
   };
 
   const handleUserClick = (userId: string) => {
-    router.push(`/calendar?userId=${userId}`); // userId 쿼리 파라미터 추가
+    router.push(`/calendar?userId=${userId}`);
   };
-
 
   return (
     <div className="flex h-screen bg-white">
@@ -98,16 +99,29 @@ const FollowPage = () => {
         </div>
 
         <div className="list">
-          {users.map((user, index) => (
-            <div key={index} className="user-block" onClick={() => handleUserClick(user.user.id)}>
-              <span className="user-text">{user.user.name}</span>
-              <button 
-                className="follow-button"
-                onClick={(e) => toggleFollow(e, user.user.id, user.followState)}>
-                  {user.followState ? "팔로잉" : "팔로우"}
-              </button>
-            </div>
-          ))}
+          {users.map((user, index) => {
+            const isFollowing = user.isFollowing;
+            const isFollower = user.isFollower;
+            let buttonText = "팔로우";
+
+            if (isFollowing) {
+              buttonText = "팔로잉";
+            } else if (isFollower) {
+              buttonText = "맞팔로우";
+            }
+
+            return (
+              <div key={index} className="user-block" onClick={() => handleUserClick(user.user.id)}>
+                <span className="user-text">{user.user.name}</span>
+                <button 
+                  className="follow-button"
+                  onClick={(e) => toggleFollow(e, user.user.id, isFollowing)}
+                >
+                  {buttonText}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

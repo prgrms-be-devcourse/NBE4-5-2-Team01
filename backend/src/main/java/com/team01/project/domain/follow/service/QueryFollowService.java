@@ -24,23 +24,23 @@ public class QueryFollowService {
 	private final UserRepository userRepository;
 
 	public List<FollowResponse> findFollowing(String currentUserId, String userId) {
-		Optional<User> currentUser = userRepository.findById(currentUserId);
+		User currentUser = userRepository.getById(currentUserId);
 		User user = userRepository.getById(userId);
 
 		return followRepository.findByFromUser(user).stream()
 			.map(follow -> FollowResponse.of(
-				follow.getToUser(), currentUser.isPresent() && checkFollow(follow.getToUser(), currentUser.get())
+				follow.getToUser(), checkFollow(follow.getToUser(), currentUser), checkFollow(currentUser, follow.getToUser())
 			))
 			.toList();
 	}
 
 	public List<FollowResponse> findFollower(String currentUserId, String userId) {
-		Optional<User> currentUser = userRepository.findById(currentUserId);
+		User currentUser = userRepository.getById(currentUserId);
 		User user = userRepository.getById(userId);
 
 		return followRepository.findByToUser(user).stream()
 			.map(follow -> FollowResponse.of(
-				follow.getFromUser(), currentUser.isPresent() && checkFollow(follow.getFromUser(), currentUser.get())
+				follow.getFromUser(), checkFollow(follow.getFromUser(), currentUser), checkFollow(currentUser, follow.getFromUser())
 			))
 			.toList();
 	}
