@@ -18,12 +18,80 @@ interface Monthly {
     monthly: CalendarDate[];
 }
 
+interface User {
+    id: string;
+    name: string;
+    nickName: string;
+}
+
+interface FollowCount {
+    followingCount: number;
+    followerCount: number;
+}
+
 const Calendar: React.FC = () => {
 
     const [monthly, setMonthly] = useState<CalendarDate[]>([]);
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
+    const [user, setUser] = useState<User | null>(null);
+    const [followingCount, setFollowingCount] = useState(0);
+    const [followerCount, setFollowerCount] = useState(0);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('accessToken');
+
+            if (!token) {
+                router.push("/login");
+                return;
+            }
+
+            const response = await fetch("http://localhost:8080/api/v1/user/byToken", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
+            }
+
+            const data = await response.json();
+            setUser(data);
+            fetchFollowCount(data.id);
+        };
+
+        fetchUserData();
+    }, []);
+
+    const fetchFollowCount = async (userId: string | undefined) => {
+        const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+
+        const response = await fetch(`http://localhost:8080/api/v1/follows/count/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("사용자 팔로우 정보를 불러오는 데 실패했습니다.");
+        }
+
+        const data: FollowCount = await response.json();
+        setFollowerCount(data.followerCount);
+        setFollowingCount(data.followingCount);
+    };
 
     const fetchCalendarData = async (year: number, month: number) => {
         const token = localStorage.getItem('accessToken');
@@ -96,22 +164,16 @@ const Calendar: React.FC = () => {
         );
     };
 
-    const user = {
-        nickname: "홍길동",
-        followers: 3,
-        following: 6
-    };
-
     return (
         <div className="flex flex-col w-full px-10 justify-center items-center">
             <div className="w-9/12 flex justify-end mt-4 mb-4">
-                <h2 className="text-xl text-[#393D3F]">{user.nickname}의 캘린더📆</h2>
+                <h2 className="text-xl text-[#393D3F]">{user?.nickName ?? "나"}의 캘린더📆</h2>
                 <div className="flex space-x-4 ml-4">
                     <button className="text-xl text-[#393D3F]">
-                        {user.followers} 팔로워
+                        {followerCount} 팔로워
                     </button>
                     <button className="text-xl text-[#393D3F]">
-                        {user.following} 팔로잉
+                        {followingCount} 팔로잉
                     </button>
                 </div>
             </div>
