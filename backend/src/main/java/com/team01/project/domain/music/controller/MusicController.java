@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,11 +37,11 @@ public class MusicController {
 	@ResponseStatus(HttpStatus.OK)
 	public MusicResponse getMusicFromSpotify(
 		@PathVariable String id,
-		@RequestHeader(value = "Authorization") String accessToken
+		@RequestHeader("Spotify-Token") String spotifyToken
 	) {
-		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
+		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, spotifyToken);
 		if (musicRequest != null) {
-			Music music = musicRequest.toEntity(id);
+			Music music = musicRequest.toEntity();
 			return MusicResponse.fromEntity(music);
 		}
 		throw new IllegalArgumentException("Invalid music data");
@@ -47,14 +51,56 @@ public class MusicController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public MusicResponse saveMusicFromSpotify(
 		@PathVariable String id,
-		@RequestHeader("Authorization") String accessToken
+		@RequestHeader("Spotify-Token") String spotifyToken
 	) {
-		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, accessToken);
+		MusicRequest musicRequest = spotifyService.getTrackWithGenre(id, spotifyToken);
 		if (musicRequest != null) {
-			Music savedMusic = musicService.saveMusic(musicRequest.toEntity(id));
+			Music savedMusic = musicService.saveMusic(musicRequest.toEntity());
 			return MusicResponse.fromEntity(savedMusic);
 		}
 		throw new IllegalArgumentException("Invalid music data");
+	}
+
+	@PostMapping("/save-all")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void saveAllMusic(
+		@RequestBody List<Music> musicList,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		String spotifyToken = user.getAttribute("spotifyToken");
+		List<Music> updatedMusicList = musicList.stream()
+			.map(music -> {
+				if (music.getGenre() == null || music.getGenre().isEmpty()) {
+					MusicRequest musicRequest = spotifyService.getTrackWithGenre(music.getId(), spotifyToken);
+					music.setGenre(musicRequest.genre());
+				}
+				return music;
+			})
+			.collect(Collectors.toList());
+		musicService.saveAllMusic(musicList);
+	}
+
+	@GetMapping("/spotify/search")
+	@ResponseStatus(HttpStatus.OK)
+	public List<MusicResponse> searchTracks(
+		@RequestParam String keyword,
+		@RequestHeader("Spotify-Token") String spotifyToken
+	) {
+		List<MusicRequest> tracks = spotifyService.searchByKeyword(keyword, spotifyToken);
+		return tracks.stream()
+			.map(request -> MusicResponse.fromEntity(request.toEntity()))
+			.collect(Collectors.toList());
+	}
+
+	@GetMapping("/spotify/artist/{artistId}/top-tracks")
+	public List<MusicResponse> getTopTracksByArtist(
+		@PathVariable String artistId,
+		@RequestHeader("Spotify-Token") String spotifyToken
+	) {
+		List<MusicRequest> topTracks = spotifyService.getTopTracksByArtist(artistId, spotifyToken);
+		return topTracks.stream()
+			.map(request -> MusicResponse.fromEntity(request.toEntity()))
+			.collect(Collectors.toList());
 	}
 
 	@GetMapping
@@ -75,5 +121,11 @@ public class MusicController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteMusic(@PathVariable String id) {
 		musicService.deleteMusic(id);
+	}
+
+	@GetMapping("/recent/random/{userId}")
+	public MusicResponse getRandomRecentMusic(@PathVariable String userId) {
+		Music randomMusic = musicService.getRandomRecentMusic(userId);
+		return MusicResponse.fromEntity(randomMusic);
 	}
 }

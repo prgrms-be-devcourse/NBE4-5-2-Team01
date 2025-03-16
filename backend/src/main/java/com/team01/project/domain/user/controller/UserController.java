@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,14 +14,18 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team01.project.domain.user.dto.SimpleUserResponse;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
+import com.team01.project.domain.user.service.SpotifyRefreshTokenService;
 import com.team01.project.domain.user.service.UserService;
 import com.team01.project.global.security.JwtTokenProvider;
 
@@ -36,6 +40,7 @@ public class UserController {
 
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final SpotifyRefreshTokenService spotifyRefreshTokenService;
 	private final UserService userService;
 
 	@GetMapping("/login")
@@ -62,9 +67,8 @@ public class UserController {
 	// }
 
 	@Transactional
-	@GetMapping("/spotify/logout")
+	@GetMapping("/logout")
 	public String forceLogout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		System.out.println("강제 로그아웃 요청 받음");
 
 		if (authentication == null) {
 			System.out.println("authentication 객체가 NULL입니다. SecurityContext에 인증 정보 없음.");
@@ -93,24 +97,18 @@ public class UserController {
 	}
 
 	@ResponseBody
-	@GetMapping("/refresh")
-	public String refreshToken(@RequestBody String refreshToken) {
-		//String refreshToken = payload.get("refreshToken").toString();
-		String userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
-		String newAccessToken = getNewSpotifyAccessToken(refreshToken);
-
-		String newJwtToken = jwtTokenProvider.createToken(userId, newAccessToken);
-		System.out.println("토큰: " + newJwtToken);
-		return newJwtToken;
-	}
-
-	private String getNewSpotifyAccessToken(String refreshToken) {
-		return refreshToken;
+	@PostMapping("/refresh")
+	public ResponseEntity<?> refreshToken(@RequestBody Map<String, Object> reqMap) {
+		String refreshToken = reqMap.get("refreshToken").toString();
+		return userService.refreshToken(refreshToken);
 	}
 
 	@ResponseBody
 	@GetMapping("testApi")
 	public Map<String, String> testApi(@AuthenticationPrincipal OAuth2User user) {
+
+		String spotifyToken = user.getAttribute("spotifyToken");
+		System.out.println("스포티파이 토큰체크:" + spotifyToken);
 		String userId = user.getName();
 		System.out.println("유저아이디 체크:" + userId);
 		Map<String, String> resMap = new HashMap<>();
@@ -120,11 +118,28 @@ public class UserController {
 	}
 
 	@ResponseBody
+	@GetMapping("testApiCookie")
+	public ResponseEntity<?> logout(@CookieValue(name = "accessToken", required = false) String accessToken) {
+		System.out.println("쿠키" + accessToken);
+		// accessToken 값이 null이 아니라면 토큰 기반 로그아웃 로직 수행
+		// 예: 토큰 검증, 리프레시 토큰 삭제 등
+		// ...
+		return ResponseEntity.ok("Logged out");
+	}
+
+	@ResponseBody
 	@GetMapping("/search")
 	public List<SimpleUserResponse> search(@RequestParam(name = "q") String name) {
 		return userService.search(name).stream()
 			.map(SimpleUserResponse::from)
 			.toList();
 	}
-}
 
+	@ResponseBody
+	@GetMapping("/byToken")
+	public SimpleUserResponse getUserByToken(@RequestHeader("Authorization") String accessToken) {
+		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
+		String userId = jwtTokenProvider.getUserIdFromToken(token);
+		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
+}
