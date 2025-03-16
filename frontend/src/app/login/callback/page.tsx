@@ -9,25 +9,18 @@ export default function AuthCallback() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const jwtToken = urlParams.get("access_token");
-    const spotifyToken = urlParams.get("spotify_access_token");
     const refreshToken = urlParams.get("refresh_token");
 
     console.log("JWT Token:", jwtToken);
-    console.log("Spotify Token:", spotifyToken);
+    console.log("refresh Token:", refreshToken);
 
-    if (jwtToken && spotifyToken && refreshToken) {
-      // 토큰들을 로컬 스토리지에 저장
-      localStorage.setItem("accessToken", jwtToken);
-      localStorage.setItem("spotifyToken", spotifyToken);
-      localStorage.setItem("refreshToken", refreshToken);
-
-      // 토큰들을 쿠키에 저장
-      const cookieOptions = "; path=/; samesite=strict";
-      document.cookie = `accessToken=${jwtToken}${cookieOptions}; max-age=3600`;
-      document.cookie = `refreshToken=${refreshToken}${cookieOptions}; max-age=86400`;
+    if (jwtToken && refreshToken) {
+      // 토큰들을 쿠키에만 저장
+      const cookieOptions = "; path=/; samesite=strict; secure";
+      document.cookie = `accessToken=${jwtToken}${cookieOptions}; max-age=10`; // 10초
+      document.cookie = `refreshToken=${refreshToken}${cookieOptions}; max-age=604800`; // 7일
 
       console.log("토큰 저장 완료!");
-
       // 홈으로 리다이렉트
       window.location.href = "/";
     } else {

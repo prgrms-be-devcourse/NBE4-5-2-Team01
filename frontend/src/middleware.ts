@@ -9,7 +9,7 @@ const refreshAccessToken = async (refreshToken: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${refreshToken}`  // 리프레시 토큰을 Authorization 헤더에 포함
+        "Authorization": `Bearer ${refreshToken}`
       },
       body: JSON.stringify({ refreshToken })
     });
@@ -90,12 +90,16 @@ export default async function middleware(req: NextRequest) {
       }
       console.log("Token refreshed successfully:", newAccessToken);
 
-      // 새 액세스 토큰을 쿠키에 저장하고, 응답을 통해 다음 요청에 반영
+      // 새 액세스 토큰을 쿠키에 저장하고, Authorization 헤더 설정
       const response = NextResponse.next();
       response.cookies.set("accessToken", newAccessToken, {
         path: "/",
         maxAge: 3600, // 1시간
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict"
       });
+      response.headers.set("Authorization", `Bearer ${newAccessToken}`);
       return response;
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -103,9 +107,10 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
-  // 액세스 토큰이 유효하면 그대로 요청 처리
-  console.log("Valid token, proceeding");
-  return NextResponse.next();
+  // 액세스 토큰이 유효하면 Authorization 헤더 설정
+  const response = NextResponse.next();
+  response.headers.set("Authorization", `Bearer ${accessToken}`);
+  return response;
 }
 
 export const config = {

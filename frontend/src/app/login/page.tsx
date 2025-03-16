@@ -7,8 +7,15 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 로컬 스토리지에서 토큰 확인
-    const accessToken = localStorage.getItem("accessToken");
+    // 쿠키에서 토큰 확인
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(";").shift();
+      return null;
+    };
+
+    const accessToken = getCookie("accessToken");
     if (accessToken) {
       // 토큰이 있으면 홈으로 리다이렉트
       router.push("/");
