@@ -139,8 +139,14 @@ const Calendar: React.FC = () => {
     }, []);
 
     const handleDayCellContent = (arg: { date: Date; dayNumberText: string }) => {
-        const formattedDate = arg.date.toISOString().split("T")[0];
-        const hasMemo = monthly.some((item) => item.date === formattedDate && item.hasMemo);
+        const formattedDate = new Date(arg.date.setHours(0, 0, 0, 0)).toISOString().split("T")[0];
+        const hasMemo = monthly.some((item) => {
+            const itemDate = new Date(item.date);
+            itemDate.setHours(0, 0, 0, 0);
+            const formattedItemDate = itemDate.toISOString().split("T")[0];
+
+            return formattedItemDate === formattedDate && item.hasMemo;
+        });
 
         return (
             <div className="relative flex justify-between items-center w-full">
