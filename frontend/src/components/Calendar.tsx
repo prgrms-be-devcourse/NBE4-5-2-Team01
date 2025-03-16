@@ -47,13 +47,6 @@ const Calendar: React.FC = () => {
     useEffect(() => {
         const fetchOwnerId = async () => {
             const userId = params.get('userId');
-            const token = localStorage.getItem('accessToken');
-
-            if (!token) {
-                router.push("/login");
-                return;
-            }
-
             let currentOwnerId: string | null = null;
 
             if (userId) {
@@ -61,8 +54,8 @@ const Calendar: React.FC = () => {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    }
+                    },
+                    credentials: "include",
                 })
 
                 if (!response.ok) {
@@ -76,8 +69,8 @@ const Calendar: React.FC = () => {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
                         },
+                        credentials: "include",
                     });
 
                     if (!response.ok) {
@@ -95,12 +88,12 @@ const Calendar: React.FC = () => {
                     return;
                 }
             } else {
-                const response = await fetch(BASE_URL + "/user/byToken", {
+                const response = await fetch(BASE_URL + "/user/byCookie", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
                     },
+                    credentials: "include",
                 });
 
                 if (!response.ok) {
@@ -124,19 +117,12 @@ const Calendar: React.FC = () => {
     }, [params]);
 
     const fetchFollowCount = async (userId: string | undefined) => {
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            router.push("/login");
-            return;
-        }
-
-        const response = await fetch(BASE_URL + `/follows/count/${userId}`, {
+           const response = await fetch(BASE_URL + `/follows/count/${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
             },
+            credentials: "include",
         });
 
         if (!response.ok) {
@@ -149,16 +135,8 @@ const Calendar: React.FC = () => {
     };
 
     const fetchCalendarData = async (year: number, month: number) => {
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            router.push("/login");
-            return;
-        }
-
-        const headers: Record<string, string> = {
+          const headers: Record<string, string> = {
             "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : "",
             ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
         };
 
@@ -167,6 +145,7 @@ const Calendar: React.FC = () => {
             {
                 method: "GET",
                 headers: headers,
+                credentials: "include",
             }
         );
 
