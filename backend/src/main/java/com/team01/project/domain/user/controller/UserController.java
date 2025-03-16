@@ -150,4 +150,10 @@ public class UserController {
 		return SimpleUserResponse.from(userService.getUserById(userId));
 	}
 
+	@ResponseBody
+	@GetMapping("/byCookie")
+	public SimpleUserResponse getUserByCookie(@CookieValue(name = "accessToken") String accessToken) {
+		String userId = jwtTokenProvider.getUserIdFromToken(accessToken);
+		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
 }
