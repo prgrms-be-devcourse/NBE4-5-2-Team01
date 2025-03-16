@@ -23,35 +23,38 @@ const MoodTracks = ({ mood, tracks }) => {
     const updateScrollState = () => {
         if (trackRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-            setIsAtStart(scrollLeft === 0);
-            setIsAtEnd(scrollLeft + clientWidth >= scrollWidth);
+            setIsAtStart(Math.round(scrollLeft) === 0);
+            setIsAtEnd(Math.round(scrollLeft + clientWidth) >= Math.round(scrollWidth));
         }
     };
 
-    // 스크롤 이벤트 리스너 추가
     useEffect(() => {
-        const trackElement = trackRef.current;
-        if (trackElement) {
-            trackElement.addEventListener("scroll", updateScrollState);
-            updateScrollState(); // 초기 상태 업데이트
-        }
+        const element = trackRef.current;
+        if (!element) return;
+
+        const handleScroll = () => {
+            updateScrollState();
+        };
+
+        element.addEventListener("scroll", handleScroll);
+        updateScrollState();  // 초기 스크롤 상태 설정
 
         return () => {
-            if (trackElement) {
-                trackElement.removeEventListener("scroll", updateScrollState);
-            }
+            element.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    }, [tracks]); // tracks 변경될 때마다 스크롤 상태 업데이트    
 
     const scrollLeft = () => {
         if (trackRef.current) {
             trackRef.current.scrollTo({ left: 0, behavior: "smooth" });
+            setTimeout(updateScrollState, 200);  // 스크롤 이후 상태 업데이트
         }
     };
 
     const scrollRight = () => {
         if (trackRef.current) {
             trackRef.current.scrollTo({ left: trackRef.current.scrollWidth, behavior: "smooth" });
+            setTimeout(updateScrollState, 200);  // 스크롤 이후 상태 업데이트
         }
     };
 
