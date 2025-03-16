@@ -230,15 +230,19 @@ const Calendar: React.FC = () => {
         );
     };
 
+    const handleFollowButtonClick = (ownerId: string) => {
+        router.push(`/follow?userId=${ownerId}`);
+    }
+
     return (
         <div className="flex flex-col w-full px-10 justify-center items-center">
             <div className="w-9/12 flex justify-end mt-4 mb-4">
                 <h2 className="text-xl text-[#393D3F]">{user?.name ?? "나"}의 캘린더📆</h2>
                 <div className="flex space-x-4 ml-4">
-                    <button className="text-xl text-[#393D3F]">
+                    <button className="text-xl text-[#393D3F]" onClick={() => handleFollowButtonClick(ownerId!)}>
                         {followerCount} 팔로워
                     </button>
-                    <button className="text-xl text-[#393D3F]">
+                    <button className="text-xl text-[#393D3F]" onClick={() => handleFollowButtonClick(ownerId!)}>
                         {followingCount} 팔로잉
                     </button>
                 </div>
