@@ -114,12 +114,14 @@ public class SpotifyService {
 			.flatMap(id -> getArtistGenres(id, accessToken).stream())
 			.collect(Collectors.toSet());
 
+		LocalDate parsedReleaseDate = parseReleaseDate(track.getAlbum().getReleaseDate());
+
 		return new MusicRequest(
 			track.getId(),
 			track.getName(),
 			track.getArtistsAsString(),
 			track.getArtistsIdAsString(),
-			LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),
+			parsedReleaseDate,
 			track.getAlbum().getImages().get(0).getUrl(),
 			String.join(", ", allGenres)
 		);
@@ -155,9 +157,11 @@ public class SpotifyService {
 				SpotifyTrackResponse track = objectMapper.treeToValue(item, SpotifyTrackResponse.class);
 				artistIds.addAll(
 					track.getArtists().stream().map(SpotifyTrackResponse.Artist::getId).collect(Collectors.toSet()));
+
+				LocalDate parsedReleaseDate = parseReleaseDate(track.getAlbum().getReleaseDate());
 				musicRequests.add(new MusicRequest(track.getId(), track.getName(), track.getArtistsAsString(),
 					track.getArtistsIdAsString(),
-					LocalDate.parse(track.getAlbum().getReleaseDate(), DateTimeFormatter.ISO_DATE),
+					parsedReleaseDate,
 					track.getAlbum().getImages().get(0).getUrl(), ""));
 			}
 
@@ -183,6 +187,25 @@ public class SpotifyService {
 			throw new SpotifyApiException("Spotify API 요청 오류: " + e.getResponseBodyAsString(), e);
 		} catch (Exception e) {
 			throw new SpotifyApiException("검색 결과를 처리하는 중 오류 발생: " + e.getMessage(), e);
+		}
+	}
+
+	private LocalDate parseReleaseDate(String releaseDate) {
+		if (releaseDate == null || releaseDate.isBlank()) {
+			return null; // 날짜가 없으면 null 반환
+		}
+
+		try {
+			if (releaseDate.length() == 4) {  // "yyyy"
+				return LocalDate.of(Integer.parseInt(releaseDate), 1, 1);
+			} else if (releaseDate.length() == 7) {  // "yyyy-MM"
+				return LocalDate.parse(releaseDate + "-01", DateTimeFormatter.ISO_DATE);
+			} else {  // "yyyy-MM-dd"
+				return LocalDate.parse(releaseDate, DateTimeFormatter.ISO_DATE);
+			}
+		} catch (Exception e) {
+			System.err.println("날짜 변환 오류: " + releaseDate);
+			return null; // 오류 발생 시 null 반환
 		}
 	}
 
