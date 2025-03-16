@@ -22,7 +22,10 @@ const refreshAccessToken = async (refreshToken: string) => {
 
     const data = await response.json();
     console.log("Refresh token response data:", data);
-    return data.accessToken; // 새로운 액세스 토큰 반환
+    return {
+      accessToken: data.accessToken,
+      spotifyAccessToken: data.spotifyAccessToken
+    }; // 새로운 액세스 토큰과 스포티파이 토큰 반환
   } catch (error) {
     console.error("Error refreshing token:", error);
     return null;
@@ -83,23 +86,34 @@ export default async function middleware(req: NextRequest) {
   if (isAccessTokenExpired(accessToken)) {
     console.log("Access token expired, attempting refresh");
     try {
-      const newAccessToken = await refreshAccessToken(refreshToken);
-      if (!newAccessToken) {
+      const tokens = await refreshAccessToken(refreshToken);
+      if (!tokens) {
         console.log("Token refresh failed, redirecting to /login");
         return NextResponse.redirect(new URL("/login", req.url));
       }
-      console.log("Token refreshed successfully:", newAccessToken);
+      console.log("Tokens refreshed successfully:", tokens);
 
-      // 새 액세스 토큰을 쿠키에 저장하고, Authorization 헤더 설정
+      // 새 액세스 토큰과 스포티파이 토큰을 쿠키에 저장하고, Authorization 헤더 설정
       const response = NextResponse.next();
-      response.cookies.set("accessToken", newAccessToken, {
+      response.cookies.set("accessToken", tokens.accessToken, {
         path: "/",
         maxAge: 3600, // 1시간
         httpOnly: true,
         secure: true,
         sameSite: "strict"
       });
-      response.headers.set("Authorization", `Bearer ${newAccessToken}`);
+      
+      if (tokens.spotifyAccessToken) {
+        response.cookies.set("spotifyAccessToken", tokens.spotifyAccessToken, {
+          path: "/",
+          maxAge: 3600, // 1시간
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict"
+        });
+      }
+      
+      response.headers.set("Authorization", `Bearer ${tokens.accessToken}`);
       return response;
     } catch (error) {
       console.error("Error refreshing token:", error);
