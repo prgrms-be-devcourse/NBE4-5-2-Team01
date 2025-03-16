@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import "@/components/style/follow.css";
 
 const FollowPage = () => {
@@ -10,13 +10,16 @@ const FollowPage = () => {
   const { id } = useParams<{ id: string }>(); 
   const [users, setUsers] = useState([]);
   const router = useRouter();
+  const searchParams = useSearchParams(); 
+  const userId = searchParams.get("userId");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        if (!userId) return;
         const token = localStorage.getItem("accessToken");
 
-        const response = await axios.get(`http://localhost:8080/api/v1/follows/${activeTab}/jsaidfjsailfiesaf`,
+        const response = await axios.get(`http://localhost:8080/api/v1/follows/${activeTab}/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,7 +35,7 @@ const FollowPage = () => {
     };
 
     fetchUsers();
-  }, [activeTab, id]);
+  }, [activeTab, userId]);
 
   const toggleFollow = async (e: React.MouseEvent, userId: string, isFollowing: boolean) => {
     e.stopPropagation();
