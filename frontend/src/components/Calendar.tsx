@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {useEffect, useState} from "react";
 import {DatesSetArg, EventContentArg} from "@fullcalendar/core";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 interface CalendarDate {
     id: number; // 캘린더 아이디
@@ -39,10 +39,14 @@ const Calendar: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [followingCount, setFollowingCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
+    const [ownerId, setOwnerId] = useState<string | null>(null);
+    const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(true);
     const router = useRouter();
+    const params = useSearchParams();
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchOwnerId = async () => {
+            const userId = params.get('userId');
             const token = localStorage.getItem('accessToken');
 
             if (!token) {
@@ -50,25 +54,74 @@ const Calendar: React.FC = () => {
                 return;
             }
 
-            const response = await fetch(BASE_URL + "/user/byToken", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
+            let currentOwnerId: string | null = null;
 
-            if (!response.ok) {
-                throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
+            if (userId) {
+                const response = await fetch(BASE_URL + `/follows/check/${userId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    }
+                })
+
+                if (!response.ok) {
+                    throw new Error("맞팔로우 여부 정보를 불러오는 데 실패했습니다.");
+                }
+
+                const isMutualFollowing: boolean = await response.json();
+
+                if (isMutualFollowing) {
+                    const response = await fetch(BASE_URL + `/user/${userId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
+                    }
+
+                    const data: User = await response.json();
+
+                    setUser(data);
+                    currentOwnerId = data.id;
+                    setIsCalendarOwner(false);
+                } else {
+                    alert("캘린더를 조회할 권한이 없습니다.");
+                    router.push("/calendar");
+                    return;
+                }
+            } else {
+                const response = await fetch(BASE_URL + "/user/byToken", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
+                }
+
+                const data: User = await response.json();
+
+                setUser(data);
+                currentOwnerId = data.id;
+                setIsCalendarOwner(true);
             }
 
-            const data = await response.json();
-            setUser(data);
-            fetchFollowCount(data.id);
+            if (currentOwnerId) {
+                setOwnerId(currentOwnerId);
+                fetchFollowCount(currentOwnerId);
+            }
         };
 
-        fetchUserData();
-    }, []);
+        fetchOwnerId();
+    }, [params]);
 
     const fetchFollowCount = async (userId: string | undefined) => {
         const token = localStorage.getItem('accessToken');
@@ -103,14 +156,17 @@ const Calendar: React.FC = () => {
             return;
         }
 
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : "",
+            ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
+        };
+
         const res = await fetch(
             BASE_URL + `/calendar?year=${year}&month=${month}`,
             {
                 method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token ? `Bearer ${token}` : "",
-                },
+                headers: headers,
             }
         );
 
@@ -119,8 +175,10 @@ const Calendar: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchCalendarData(currentYear, currentMonth);
-    }, [currentYear, currentMonth]);
+        if (ownerId) {
+            fetchCalendarData(currentYear, currentMonth);
+        }
+    }, [ownerId, currentYear, currentMonth]);
 
     const handleDateChange = (arg: DatesSetArg) => {
         setCurrentYear(arg.view.currentStart.getFullYear());
