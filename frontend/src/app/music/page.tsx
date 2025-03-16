@@ -3,6 +3,7 @@
 import "@/app/music/style.css";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { getCookie } from "@/app/utils/cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,7 +24,7 @@ export default function MusicRecommendation() {
 
   const moodOptions = ["행복", "슬픔", "에너지", "편안", "사랑", "우울", "설렘"];
   const moodMapping = {
-    "행복": "기분이 좋을 때", 
+    "행복": "기분이 좋을 때",
     "슬픔": "마음이 울적할 때",
     "에너지": "활기차고 싶을 때",
     "편안": "편안함을 느끼고 싶을 때",
@@ -59,14 +60,13 @@ export default function MusicRecommendation() {
         setIsLoading(false);
       }
     };
-  
+
     fetchAllData();
   }, []);
-  
+
   const fetchUser = async () => {
     try {
-      const jwt = localStorage.getItem("accessToken");
-
+      const jwt = getCookie("accessToken");
       const res = await axios.get(`${API_URL}/user/byToken`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -88,9 +88,7 @@ export default function MusicRecommendation() {
 
   const fetchRandomMusic = async (userId) => {
     try {
-      const jwt = localStorage.getItem("accessToken");
-      const spotify = localStorage.getItem("spotifyToken");
-
+      const jwt = getCookie("accessToken");
       const randomRes = await axios.get(`${API_URL}/music/recent/random/${userId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -108,18 +106,15 @@ export default function MusicRecommendation() {
 
   const fetchRecentTracks = async (artistId) => {
     try {
-      const jwt = localStorage.getItem("accessToken");
-      const spotify = localStorage.getItem("spotifyToken");
-
+      const jwt = getCookie("accessToken");
       const res = await axios.get(
         `${SPOTIFY_URL}/artist/${artistId}/top-tracks`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-            "Spotify-Token": spotify,
-            "Content-Type": "application/json"
-          }
-        });
-        
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json"
+        }
+      });
+
       setRecentTracks(res.data);
     } catch (error) {
       console.error("최근 음악 조회 실패:", error);
@@ -129,13 +124,10 @@ export default function MusicRecommendation() {
 
   const fetchMoodTracks = async (mood) => {
     try {
-      const jwt = localStorage.getItem("accessToken");
-      const spotify = localStorage.getItem("spotifyToken");
-
+      const jwt = getCookie("accessToken");
       const res = await axios.get(`${SPOTIFY_URL}/search?keyword=${mood}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-          "Spotify-Token": spotify,
           "Content-Type": "application/json"
         }
       });
@@ -215,18 +207,16 @@ export default function MusicRecommendation() {
             <div className="flex space-x-2">
               <button
                 onClick={() => scrollLeft(recentTrackRef)}
-                className={`px-3 transition-colors ${
-                  isAtStartRecent ? "text-gray-300 cursor-default" : "text-black"
-                }`}
+                className={`px-3 transition-colors ${isAtStartRecent ? "text-gray-300 cursor-default" : "text-black"
+                  }`}
                 disabled={isAtStartRecent}
               >
                 <FontAwesomeIcon icon={faChevronLeft} />
               </button>
               <button
                 onClick={() => scrollRight(recentTrackRef)}
-                className={`px-3 transition-colors ${
-                  isAtEndRecent ? "text-gray-300 cursor-default" : "text-black"
-                }`}
+                className={`px-3 transition-colors ${isAtEndRecent ? "text-gray-300 cursor-default" : "text-black"
+                  }`}
                 disabled={isAtEndRecent}
               >
                 <FontAwesomeIcon icon={faChevronRight} />
@@ -262,25 +252,23 @@ export default function MusicRecommendation() {
 
         <section>
           <div className="flex justify-between items-center mb-5">
-          <h3 className="text-xl font-semibold mb-2 text-[#393D3F]">
-            <span className="point-color">{moodMapping[selectedMood]}</span> 이런 음악 어때요?
-          </h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#393D3F]">
+              <span className="point-color">{moodMapping[selectedMood]}</span> 이런 음악 어때요?
+            </h3>
 
             <div className="flex space-x-2">
               <button
                 onClick={() => scrollLeft(moodTrackRef)}
-                className={`px-3 transition-colors ${
-                  isAtStartMood ? "text-gray-300 cursor-default" : "text-black"
-                }`}
+                className={`px-3 transition-colors ${isAtStartMood ? "text-gray-300 cursor-default" : "text-black"
+                  }`}
                 disabled={isAtStartMood}
               >
                 <FontAwesomeIcon icon={faChevronLeft} />
               </button>
               <button
                 onClick={() => scrollRight(moodTrackRef)}
-                className={`px-3 transition-colors ${
-                  isAtEndMood ? "text-gray-300 cursor-default" : "text-black"
-                }`}
+                className={`px-3 transition-colors ${isAtEndMood ? "text-gray-300 cursor-default" : "text-black"
+                  }`}
                 disabled={isAtEndMood}
               >
                 <FontAwesomeIcon icon={faChevronRight} />
