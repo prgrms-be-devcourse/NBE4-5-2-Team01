@@ -27,7 +27,9 @@ public class QueryFollowService {
 
 		return followRepository.findByFromUser(user).stream()
 			.map(follow -> FollowResponse.of(
-				follow.getToUser(), checkFollow(follow.getToUser(), currentUser), checkFollow(currentUser, follow.getToUser())
+				follow.getToUser(),
+				checkFollow(follow.getToUser(), currentUser),
+				checkFollow(currentUser, follow.getToUser())
 			))
 			.toList();
 	}
@@ -38,7 +40,9 @@ public class QueryFollowService {
 
 		return followRepository.findByToUser(user).stream()
 			.map(follow -> FollowResponse.of(
-				follow.getFromUser(), checkFollow(follow.getFromUser(), currentUser), checkFollow(currentUser, follow.getFromUser())
+				follow.getFromUser(),
+				checkFollow(follow.getFromUser(), currentUser),
+				checkFollow(currentUser, follow.getFromUser())
 			))
 			.toList();
 	}

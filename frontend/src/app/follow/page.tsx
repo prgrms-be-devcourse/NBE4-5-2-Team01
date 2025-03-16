@@ -65,7 +65,7 @@ const FollowPage = () => {
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.user.id === userId
-            ? { ...user, isFollowing: !isFollowing } // 기존 isFollower 값 유지
+            ? { ...user, isFollowing: !isFollowing }
             : user
         )
       );
