@@ -29,6 +29,8 @@ interface FollowCount {
     followerCount: number;
 }
 
+const BASE_URL = "http://localhost:8080/api/v1";
+
 const Calendar: React.FC = () => {
 
     const [monthly, setMonthly] = useState<CalendarDate[]>([]);
@@ -48,7 +50,7 @@ const Calendar: React.FC = () => {
                 return;
             }
 
-            const response = await fetch("http://localhost:8080/api/v1/user/byToken", {
+            const response = await fetch(BASE_URL + "/user/byToken", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +78,7 @@ const Calendar: React.FC = () => {
             return;
         }
 
-        const response = await fetch(`http://localhost:8080/api/v1/follows/count/${userId}`, {
+        const response = await fetch(BASE_URL + `/follows/count/${userId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -102,7 +104,7 @@ const Calendar: React.FC = () => {
         }
 
         const res = await fetch(
-            `http://localhost:8080/api/v1/calendar?year=${year}&month=${month}`,
+            BASE_URL + `/calendar?year=${year}&month=${month}`,
             {
                 method: "GET",
                 headers: {
