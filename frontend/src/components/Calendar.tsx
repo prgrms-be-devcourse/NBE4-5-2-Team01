@@ -234,6 +234,22 @@ const Calendar: React.FC = () => {
         router.push(`/follow?userId=${ownerId}`);
     }
 
+    const handleDateClick = ((arg: { dateStr: string; }) => {
+        const clickedDate: CalendarDate | undefined = monthly.find(
+            (calendarDate) => calendarDate.date === arg.dateStr
+        );
+
+        if (!clickedDate && isCalendarOwner) {
+            const [yearStr, monthStr, dayStr] = arg.dateStr.split("-");
+
+            const year = parseInt(yearStr, 10);
+            const month = parseInt(monthStr, 10);
+            const day = parseInt(dayStr, 10);
+
+            router.push(`/calendar/record?year=${year}&month=${month}&day=${day}`);
+        }
+    });
+
     return (
         <div className="flex flex-col w-full px-10 justify-center items-center">
             <div className="w-9/12 flex justify-end mt-4 mb-4">
@@ -263,6 +279,7 @@ const Calendar: React.FC = () => {
                     selectMirror={true}
                     dayCellContent={handleDayCellContent}
                     datesSet={handleDateChange}
+                    dateClick={handleDateClick}
                     dayMaxEvents={true}
                     events={monthly.map((arg) => ({
                         date: arg.date,
