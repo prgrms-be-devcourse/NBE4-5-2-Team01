@@ -108,7 +108,7 @@ public class UserController {
 	public Map<String, String> testApi(@AuthenticationPrincipal OAuth2User user) {
 
 		String spotifyToken = user.getAttribute("spotifyToken");
-		System.out.println("스포티파이 토큰체크:"+spotifyToken);
+		System.out.println("스포티파이 토큰체크:" + spotifyToken);
 		String userId = user.getName();
 		System.out.println("유저아이디 체크:" + userId);
 		Map<String, String> resMap = new HashMap<>();
