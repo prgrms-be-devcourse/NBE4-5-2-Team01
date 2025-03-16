@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -134,4 +135,11 @@ public class UserController {
 		String userId = jwtTokenProvider.getUserIdFromToken(token);
 		return SimpleUserResponse.from(userService.getUserById(userId));
 	}
+
+	@ResponseBody
+	@GetMapping("/{user-id}")
+	public SimpleUserResponse getUserByUserId(@PathVariable(name = "user-id") String userId) {
+		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
+
 }
