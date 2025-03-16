@@ -1,27 +1,38 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 // 리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받는 함수
 const refreshAccessToken = async (refreshToken: string) => {
-  const response = await fetch("http://localhost:8080/api/v1/refresh", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ refreshToken }),
-  });
+  try {
+    console.log("Attempting to refresh token with:", refreshToken);
+    const response = await fetch("http://localhost:8080/api/v1/user/refresh", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${refreshToken}`  // 리프레시 토큰을 Authorization 헤더에 포함
+      },
+      body: JSON.stringify({ refreshToken })
+    });
 
-  if (!response.ok) {
-    throw new Error("Failed to refresh access token");
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("Refresh token response error:", errorData);
+      throw new Error("Failed to refresh access token");
+    }
+
+    const data = await response.json();
+    console.log("Refresh token response data:", data);
+    return data.accessToken; // 새로운 액세스 토큰 반환
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    return null;
   }
-
-  const data = await response.json();
-  return data.accessToken; // 새로운 액세스 토큰 반환
 };
 
 // 액세스 토큰 만료 여부를 확인하는 함수
 const isAccessTokenExpired = (accessToken: string): boolean => {
   try {
-    const payload = JSON.parse(atob(accessToken.split('.')[1])); // JWT payload 디코딩
+    const payload = JSON.parse(atob(accessToken.split(".")[1])); // JWT payload 디코딩
     const expiration = payload.exp * 1000; // 만료 시간 (초 -> 밀리초 변환)
     return Date.now() >= expiration;
   } catch (error) {
@@ -30,46 +41,76 @@ const isAccessTokenExpired = (accessToken: string): boolean => {
   }
 };
 
-export async function middleware(req: Request) {
-  console.log("미들웨어 실행");
+// 보호되지 않은(public) 경로인지 확인하는 함수
+const isPublicRoute = (pathname: string): boolean => {
+  const publicPaths = [
+    "/login",
+    "/callback",
+    "/api",
+    "/_next",
+    "/static",
+    "/favicon.ico"
+  ];
+  return publicPaths.some((path) => pathname.startsWith(path));
+};
 
-  // 이미 액세스 토큰이 갱신되어서 처리 중인 요청인지 확인
-  const isTokenRefreshed = req.headers.get("X-Token-Refreshed");
+export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  console.log("Middleware handling path:", pathname);
 
-  // 액세스 토큰과 리프레시 토큰을 헤더에서 추출
-  const accessToken = req.headers.get("Authorization")?.replace("Bearer ", "");
-  const refreshToken = req.headers.get("refreshToken");
-
-  if (!accessToken || !refreshToken) {
-    return NextResponse.redirect(new URL("/login", req.url)); // 토큰이 없으면 로그인 페이지로 리다이렉트
+  // public 경로는 미들웨어 건너뛰기
+  if (isPublicRoute(pathname)) {
+    console.log("Public route, passing through");
+    return NextResponse.next();
   }
 
-  // 액세스 토큰이 만료되었으면 리프레시 토큰을 사용하여 갱신
-  if (isAccessTokenExpired(accessToken)) {
-    try {
-      // 이미 갱신된 요청이 아닌지 확인
-      if (isTokenRefreshed) {
-        // 이미 갱신된 요청이라면 무한루프 방지
-        return NextResponse.next();
-      }
+  // 쿠키에서 액세스 토큰과 리프레시 토큰 가져오기
+  const accessToken = req.cookies.get("accessToken")?.value;
+  const refreshToken = req.cookies.get("refreshToken")?.value;
 
-      // 리프레시 토큰을 사용하여 액세스 토큰 갱신
+  console.log("Token check:", {
+    access: accessToken ? "exists" : "none",
+    refresh: refreshToken ? "exists" : "none",
+  });
+
+  // 토큰이 없으면 로그인 페이지로 리디렉션
+  if (!accessToken || !refreshToken) {
+    console.log("Tokens not found, redirecting to /login");
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  // 액세스 토큰이 만료되었으면 리프레시 토큰으로 갱신
+  if (isAccessTokenExpired(accessToken)) {
+    console.log("Access token expired, attempting refresh");
+    try {
       const newAccessToken = await refreshAccessToken(refreshToken);
       if (!newAccessToken) {
-        return NextResponse.redirect(new URL("/login", req.url)); // 리프레시 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
+        console.log("Token refresh failed, redirecting to /login");
+        return NextResponse.redirect(new URL("/login", req.url));
       }
+      console.log("Token refreshed successfully:", newAccessToken);
 
-      // 새로운 액세스 토큰을 응답에 추가하고 X-Token-Refreshed 헤더를 추가하여 무한 루프 방지
+      // 새 액세스 토큰을 쿠키에 저장하고, 응답을 통해 다음 요청에 반영
       const response = NextResponse.next();
-      response.headers.set("Authorization", `Bearer ${newAccessToken}`);
-      response.headers.set("X-Token-Refreshed", "true"); // 이 요청은 토큰이 갱신된 요청임을 표시
+      response.cookies.set("accessToken", newAccessToken, {
+        path: "/",
+        maxAge: 3600, // 1시간
+      });
       return response;
     } catch (error) {
       console.error("Error refreshing token:", error);
-      return NextResponse.redirect(new URL("/login", req.url)); // 재발급 실패 시 로그인 페이지로 리다이렉트
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
   // 액세스 토큰이 유효하면 그대로 요청 처리
+  console.log("Valid token, proceeding");
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    // api, _next, favicon.ico 등은 제외
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};

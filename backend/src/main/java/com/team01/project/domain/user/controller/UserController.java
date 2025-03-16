@@ -98,7 +98,8 @@ public class UserController {
 
 	@ResponseBody
 	@PostMapping("/refresh")
-	public ResponseEntity<?> refreshToken(@RequestBody String refreshToken) {
+	public ResponseEntity<?> refreshToken(@RequestBody Map<String, Object> reqMap) {
+		String refreshToken = reqMap.get("refreshToken").toString();
 		return userService.refreshToken(refreshToken);
 	}
 

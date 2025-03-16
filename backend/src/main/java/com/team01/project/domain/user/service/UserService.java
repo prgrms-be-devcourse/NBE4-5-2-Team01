@@ -115,7 +115,7 @@ public class UserService {
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", 200);
-		response.put("jwt", newAccessToken);
+		response.put("accessToken", newAccessToken);
 		return ResponseEntity.status(200).body(response);
 	}
 
