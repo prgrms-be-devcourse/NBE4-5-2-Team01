@@ -121,9 +121,6 @@ public class UserController {
 	@GetMapping("testApiCookie")
 	public ResponseEntity<?> logout(@CookieValue(name = "accessToken", required = false) String accessToken) {
 		System.out.println("쿠키" + accessToken);
-		// accessToken 값이 null이 아니라면 토큰 기반 로그아웃 로직 수행
-		// 예: 토큰 검증, 리프레시 토큰 삭제 등
-		// ...
 		return ResponseEntity.ok("Logged out");
 	}
 
