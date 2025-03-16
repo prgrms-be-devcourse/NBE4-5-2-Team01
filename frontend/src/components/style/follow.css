@@ -39,6 +39,7 @@
   margin: 20px auto;
   width: 1000px;
   height: 70px;
+  cursor: pointer;
 }
 
 .user-text {
