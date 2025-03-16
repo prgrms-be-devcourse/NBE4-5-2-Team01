@@ -61,9 +61,17 @@ const Calendar: React.FC = () => {
         document.head.appendChild(style);
     }, []);
 
-    const handleDayCellContent = (arg: { dayNumberText: string; }) => {
-        return arg.dayNumberText.replace("일", "");
-    }
+    const handleDayCellContent = (arg: { date: Date; dayNumberText: string }) => {
+        const formattedDate = arg.date.toISOString().split("T")[0];
+        const hasMemo = monthly.some((item) => item.date === formattedDate && item.hasMemo);
+
+        return (
+            <div className="relative flex justify-between items-center w-full">
+                {hasMemo && <span className="w-1.5 h-1.5 bg-[#C8B6FF] rounded-full mr-1"></span>}
+                <span className="ml-auto">{arg.dayNumberText.replace("일", "")}</span>
+            </div>
+        );
+    };
 
     const renderEventContent = (eventInfo: EventContentArg) => {
         const imageUrl = eventInfo.event.extendedProps.albumImage;
