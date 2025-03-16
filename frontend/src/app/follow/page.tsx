@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { getCookie } from "../utils/cookie";
 import "@/components/style/follow.css";
 
 const FollowPage = () => {
@@ -17,7 +18,7 @@ const FollowPage = () => {
     const fetchUsers = async () => {
       try {
         if (!userId) return;
-        const token = localStorage.getItem("accessToken");
+        const token = getCookie("accessToken");
 
         const response = await axios.get(`http://localhost:8080/api/v1/follows/${activeTab}/${userId}`,
         {
@@ -41,8 +42,8 @@ const FollowPage = () => {
     e.stopPropagation();
 
     try {
-      const token = localStorage.getItem("accessToken");
-
+      const token = getCookie("accessToken");
+      console.log(token);
       if (isFollowing) {
         await axios.delete(`http://localhost:8080/api/v1/follows/${userId}`, {
           headers: {
@@ -65,7 +66,7 @@ const FollowPage = () => {
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user.user.id === userId
-            ? { ...user, isFollowing: !isFollowing }
+            ? { ...user, isFollowing: !isFollowing } // 기존 isFollower 값 유지
             : user
         )
       );
@@ -80,8 +81,6 @@ const FollowPage = () => {
 
   return (
     <div className="flex h-screen bg-white">
-      <div className="side-bar"></div>
-
       <div className="tab-bar">
         <div className="tab">
           <button
