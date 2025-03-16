@@ -22,7 +22,10 @@ const refreshAccessToken = async (refreshToken: string) => {
 
     const data = await response.json();
     console.log("Refresh token response data:", data);
-    return data.accessToken; // 새로운 액세스 토큰 반환
+    return {
+      accessToken: data.accessToken,
+      spotifyAccessToken: data.spotifyAccessToken
+    }; // 새로운 액세스 토큰과 스포티파이 토큰 반환
   } catch (error) {
     console.error("Error refreshing token:", error);
     return null;
@@ -74,32 +77,48 @@ export default async function middleware(req: NextRequest) {
   });
 
   // 토큰이 없으면 로그인 페이지로 리디렉션
-  if (!accessToken || !refreshToken) {
-    console.log("Tokens not found, redirecting to /login");
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  // if (!accessToken || !refreshToken) {
+  //   console.log("Tokens not found, redirecting to /login");
+  //   return NextResponse.redirect(new URL("/login", req.url));
+  // }
 
   // 액세스 토큰이 만료되었으면 리프레시 토큰으로 갱신
-  if (isAccessTokenExpired(accessToken)) {
+  if (!accessToken || isAccessTokenExpired(accessToken)) {
     console.log("Access token expired, attempting refresh");
     try {
+      if (!refreshToken) {
+        console.log("Refresh token not found, redirecting to /login");
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+
       const newAccessToken = await refreshAccessToken(refreshToken);
       if (!newAccessToken) {
         console.log("Token refresh failed, redirecting to /login");
         return NextResponse.redirect(new URL("/login", req.url));
       }
-      console.log("Token refreshed successfully:", newAccessToken);
+      console.log("Tokens refreshed successfully:", newAccessToken);
 
-      // 새 액세스 토큰을 쿠키에 저장하고, Authorization 헤더 설정
+      // 새 액세스 토큰과 스포티파이 토큰을 쿠키에 저장하고, Authorization 헤더 설정
       const response = NextResponse.next();
-      response.cookies.set("accessToken", newAccessToken, {
+      response.cookies.set("accessToken", newAccessToken.accessToken, {
         path: "/",
         maxAge: 3600, // 1시간
         httpOnly: true,
         secure: true,
         sameSite: "strict"
       });
-      response.headers.set("Authorization", `Bearer ${newAccessToken}`);
+      
+      if (newAccessToken.spotifyAccessToken) {
+        response.cookies.set("spotifyAccessToken", newAccessToken.spotifyAccessToken, {
+          path: "/",
+          maxAge: 3600, // 1시간
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict"
+        });
+      }
+      
+      response.headers.set("Authorization", `Bearer ${newAccessToken.accessToken}`);
       return response;
     } catch (error) {
       console.error("Error refreshing token:", error);
