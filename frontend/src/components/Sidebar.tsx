@@ -1,25 +1,75 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 
-interface UserDto {
+interface User {
   id: string;
   email: string;
   name: string;
-  nickName: string;
-  birthDay: string; // Assuming it returns as a string from the API (or handle accordingly)
-  createdDate: string; // Same here, handle date if needed
-  field: string;
-  userIntro: string;
-  image: string;
+  nickName: string | null;
+  userIntro: string | null;
+  image: string | null;
+  birthDay: string | null;
+  createdDate: string;
+  field: string | null;
 }
 
 export default function Sidebar() {
-  const [user, setUser] = useState<UserDto | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [userData, setUserData] = useState<User | null>(null);
+  const [lastBioUpdate, setLastBioUpdate] = useState<string | null>(null);
+  const [lastNameUpdate, setLastNameUpdate] = useState<string | null>(null);
+  const [lastImageUpdate, setLastImageUpdate] = useState<string | null>(null);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/user/getUsers",
+        {
+          withCredentials: true,
+        }
+      );
+
+      const userData = response.data;
+      setUserData(userData);
+    } catch (error) {
+      console.error("사용자 정보 조회 중 오류 발생:", error);
+    }
+  };
+
+  // 초기 데이터 로드
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // localStorage의 lastBioUpdate, lastNameUpdate, lastImageUpdate 변경 감지
+  useEffect(() => {
+    const checkForUpdates = () => {
+      const newBioUpdate = localStorage.getItem("lastBioUpdate");
+      const newNameUpdate = localStorage.getItem("lastNameUpdate");
+      const newImageUpdate = localStorage.getItem("lastImageUpdate");
+
+      if (
+        newBioUpdate !== lastBioUpdate ||
+        newNameUpdate !== lastNameUpdate ||
+        newImageUpdate !== lastImageUpdate
+      ) {
+        setLastBioUpdate(newBioUpdate);
+        setLastNameUpdate(newNameUpdate);
+        setLastImageUpdate(newImageUpdate);
+        fetchUsers(); // 새로운 데이터 가져오기
+      }
+    };
+
+    // 1초마다 업데이트 확인
+    const interval = setInterval(checkForUpdates, 1000);
+
+    return () => clearInterval(interval);
+  }, [lastBioUpdate, lastNameUpdate, lastImageUpdate]);
+
 
   useEffect(() => {
     axios
@@ -142,17 +192,22 @@ export default function Sidebar() {
             <Image src="/user.png" alt="Avatar" width={28} height={28} />
           </div>
           <div id="nav-footer-titlebox">
-            <Link id="nav-footer-title" href="/user/profile">
-              {user?.name}
+            <Link id="nav-footer-title" href="/">
+              {userData?.name || "로딩 중..."}
             </Link>
-            {/* <span id="nav-footer-subtitle">{user?.nickname}</span> */}
+            {/* <span id="nav-footer-subtitle">
+
+            </span> */}
           </div>
           <label htmlFor="nav-footer-toggle">
             <i className="fas fa-caret-up"></i>
           </label>
         </div>
         <div id="nav-footer-content">
-          <p>{user?.userIntro ?? "자기소개를 작성해보세요!!"}</p>
+          <p>
+            {userData?.userIntro ||
+              "자기소개를 작성하면 나오는 곳 입니다. 아무거나 적으면 됩니다. 자신을 소개해보세요. 자신을 한 문장으로 알려주세요."}
+          </p>
         </div>
       </div>
     </div>
