@@ -1,5 +1,7 @@
 package com.team01.project.domain.user.service;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team01.project.domain.follow.controller.dto.FollowResponse;
+import com.team01.project.domain.follow.repository.FollowRepository;
 import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
@@ -47,6 +51,8 @@ public class UserService {
 
 	@Autowired
 	private OAuth2AuthorizedClientService authorizedClientService;
+
+	private final FollowRepository followRepository;
 
 	@Value("${spring.security.oauth2.client.registration.spotify.client-id}")
 	private String clientId;
@@ -166,12 +172,26 @@ public class UserService {
 		}
 	}
 
-	public List<User> search(String name) {
-		return userRepository.searchUser(name);
+	public List<FollowResponse> search(String currentUserId, String name) {
+		User currentUser = userRepository.getById(currentUserId);
+		List<User> users = userRepository.searchUser(name);;
+
+		return users.stream()
+			.map(user ->
+				FollowResponse.of(
+				user,
+				checkFollow(user, currentUser),
+				checkFollow(currentUser, user)
+			))
+			.toList();
 	}
 
 	public User getUserById(String id) {
 		return userRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저 찾을 수 없습니다: " + id));
+	}
+
+	private boolean checkFollow(User user, User currentUser) {
+		return followRepository.existsByToUserAndFromUser(user, currentUser);
 	}
 }
