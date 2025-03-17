@@ -8,6 +8,7 @@ import MusicList from "./MusicList";
 import MusicSearch from "./MusicSearch";
 import "./style.css";
 import { AlertComponent } from "@/components/alert";
+import { Card } from "@/components/ui/card";
 
 export default function CalendarRecordPage() {
   const API_URL = "http://localhost:8080/api/v1";
@@ -149,30 +150,32 @@ export default function CalendarRecordPage() {
   };
 
   return (
-    <div className="p-6">
-      {alertData && (
-        <AlertComponent
-          title={alertData.title}
-          description={alertData.description}
-          variant={alertData.variant}
-        />
-      )}
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-2xl font-bold">
-          {isEditing ? "기록 수정" : "기록 추가"}
-        </h2>
-        <button onClick={handleSaveRecord} className="btn btn-primary">
-          완료
-        </button>
+    <Card className="m-10 bg-white border-0 p-0">
+      <div className="p-6">
+        {alertData && (
+          <AlertComponent
+            title={alertData.title}
+            description={alertData.description}
+            variant={alertData.variant}
+          />
+        )}
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-2xl font-bold">
+            {isEditing ? "기록 수정" : "기록 추가"}
+          </h2>
+          <button onClick={handleSaveRecord} className="btn btn-primary">
+            완료
+          </button>
+        </div>
+        <div className="space-y-7">
+          <MusicSearch onSelectTrack={handleSelectTrack} />
+          <MusicList
+            selectedTracks={selectedTracks}
+            onRemoveTrack={handleRemoveTrack}
+          />
+          <MemoInput memo={memo} setMemo={setMemo} />
+        </div>
       </div>
-      <div className="space-y-7">
-        <MusicSearch onSelectTrack={handleSelectTrack} />
-        <MusicList
-          selectedTracks={selectedTracks}
-          onRemoveTrack={handleRemoveTrack}
-        />
-        <MemoInput memo={memo} setMemo={setMemo} />
-      </div>
-    </div>
+    </Card>
   );
 }

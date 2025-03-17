@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import "@/components/style/search.css";
 
 const SearchPage = () => {
   const [activeTab, setActiveTab] = useState("following");
@@ -67,13 +66,13 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-[#F8F7FF] py-10">
+    <div className="flex flex-col items-center min-h-screen py-10">
       {/* 검색창 */}
       <div className="w-full max-w-lg">
         <input
           type="text"
           placeholder="사용자 검색..."
-          className="w-full px-5 py-3 text-lg text-gray-800 bg-white border border-[#C8B6FF] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#E7C6FF] transition"
+          className="w-full px-5 py-3 text-lg text-gray-800 bg-white border border-[#B8C0FF] rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#E7C6FF] transition"
           onChange={(e) => setNickName(e.target.value)}
           onKeyDown={handleKeyDown}
         />
@@ -97,7 +96,12 @@ const SearchPage = () => {
             >
               <span className="text-lg font-medium text-gray-800">{user.user.name}</span>
               <button
-                className="px-4 py-2 text-sm font-medium text-white bg-[#C8B6FF] hover:bg-[#B8C0FF] rounded-lg transition"
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${isFollowing
+                  ? "bg-[#BBD0FF] text-gray-800 hover:bg-[#B8C0FF]" // 팔로잉 → 연한 블루
+                  : isFollower
+                    ? "bg-[#FFD6FF] text-gray-800 hover:bg-[#E7C6FF]" // 맞팔로우 → 연한 핑크
+                    : "bg-[#C8B6FF] text-white hover:bg-[#B8C0FF]" // 기본 팔로우 버튼
+                  }`}
                 onClick={(e) => toggleFollow(e, user.user.id, isFollowing)}
               >
                 {buttonText}
