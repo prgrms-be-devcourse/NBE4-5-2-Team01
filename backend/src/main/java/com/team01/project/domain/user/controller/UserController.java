@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -192,7 +193,7 @@ public class UserController {
 	public ResponseEntity<?> uploadImage(@AuthenticationPrincipal OAuth2User oAuth2User,
 		@RequestParam("image") MultipartFile file) {
 		String userId = oAuth2User.getName();
-		System.out.println("파일네임"+file.getName());
+		System.out.println("파일네임" + file.getName());
 		try {
 			String savedFileInfo = userService.uploadImage(userId, file);
 
@@ -203,5 +204,19 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body("File upload failed: " + e.getMessage());
 		}
+
+	}
+
+	@ResponseBody
+	@GetMapping("/{user-id}")
+	public SimpleUserResponse getUserByUserId(@PathVariable(name = "user-id") String userId) {
+		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
+
+	@ResponseBody
+	@GetMapping("/byCookie")
+	public SimpleUserResponse getUserByCookie(@CookieValue(name = "accessToken") String accessToken) {
+		String userId = jwtTokenProvider.getUserIdFromToken(accessToken);
+		return SimpleUserResponse.from(userService.getUserById(userId));
 	}
 }
