@@ -48,7 +48,7 @@ export default function MusicRecommendation() {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`${API_URL}/user/byToken`,
+      const res = await axios.get(`${API_URL}/user/byCookie`,
         {
           headers: {
             "Content-Type": "application/json"
@@ -99,7 +99,6 @@ export default function MusicRecommendation() {
         }
       );
       setRecentTracks(res.data);
-      console.log("[Artist] result:", res.data);
     } catch (error) {
       console.error("최근 음악 조회 실패:", error);
       throw error;
@@ -117,7 +116,6 @@ export default function MusicRecommendation() {
         }
       );
       setMoodTracks(res.data);
-      console.log("[Mood] result:", res.data);
     } catch (error) {
       console.error("기분 음악 조회 실패:", error);
       throw error;
