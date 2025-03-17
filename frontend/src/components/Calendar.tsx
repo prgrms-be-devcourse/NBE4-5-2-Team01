@@ -288,8 +288,9 @@ const Calendar: React.FC = () => {
           contentHeight="auto"
           plugins={[dayGridPlugin, interactionPlugin]}
           headerToolbar={{
-            left: "title",
-            right: "prevYear,prev,today,next,nextYear",
+            left: "prevYear,prev",
+            center: "title",
+            right: "next,nextYear",
           }}
           initialView="dayGridMonth"
           editable={false}

@@ -432,3 +432,19 @@ label[for="nav-footer-toggle"] {
 .fc .fc-daygrid-body-natural .fc-daygrid-day-events {
   margin-bottom: 0;
 }
+
+.fc .fc-toolbar {
+  justify-content: space-evenly;
+}
+
+.fc .fc-toolbar-chunk .fc-button {
+  border: none;
+  background: #C8B6FF;
+  color: white;
+}
+
+.fc .fc-toolbar-chunk .fc-button:active {
+  border: none;
+  background: #C8B6FF;
+  color: white;
+}
