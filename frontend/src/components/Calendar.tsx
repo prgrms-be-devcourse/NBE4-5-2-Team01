@@ -40,7 +40,7 @@ const Calendar: React.FC = () => {
     const [followingCount, setFollowingCount] = useState(0);
     const [followerCount, setFollowerCount] = useState(0);
     const [ownerId, setOwnerId] = useState<string | null>(null);
-    const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(true);
+    const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(false);
     const router = useRouter();
     const params = useSearchParams();
 
@@ -226,6 +226,10 @@ const Calendar: React.FC = () => {
             const day = parseInt(dayStr, 10);
 
             router.push(`/calendar/record?year=${year}&month=${month}&day=${day}`);
+        } else if (clickedDate && isCalendarOwner) {
+            router.push(`/calendar/${clickedDate.id}`);
+        } else if (clickedDate && !isCalendarOwner) {
+            router.push(`/calendar/${clickedDate.id}?readOnly=true`);
         }
     });
 
