@@ -209,6 +209,24 @@ const Calendar: React.FC = () => {
     }
   };
 
+  const createButton = () => {
+    const button = document.createElement("button");
+    button.textContent = "+";
+
+    // 버튼 스타일링
+    button.style.position = "absolute"; // 위치를 절대값으로 설정
+    button.style.top = "50%"; // 세로 중앙 정렬
+    button.style.left = "50%"; // 가로 중앙 정렬
+    button.style.transform = "translate(-50%, -50%)"; // 중앙 정렬을 위한 이동
+    button.style.border = "none"; // 버튼 테두리 없애기
+    button.style.padding = "5px 10px"; // 버튼 안쪽 여백
+    button.style.cursor = "pointer"; // 커서 포인터로 변경
+    button.style.fontSize = "1.5em"; // 텍스트 크기
+    button.style.color = "text-[#393D3F]"; // 텍스트 색상
+
+    return button;
+  };
+
   return (
       <div className="flex flex-col w-full px-10 justify-center items-center">
         <div className="flex justify-end mt-4 mb-4" style={{width: "min(90vh, calc(100vw - 18rem))"}}>
@@ -278,6 +296,33 @@ const Calendar: React.FC = () => {
                   dateNumber.style.setProperty("font-weight", "700", "important");
                   dateNumber.style.setProperty("text-shadow", "0 0 3px rgba(0,0,0,0.5)", "important");
                 }
+              }}
+              dayCellDidMount={(info) => {
+                const dateStr = info.date.toLocaleDateString("en-CA"); // YYYY-MM-DD 형식으로 가공
+                const hasEvent = monthly.some((event) => event.date === dateStr); // 해당 날짜에 이벤트가 있는지 확인
+
+                if (hasEvent) {
+                  console.log(dateStr);
+                }
+                info.el.style.position = "relative"; // 날짜 셀에 상대적인 위치 부여
+
+                const button = createButton(); // [+] 버튼 생성
+                const cell = info.el as HTMLElement;
+
+                cell.addEventListener("mouseenter", () => {
+                  cell.style.backgroundColor = "#D9CFFF"; // 배경색 변경
+                  if (!hasEvent) {
+                    cell.appendChild(button); // 이벤트가 없으면 [+] 버튼 추가
+                  }
+                });
+
+                // 마우스가 셀에서 벗어날 때
+                cell.addEventListener("mouseleave", () => {
+                  cell.style.backgroundColor = ""; // 배경색 원래대로 복구
+                  if (!hasEvent && button.parentNode) {
+                    button.parentNode.removeChild(button); // [+] 버튼 제거
+                  }
+                });
               }}
               stickyHeaderDates={true}
               validRange={{
