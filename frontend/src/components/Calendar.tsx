@@ -235,13 +235,13 @@ const Calendar: React.FC = () => {
           </h2>
           <div className="flex space-x-4 ml-4">
             <button
-                className="text-xl text-[#393D3F]"
+                className="text-lg text-white bg-[#C8B6FF] rounded-lg"
                 onClick={() => handleFollowButtonClick(ownerId!)}
             >
               {followerCount} 팔로워
             </button>
             <button
-                className="text-xl text-[#393D3F]"
+                className="text-lg text-white bg-[#C8B6FF] rounded-lg"
                 onClick={() => handleFollowButtonClick(ownerId!)}
             >
               {followingCount} 팔로잉
