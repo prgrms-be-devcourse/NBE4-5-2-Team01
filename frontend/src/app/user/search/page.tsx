@@ -14,7 +14,7 @@ const SerachPage = () => {
   const [users, setUsers] = useState([]);
   const router = useRouter();
 
-  const fetchUsers = async () => {
+  const searchUser = async () => {
     try {
       const token = getCookie("accessToken");
       console.log(token)
