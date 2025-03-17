@@ -164,8 +164,10 @@ public class UserController {
 	@Operation(summary = "유저 검색 api", description = "이름과 닉네임으로 유저를 검색한다.")
 	@ResponseBody
 	@GetMapping("/search")
-	public List<FollowResponse> search(@RequestParam(name = "q") String name,
-		@AuthenticationPrincipal OAuth2User user) {
+	public List<FollowResponse> search(
+		@RequestParam(name = "q") String name,
+		@AuthenticationPrincipal OAuth2User user
+	) {
 		return userService.search(user.getName(), name);
 	}
 
