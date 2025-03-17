@@ -163,10 +163,8 @@ public class UserController {
 
 	@ResponseBody
 	@GetMapping("/search")
-	public List<FollowResponse> search(
-		@RequestParam(name = "q") String name,
-		@AuthenticationPrincipal OAuth2User user
-	) {
+	public List<FollowResponse> search(@RequestParam(name = "q") String name,
+		@AuthenticationPrincipal OAuth2User user) {
 		return userService.search(user.getName(), name);
 	}
 
