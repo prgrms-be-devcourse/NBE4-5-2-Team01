@@ -366,7 +366,14 @@ const RecapPage = () => {
         </div>
         {loading && <div>음악 기록을 불러오는 중...</div>}
         {error && <div>{error}</div>}
-        {!loading && !error && (
+        {/* 로딩과 에러가 없고, 데이터가 없는 경우 메시지 출력 */}
+        {!loading && !error && filteredData.length === 0 && (
+          <div className="no-records">
+            <p>음악 기록을 시작해보세요!!</p>
+          </div>
+        )}
+        {/* 로딩과 에러가 없고, 데이터가 있을 때 기존 통계 콘텐츠 렌더링 */}
+        {!loading && !error && filteredData.length > 0 && (
           <>
             <div className="content1">
               <section>
