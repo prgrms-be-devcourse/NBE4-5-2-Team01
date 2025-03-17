@@ -12,7 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 @Configuration
 public class SwaggerConfig {
 	@Bean
-	public OpenAPI openAPI() {
+	public OpenAPI openApi() {
 		String jwt = "JWT";
 		SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
 		Components components = new Components().addSecuritySchemes(jwt,
