@@ -134,12 +134,19 @@ export default function CalendarRecordPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-10 px-16">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-3xl font-bold">
           {isEditing ? "기록 수정" : "기록 추가"}
         </h2>
-        <button onClick={handleSaveRecord} className="btn btn-primary">
+        <button
+          onClick={handleSaveRecord}
+          className="btn btn-primary"
+          style={{
+            fontSize: "1.5rem",
+            width: "100px",
+          }}
+        >
           완료
         </button>
       </div>

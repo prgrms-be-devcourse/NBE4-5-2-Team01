@@ -342,7 +342,7 @@ const RecapPage = () => {
               <h1>Music Calendar Recap</h1>
             </div>
             <div className="explan">
-              <p>user님이 들었던 음악들의 Recap</p>
+              <p>회원님이 들었던 노래 Recap</p>
             </div>
           </div>
           <div className="button">
