@@ -62,7 +62,7 @@ const filterRecords = (
   const now = new Date();
   if (view === "weekly") {
     const start = new Date();
-    start.setDate(now.getDate() - 6);
+    start.setDate(now.getDate() - 7);
     return data.filter((item) => {
       const itemDate = new Date(item.date);
       return itemDate >= start && itemDate <= now;
@@ -130,6 +130,14 @@ const getGenreDistribution = (
   return { labels, percentages };
 };
 
+// YYYY-MM-DD 형식으로 날짜를 반환하는 헬퍼 함수 (로컬 타임존 기준)
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 /* 날짜별 기록 개수를 계산하는 함수
    지정된 기간(주간: 최근 7일, 월간: 이번 달)의 범위를 만들어 해당 날짜의 기록 수를 채워줌 */
 const getRecordsPerDateWithRange = (
@@ -138,8 +146,11 @@ const getRecordsPerDateWithRange = (
 ): { dates: string[]; counts: number[] } => {
   const recordMap: Record<string, number> = {};
   data.forEach((item) => {
-    recordMap[item.date] = (recordMap[item.date] || 0) + 1;
+    // API에서 받은 날짜 문자열 그대로 사용
+    const dateStr = item.date;
+    recordMap[dateStr] = (recordMap[dateStr] || 0) + 1;
   });
+
   const now = new Date();
   let startDate: Date, endDate: Date;
   if (view === "weekly") {
@@ -150,15 +161,18 @@ const getRecordsPerDateWithRange = (
     startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   }
+
   const dates: string[] = [];
   const counts: number[] = [];
   const current = new Date(startDate);
+
   while (current <= endDate) {
-    const dateStr = current.toISOString().split("T")[0];
+    const dateStr = formatDate(current); // formatDate는 로컬 날짜를 "YYYY-MM-DD"로 변환
     dates.push(dateStr);
     counts.push(recordMap[dateStr] || 0);
     current.setDate(current.getDate() + 1);
   }
+
   return { dates, counts };
 };
 
