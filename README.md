@@ -75,7 +75,8 @@
 ![Image](https://github.com/user-attachments/assets/35a28ea7-5171-4cb2-a51e-e576b62c6f2f)
 
 ## Flow Chart
-[🗃️ Flow Chart]()
+![image](https://github.com/user-attachments/assets/58fb32c8-58a0-4e73-9251-40f0a6501246)
+
 
 ## 브랜치 전략
 **GitHub Flow** 전략 사용
