@@ -22,6 +22,8 @@ interface MusicRecord {
     musics: Music[];
 }
 
+const BASE_URL = "http://localhost:8080/api/v1";
+
 export default function MusicDetailPage() {
     const [musicRecord, setMusicRecord] = useState<MusicRecord>();
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
@@ -44,7 +46,7 @@ export default function MusicDetailPage() {
     useEffect(() => {
         const fetchMusicRecords = async () => {
             const res = await fetch(
-                `http://localhost:8080/api/v1/calendar/${params.id}`,
+                BASE_URL + `/calendar/${params.id}`,
                 {
                     method: "GET",
                     headers: {
