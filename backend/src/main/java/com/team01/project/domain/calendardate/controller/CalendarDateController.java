@@ -51,7 +51,8 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 먼슬리 캘린더
 	 */
-	@Operation(summary = "먼슬리 캘린더 조회 api", description = "현재 로그인 하고 있는 유저 또는 헤더의 Calendar-Owner-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회")
+	@Operation(summary = "먼슬리 캘린더 조회 api", description = "현재 로그인 하고 있는 유저 또는 헤더의 Calendar-Own" +
+		"er-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회")
 	@GetMapping(params = {"year", "month"})
 	@ResponseStatus(HttpStatus.OK)
 	public MonthlyFetchResponse fetchMonthlyCalendar(
