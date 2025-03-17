@@ -7,24 +7,18 @@ import { getCookie } from "../../utils/cookie";
 import "@/components/style/search.css";
 import { useFormState } from "react-dom";
 
-const SerachPage = () => {
+const SearchPage = () => {
   const [activeTab, setActiveTab] = useState("following");
   const [nickName, setNickName] = useState("");
   const { id } = useParams<{ id: string }>(); 
   const [users, setUsers] = useState([]);
   const router = useRouter();
 
-  const searchUser = async () => {
+  const searchUsers = async () => {
     try {
-      const token = getCookie("accessToken");
-      console.log(token)
-
       const response = await axios.get(`http://localhost:8080/api/v1/user/search?q=${nickName}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+        withCredentials: true
       }
       );
       setUsers(response.data);
@@ -35,12 +29,12 @@ const SerachPage = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    searchUsers();
   }, [activeTab]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      fetchUsers();
+      searchUsers();
     }
   };
 
@@ -48,23 +42,15 @@ const SerachPage = () => {
     e.stopPropagation();
 
     try {
-      const token = getCookie("accessToken");
-      console.log(token);
       if (isFollowing) {
         await axios.delete(`http://localhost:8080/api/v1/follows/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true
         });
       } else {
         await axios.post(
           `http://localhost:8080/api/v1/follows/${userId}`,
-          {},
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+            withCredentials: true
           }
         );
       }
@@ -86,7 +72,7 @@ const SerachPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-#F8F7FF">
       <div className="tab-bar">
         <div className="search-bar">
           <input
@@ -128,4 +114,4 @@ const SerachPage = () => {
   );
 };
 
-export default SerachPage;
+export default SearchPage;

@@ -18,14 +18,9 @@ const FollowPage = () => {
     const fetchUsers = async () => {
       try {
         if (!userId) return;
-        const token = getCookie("accessToken");
-
         const response = await axios.get(`http://localhost:8080/api/v1/follows/${activeTab}/${userId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          withCredentials: true
         }
         );
         setUsers(response.data);
@@ -42,23 +37,16 @@ const FollowPage = () => {
     e.stopPropagation();
 
     try {
-      const token = getCookie("accessToken");
-      console.log(token);
       if (isFollowing) {
         await axios.delete(`http://localhost:8080/api/v1/follows/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true
         });
       } else {
         await axios.post(
           `http://localhost:8080/api/v1/follows/${userId}`,
           {},
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+            withCredentials: true
           }
         );
       }
@@ -80,7 +68,7 @@ const FollowPage = () => {
   };
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex h-screen bg-#F8F7FF">
       <div className="tab-bar">
         <div className="tab">
           <button
