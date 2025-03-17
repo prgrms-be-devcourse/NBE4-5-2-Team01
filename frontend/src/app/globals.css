@@ -448,3 +448,6 @@ label[for="nav-footer-toggle"] {
   background: #C8B6FF;
   color: white;
 }
+.fc .fc-bg-event {
+  background: white;
+}
