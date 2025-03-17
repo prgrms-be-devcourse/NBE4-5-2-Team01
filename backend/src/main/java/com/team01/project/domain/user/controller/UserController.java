@@ -147,4 +147,10 @@ public class UserController {
 		String userId = jwtTokenProvider.getUserIdFromToken(accessToken);
 		return SimpleUserResponse.from(userService.getUserById(userId));
 	}
+
+	@GetMapping("/spotify-token")
+	public ResponseEntity<String> getSpotifyToken(@AuthenticationPrincipal OAuth2User user) {
+		String spotifyToken = user.getAttribute("spotifyToken");
+		return ResponseEntity.ok(spotifyToken);
+	}
 }

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
-import { getCookie } from "@/app/utils/cookie";
 import MemoInput from "./MemoInput";
 import MusicList from "./MusicList";
 import MusicSearch from "./MusicSearch";

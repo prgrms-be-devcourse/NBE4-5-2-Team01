@@ -3,7 +3,6 @@
 import "@/app/music/style.css";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { getCookie } from "@/app/utils/cookie";
 import RecentTracks from "./RecentTracks";
 import MoodTracks from "./MoodTracks";
 
