@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.team01.project.domain.user.dto.SimpleUserResponse;
+import com.team01.project.domain.user.dto.UserDto;
+import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.service.SpotifyRefreshTokenService;
 import com.team01.project.domain.user.service.UserService;
@@ -131,8 +133,8 @@ public class UserController {
 	@GetMapping("/search")
 	public List<SimpleUserResponse> search(@RequestParam(name = "q") String name) {
 		return userService.search(name).stream()
-			.map(SimpleUserResponse::from)
-			.toList();
+				.map(SimpleUserResponse::from)
+				.toList();
 	}
 
 	@ResponseBody
@@ -141,5 +143,11 @@ public class UserController {
 		String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
 		String userId = jwtTokenProvider.getUserIdFromToken(token);
 		return SimpleUserResponse.from(userService.getUserById(userId));
+	}
+
+	@GetMapping()
+	public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal OAuth2User user) {
+		User user1 = userService.getUserById(user.getName());
+		return ResponseEntity.ok(UserDto.from(user1));
 	}
 }
