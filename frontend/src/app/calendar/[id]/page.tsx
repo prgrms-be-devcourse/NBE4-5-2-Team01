@@ -81,30 +81,41 @@ export default function MusicDetailPage() {
         </div>
         <Carousel className="w-full max-w-2xl">
             <CarouselContent>
-                {musicRecord?.musics?.map((music) => <CarouselItem key={music.id} className="flex justify-center h-full">
-                    <Card className="w-full h-full border-1 border-gray-300">
-                        <CardContent className="flex flex-col items-center p-4">
-                            <img
-                                src={music.albumImage}
-                                alt={music.name}
-                                className="w-full h-60 object-cover rounded-lg"
-                            />
-                            <h2 className="text-lg font-semibold text-[#393D3F] mt-2">{music.name}</h2>
-                            <p className="text-sm text-gray-500">{music.singer}</p>
-                            <p className="text-sm text-gray-400">{music.genre}</p>
-                            <p className="text-sm text-gray-400">{music.releaseDate.replaceAll("-", ".")}</p>
-                        </CardContent>
-                    </Card>
-                </CarouselItem>)}
+                {musicRecord?.musics?.map((music) => (
+                    <CarouselItem key={music.id} className="flex justify-center h-full">
+                        <Card className="w-full h-full border-1 border-gray-300">
+                            <CardContent className="flex flex-row items-center p-4">
+                                <img
+                                    src={music.albumImage}
+                                    alt={music.name}
+                                    className="w-1/3 h-1/3 object-contain rounded-lg"
+                                />
+
+                                <div className="flex flex-col items-start m-10 space-y-4">
+                                    <div className="space-y-2">
+                                        <h2 className="text-3xl font-semibold text-[#393D3F]">{music.name}</h2>
+                                        <p className="text-lg text-[#393D3F]">{music.singer}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-lg text-[#393D3F]">{music.genre}</p>
+                                        <p className="text-lg text-gray-400">
+                                            {music.releaseDate.replaceAll("-", ".")}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </CarouselItem>
+                ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious/>
+            <CarouselNext/>
         </Carousel>
 
         {/* 메모 영역 */}
         <div className="w-full max-w-2xl mt-6 p-4 rounded-lg shadow">
-            <h3 className="text-md font-medium text-[#393D3F]">메모</h3>
-            <p className="mt-2 text-sm text-[#393D3F]">{musicRecord?.memo}</p>
+            <h3 className="text-md text-gray-400">메모</h3>
+            <p className="mt-2 text-md text-[#393D3F]">{musicRecord?.memo}</p>
         </div>
     </div>;
 }
