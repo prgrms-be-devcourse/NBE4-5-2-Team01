@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {useEffect, useState} from "react";
-import {DatesSetArg, EventContentArg} from "@fullcalendar/core";
+import {DatesSetArg, EventClickArg, EventContentArg} from "@fullcalendar/core";
 import {useRouter, useSearchParams} from "next/navigation";
 
 interface CalendarDate {
@@ -233,6 +233,18 @@ const Calendar: React.FC = () => {
         }
     });
 
+    const handleEventClick = (arg: EventClickArg) => {
+        if (!arg.event.start) return;
+
+        const date = arg.event.start.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).replace(/\./g, "").split(" ").join("-");
+
+        handleDateClick({ dateStr: date });
+    };
+
     return (
         <div className="flex flex-col w-full px-10 justify-center items-center">
             <div className="w-9/12 flex justify-end mt-4 mb-4">
@@ -263,8 +275,10 @@ const Calendar: React.FC = () => {
                     dayCellContent={handleDayCellContent}
                     datesSet={handleDateChange}
                     dateClick={handleDateClick}
+                    eventClick={handleEventClick}
                     dayMaxEvents={true}
                     events={monthly.map((arg) => ({
+                        start: arg.date,
                         date: arg.date,
                         borderColor: "#FFFFFF",
                         backgroundColor: "#FFFFFF",
