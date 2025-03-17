@@ -179,9 +179,9 @@ public class UserService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저 찾을 수 없습니다: " + id));
 	}
 
-	public User findByUserId(String userId){
+	public User findByUserId(String userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(()-> new RuntimeException("유저의 ID를 찾을 수 없습니다. " + userId));
+			.orElseThrow(() -> new RuntimeException("유저의 ID를 찾을 수 없습니다. " + userId));
 	}
 
 	@Transactional
