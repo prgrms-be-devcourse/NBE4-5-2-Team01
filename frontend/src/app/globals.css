@@ -428,3 +428,7 @@ label[for="nav-footer-toggle"] {
   position: relative;
   overflow: hidden;
 }
+
+.fc .fc-daygrid-body-natural .fc-daygrid-day-events {
+  margin-bottom: 0;
+}
