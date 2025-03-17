@@ -1,11 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
 
+interface UserDto {
+  id: string;
+  email: string;
+  name: string;
+  nickName: string;
+  birthDay: string; // Assuming it returns as a string from the API (or handle accordingly)
+  createdDate: string; // Same here, handle date if needed
+  field: string;
+  userIntro: string;
+  image: string;
+}
+
 export default function Sidebar() {
+  const [user, setUser] = useState<UserDto | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/v1/user", {
+        withCredentials: true, // 쿠키 포함
+      })
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
+
   return (
     <div id="nav-bar">
       <input id="nav-toggle" type="checkbox" />
@@ -114,20 +142,17 @@ export default function Sidebar() {
             <Image src="/user.png" alt="Avatar" width={28} height={28} />
           </div>
           <div id="nav-footer-titlebox">
-            <Link id="nav-footer-title" href="/">
-              Nickname
+            <Link id="nav-footer-title" href="/user/profile">
+              {user?.name}
             </Link>
-            <span id="nav-footer-subtitle">name</span>
+            {/* <span id="nav-footer-subtitle">{user?.nickname}</span> */}
           </div>
           <label htmlFor="nav-footer-toggle">
             <i className="fas fa-caret-up"></i>
           </label>
         </div>
         <div id="nav-footer-content">
-          <p>
-            자기소개를 작성하면 나오는 곳 입니다. 아무거나 적으면 됩니다. 자신을
-            소개해보세요. 자신을 한 문장으로 알려주세요.
-          </p>
+          <p>{user?.userIntro ?? "자기소개를 작성해보세요!!"}</p>
         </div>
       </div>
     </div>
