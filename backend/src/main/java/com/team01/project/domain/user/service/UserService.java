@@ -1,7 +1,5 @@
 package com.team01.project.domain.user.service;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -198,7 +196,7 @@ public class UserService {
 	private boolean checkFollow(User user, User currentUser) {
 		return followRepository.existsByToUserAndFromUser(user, currentUser);
 	}
-  
+
 	public User findByUserId(String userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new RuntimeException("유저의 ID를 찾을 수 없습니다. " + userId));
