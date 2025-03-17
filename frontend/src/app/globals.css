@@ -435,18 +435,19 @@ label[for="nav-footer-toggle"] {
 
 .fc .fc-toolbar {
   justify-content: space-evenly;
+  color: #393D3F;
 }
 
 .fc .fc-toolbar-chunk .fc-button {
   border: none;
   background: #C8B6FF;
-  color: white;
+  color: #393D3F;
 }
 
 .fc .fc-toolbar-chunk .fc-button:active {
   border: none;
   background: #C8B6FF;
-  color: white;
+  color: #393D3F;
 }
 .fc .fc-bg-event {
   background: white;
