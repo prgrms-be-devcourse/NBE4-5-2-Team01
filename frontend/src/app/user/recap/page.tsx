@@ -395,7 +395,7 @@ const RecapPage = () => {
                 <div>
                   내가 많이 들은 <span>장르</span>
                 </div>
-                <div className="chart-container">
+                <div className="chart-container" style={{ width: "600px" }}>
                   <Pie data={pieChartData} options={pieChartOptions} />
                 </div>
               </div>
