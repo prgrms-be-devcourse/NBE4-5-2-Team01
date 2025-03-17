@@ -30,8 +30,11 @@ import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.service.MusicRecordService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Calendar", description = "캘린더 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/calendar")
@@ -48,6 +51,7 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 먼슬리 캘린더
 	 */
+	@Operation(summary = "먼슬리 캘린더 조회 api", description = "현재 로그인 하고 있는 유저의 먼슬리 캘린더 조회")
 	@GetMapping(params = {"year", "month"})
 	@ResponseStatus(HttpStatus.OK)
 	public MonthlyFetchResponse fetchMonthlyCalendar(
@@ -72,6 +76,7 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 캘린더
 	 */
+	@Operation(summary = "캘린더 조회 api", description = "현재 로그인 하고 있는 유저의 캘린더 조회")
 	@GetMapping("/{calendar-date-id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CalendarDateFetchResponse fetchCalendarDate(
@@ -98,6 +103,7 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 생성된 캘린더 아이디
 	 */
+	@Operation(summary = "캘린더 생성 api", description = "현재 로그인 하고 있는 유저의 캘린더 생성")
 	@PostMapping(params = {"year", "month", "day"})
 	@ResponseStatus(HttpStatus.CREATED)
 	public CalendarDateCreateResponse createCalendarDate(
@@ -127,6 +133,7 @@ public class CalendarDateController {
 	 * @param request 음악 아이디 리스트
 	 * @param loggedInUser 현재 인증된 유저
 	 */
+	@Operation(summary = "작성된 음악 기록 수정 api", description = "현재 로그인 하고 있는 유저의 음악 기록 수정할때만 사용")
 	@PostMapping("/{calendar-date-id}/music")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void saveMusicToCalendarDate(
@@ -144,6 +151,7 @@ public class CalendarDateController {
 	 * @param request 새로운 메모
 	 * @param loggedInUser 현재 인증된 유저
 	 */
+	@Operation(summary = "작성된 메모 수정 api", description = "현재 로그인 하고 있는 유저의 메모 작성 수정할때만 사용")
 	@PostMapping("/{calendar-date-id}/memo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void writeMemoToCalendarDate(
