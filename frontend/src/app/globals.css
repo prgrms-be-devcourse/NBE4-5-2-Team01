@@ -45,6 +45,16 @@ body {
   --navbar-light-secondary: #393d3f;
 }
 
+:root {
+  --bg-color: #F8F7FF;
+  --text-color: #393D3F;
+  --point-color-1: #FFD6FF;
+  --point-color-2: #E7C6FF;
+  --point-color-3: #C8B6FF;
+  --point-color-4: #B8C0FF;
+  --point-color-5: #BBD0FF;
+}
+
 body {
   font-family: 'SUIT', sans-serif;
 }
@@ -127,7 +137,7 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--navbar-light-primary);
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
   overflow: hidden;
   user-select: none;
 }
