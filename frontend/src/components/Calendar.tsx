@@ -298,11 +298,13 @@ const Calendar: React.FC = () => {
                 }
               }}
               dayCellDidMount={(info) => {
-                const dateStr = info.date.toLocaleDateString("en-CA"); // YYYY-MM-DD 형식으로 가공
-                const hasEvent = monthly.some((event) => event.date === dateStr); // 해당 날짜에 이벤트가 있는지 확인
+                const cellDate = info.date.toLocaleDateString("en-CA"); // YYYY-MM-DD 형식으로 변환
+                const hasEvent = monthly.some((event) => event.date === cellDate);
+                const currentDate = new Date().toLocaleDateString("en-CA");
+                const isAfterToday = cellDate > currentDate;
 
-                if (hasEvent) {
-                  console.log(dateStr);
+                if (isAfterToday) {
+                  return;
                 }
                 info.el.style.position = "relative"; // 날짜 셀에 상대적인 위치 부여
 
