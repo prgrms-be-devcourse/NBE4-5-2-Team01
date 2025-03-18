@@ -75,7 +75,7 @@
 ![Image](https://github.com/user-attachments/assets/35a28ea7-5171-4cb2-a51e-e576b62c6f2f)
 
 ## Flow Chart
-[🗃️ Flow Chart]()
+[🗃️ Flow Chart](https://github.com/prgrms-be-devcourse/NBE4-5-2-Team01/wiki/%F0%9F%97%83%EF%B8%8F-Flow-Chart)
 
 ## 브랜치 전략
 **GitHub Flow** 전략 사용
@@ -90,7 +90,7 @@
 ![image]()
 
 ## API 명세서
-[📝 API 명세서]()
+[📝 API 명세서](https://github.com/prgrms-be-devcourse/NBE4-5-2-Team01/wiki/%F0%9F%93%9D-API-%EB%AA%85%EC%84%B8%EC%84%9C)
 <br/>
 <br/>
 
