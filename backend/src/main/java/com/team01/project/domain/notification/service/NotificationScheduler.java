@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class NotificationScheduler {
 		scheduleNotifications();
 	}
 
+	@Async
 	@EventListener
 	public void handleNotificationUpdated(NotificationUpdatedEvent event) {
 		System.out.println("🔔 알림 변경 감지됨! 스케줄링을 다시 설정합니다.");
@@ -146,6 +148,7 @@ public class NotificationScheduler {
 		}
 	}
 
+	@Async
 	@EventListener
 	public void handleNotificationInit(NotificationInitEvent event) {
 		System.out.println("🔔 새로운 유저 로그인!");
@@ -197,6 +200,7 @@ public class NotificationScheduler {
 		System.out.println("알림 전송 예약 시각: " + scheduledTime);
 	}
 
+	@Async
 	@EventListener
 	public void handleNotificationAsync(NotificationFollowEvent event) {
 		System.out.println("🔔 새로운 팔로우 알림!");
@@ -204,11 +208,12 @@ public class NotificationScheduler {
 				"FOLLOWING", "%s님이 회원님을 팔로우하기 시작했습니다.".formatted(event.getFromUser().getName()));
 	}
 
+	@Async
 	@EventListener
 	public void handleNotificationAsync(NotificationRecordEvent event) {
 		System.out.println("🔔 " + event.getUser().getName() + "님의 새로운 음악 등록 알림!");
 		scheduleNotificationFollowSending(event.getTime(), event.getUser(),
-				"SHARE MUSIC", "%s님, 회원님이 오늘 등록한 음악을 공유해보세요! 🎶".formatted(event.getUser().getName()));
+				"SHARE MUSIC", "%s님, 오늘도 음악을 등록하셨네요! 회원님이 오늘 등록한 음악을 공유해보세요! 🎶".formatted(event.getUser().getName()));
 	}
 
 	private void scheduleNotificationFollowSending(
