@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
-import com.team01.project.domain.notification.service.NotificationService;
 import com.team01.project.domain.user.dto.SimpleUserResponse;
 import com.team01.project.domain.user.dto.UserDto;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
@@ -54,7 +53,6 @@ public class UserController {
 	private final SpotifyRefreshTokenService spotifyRefreshTokenService;
 	private final UserService userService;
 	private final UserRepository userRepository;
-	private final NotificationService notificationService;
 
 	@GetMapping("/login")
 	public String loginPage(Authentication authentication) {
@@ -81,8 +79,9 @@ public class UserController {
 
 	@Transactional
 	@GetMapping("/logout")
-	public ResponseEntity<?> forceLogout(HttpServletRequest request, HttpServletResponse response,
-										 Authentication authentication) {
+	public ResponseEntity<?> forceLogout(
+			HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) {
 
 		if (authentication == null) {
 			System.out.println("authentication 객체가 NULL입니다. SecurityContext에 인증 정보 없음.");
@@ -90,8 +89,6 @@ public class UserController {
 		}
 
 		System.out.println("로그아웃 된 유저 ID: " + authentication.getName());
-
-		notificationService.deleteSubscription(authentication.getName());
 
 		if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
 			OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
@@ -205,8 +202,9 @@ public class UserController {
 	@Operation(summary = "이름 변경 api", description = "현재 로그인한 유저의 이름을 수정한다.")
 	@ResponseBody
 	@PutMapping("/profileName")
-	public void changeProfileName(@AuthenticationPrincipal OAuth2User oAuth2User,
-								  @RequestBody Map<String, Object> reqMap) {
+	public void changeProfileName(
+			@AuthenticationPrincipal OAuth2User oAuth2User,
+			@RequestBody Map<String, Object> reqMap) {
 		String profileName = reqMap.get("name").toString();
 		String userId = oAuth2User.getName();
 		userService.updateProfileName(userId, profileName);
@@ -215,8 +213,9 @@ public class UserController {
 	@Operation(summary = "이미지 변경 api", description = "현재 로그인한 유저의 프로필 사진을 변경한다.")
 	@ResponseBody
 	@PostMapping("/image")
-	public ResponseEntity<?> uploadImage(@AuthenticationPrincipal OAuth2User oAuth2User,
-										 @RequestParam("image") MultipartFile file) {
+	public ResponseEntity<?> uploadImage(
+			@AuthenticationPrincipal OAuth2User oAuth2User,
+			@RequestParam("image") MultipartFile file) {
 		String userId = oAuth2User.getName();
 		System.out.println("파일네임" + file.getName());
 		try {
