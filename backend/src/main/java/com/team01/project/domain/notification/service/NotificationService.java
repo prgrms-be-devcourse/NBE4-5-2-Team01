@@ -89,8 +89,8 @@ public class NotificationService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Notification> getNotificationsBetween(LocalTime now, LocalTime plusMinutes) {
-		return notificationRepository.findNotificationsBetween(now, plusMinutes);
+	public List<LocalTime> getNotificationTimeBetween(LocalTime start, LocalTime end) {
+		return notificationRepository.findDistinctNotificationTimeBetween(start, end);
 	}
 
 	// 유저가 회원가입할 때 생성

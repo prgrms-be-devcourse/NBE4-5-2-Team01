@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +34,7 @@ public class NotificationScheduler {
 	private final NotificationService notificationService;
 	private final NotificationSender notificationSender; // 알림을 보내는 클래스
 	private final ThreadPoolTaskScheduler taskScheduler;
+	private final ThreadPoolTaskScheduler separateTaskScheduler;
 	private final List<CustomScheduledTask> scheduledTasks = new ArrayList<>(); // 여러 예약 작업을 저장할 리스트
 
 	@PostConstruct
@@ -51,29 +51,27 @@ public class NotificationScheduler {
 		scheduleNotifications();
 	}
 
-	@Scheduled(cron = "0 0/30 * * * *") // 매 30분마다 실행
+	@Scheduled(cron = "0 29,59 * * * *") // 매 29분, 59분마다 실행
 	public void scheduleNotifications() {
 		// 현재 시간 기준으로 다음 30분 동안 알림이 있는지 확인
 		LocalTime now = LocalTime.from(LocalDateTime.now());
 		LocalTime plusMinutes = now.plusMinutes(30);
 
-		List<Notification> notifications = notificationService.getNotificationsBetween(now, plusMinutes);
-		System.out.println("현재 시간 기준으로 다음 30분 동안 알림이 있는지 확인. 현재 시간 : " + now + " 다음 체크 시간 : " + plusMinutes);
+		List<LocalTime> notificationTimes = notificationService.getNotificationTimeBetween(now, plusMinutes);
 
-		if (notifications.isEmpty()) {
+		System.out.println("현재 시간 기준으로 다음 30분 동안 알림이 있는지 확인. 현재 시간 : "
+				+ now + " 다음 체크 시간 : " + plusMinutes);
+
+		if (notificationTimes.isEmpty()) {
 			System.out.println("다음 30분 내 알림 없음. 매 30분마다 체크.");
 			return;
 		}
 
-		// 시간 기준으로 알림 정렬 (가장 가까운 시간부터)
-		notifications.sort(Comparator.comparing(Notification::getNotificationTime));
-
 		// 기존 예약된 작업 중 완료된 것들만 삭제하고, 나머지는 그대로 두기
 		cancelCompletedScheduledTasks();
 
-		// 알림을 해당 시간에 전송하는 작업 예약
-		for (Notification notification : notifications) {
-			LocalTime notificationTime = notification.getNotificationTime();
+
+		for (LocalTime notificationTime : notificationTimes) {
 			scheduleNotificationSending(notificationTime);
 		}
 	}
@@ -133,6 +131,19 @@ public class NotificationScheduler {
 		scheduledTasks.add(index, scheduledTask); // 시간 순으로 삽입
 	}
 
+	private void sendNotification(Notification notification, LocalDateTime notificationTime) {
+		// 알림을 전송
+		// 이메일과 푸시알림을 각각 확인해서 전송
+		if (notification.isPushEnabled()) {
+			notificationSender.sendPush(
+					notification.getUser(), notification.getTitle(), notification.getMessage(), notificationTime);
+		}
+		if (notification.isEmailEnabled()) {
+			notificationSender.sendEmail(
+					notification.getUser(), notification.getTitle(), notification.getMessage());
+		}
+	}
+
 	private void sendNotifications(List<Notification> notifications, LocalDateTime notificationTime) {
 		// 알림을 전송
 		for (Notification notification : notifications) {
@@ -181,18 +192,17 @@ public class NotificationScheduler {
 
 		Date scheduledTime = Date.from(notificationDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-		List<Notification> notificationList = List.of(
+		Notification notification =
 				Notification.builder()
 						.user(user)
 						.notificationTime(notificationTime)
 						.title(title)
 						.message(message)
-						.build()
-		);
+						.build();
 
 		// 알림 전송 작업을 예약
-		ScheduledFuture<?> futureTask = taskScheduler.schedule(() ->
-				sendNotifications(notificationList, notificationDateTime), scheduledTime);
+		ScheduledFuture<?> futureTask = separateTaskScheduler.schedule(() ->
+				sendNotification(notification, notificationDateTime), scheduledTime);
 
 		// 새 알림을 시간에 맞게 리스트에 삽입
 		insertTaskInOrder(futureTask, notificationTime);
