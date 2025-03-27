@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -157,29 +156,18 @@ public class SpotifyService {
 				SpotifyTrackResponse track = objectMapper.treeToValue(item, SpotifyTrackResponse.class);
 				artistIds.addAll(
 					track.getArtists().stream().map(SpotifyTrackResponse.Artist::getId).collect(Collectors.toSet()));
-
 				LocalDate parsedReleaseDate = parseReleaseDate(track.getAlbum().getReleaseDate());
-				musicRequests.add(new MusicRequest(track.getId(), track.getName(), track.getArtistsAsString(),
+
+				musicRequests.add(new MusicRequest(
+					track.getId(),
+					track.getName(),
+					track.getArtistsAsString(),
 					track.getArtistsIdAsString(),
 					parsedReleaseDate,
-					track.getAlbum().getImages().get(0).getUrl(), ""));
+					track.getAlbum().getImages().get(0).getUrl(),
+					null
+				));
 			}
-
-			// 모든 아티스트의 장르를 한 번에 가져오기
-			Map<String, String> artistGenres = fetchArtistGenres(artistIds, accessToken);
-
-			// 트랙에 장르 매핑
-			musicRequests.forEach(m -> {
-				List<String> trackArtistIds = Arrays.asList(m.getSingerId().split(", "));
-				List<String> trackGenres = trackArtistIds.stream()
-					.map(artistGenres::get)
-					.filter(Objects::nonNull)
-					.flatMap(genre -> Arrays.stream(genre.split(", ")))
-					.distinct()
-					.collect(Collectors.toList());
-
-				m.setGenres(String.join(", ", trackGenres));
-			});
 
 			return musicRequests;
 
@@ -244,8 +232,6 @@ public class SpotifyService {
 		String url = "/artists/" + artistId + "/top-tracks?market=KR";
 		String token = extractToken(accessToken);
 
-		System.out.println("🔍 사용한 Access Token: " + token);
-
 		try {
 			String jsonResponse = webClient.get()
 				.uri(url)
@@ -265,17 +251,24 @@ public class SpotifyService {
 				throw new SpotifyApiException("Spotify에서 트랙 정보를 가져오지 못했습니다.");
 			}
 
-			List<SpotifyTrackResponse> topTracks = new ArrayList<>();
+			List<MusicRequest> musicRequests = new ArrayList<>();
 
 			for (JsonNode trackNode : tracks) {
-				SpotifyTrackResponse topTrack = objectMapper.treeToValue(trackNode, SpotifyTrackResponse.class);
-				topTracks.add(topTrack);
+				SpotifyTrackResponse track = objectMapper.treeToValue(trackNode, SpotifyTrackResponse.class);
+
+				LocalDate parsedReleaseDate = parseReleaseDate(track.getAlbum().getReleaseDate());
+				musicRequests.add(new MusicRequest(
+					track.getId(),
+					track.getName(),
+					track.getArtistsAsString(),
+					track.getArtistsIdAsString(),
+					parsedReleaseDate,
+					track.getAlbum().getImages().get(0).getUrl(),
+					null
+				));
 			}
 
-			return topTracks.stream()
-				// .limit(5)
-				.map(track -> getTrackWithGenre(track.getId(), accessToken))
-				.collect(Collectors.toList());
+			return musicRequests;
 
 		} catch (WebClientResponseException e) {
 			throw new SpotifyApiException("Spotify API 요청 오류: " + e.getResponseBodyAsString(), e);
