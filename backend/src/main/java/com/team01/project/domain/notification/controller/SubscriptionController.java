@@ -2,7 +2,6 @@ package com.team01.project.domain.notification.controller;
 
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +14,7 @@ import com.team01.project.domain.notification.entity.Subscription;
 import com.team01.project.domain.notification.repository.SubscriptionRepository;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.dto.RsData;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,7 @@ public class SubscriptionController {
 	// 푸시 구독 정보 저장 (userId와 endpoint 모두 체크)
 	@Operation(summary = "푸시 구독 정보 저장", description = "사용자의 푸시 구독 정보 저장")
 	@PostMapping("/subscribe")
-	public ResponseEntity<String> subscribe(
+	public RsData<Void> subscribe(
 			@RequestBody SubscriptionDto dto, @AuthenticationPrincipal OAuth2User user) {
 		String userId = user.getName();
 
@@ -64,7 +64,6 @@ public class SubscriptionController {
 					userEntity, dto.getEndpoint(), dto.getKeys().getP256dh(), dto.getKeys().getAuth());
 		} else {
 			// 신규 구독 정보 생성
-//			User userEntity = userRepository.findById(userId).orElse(null);
 			subscription = Subscription.builder()
 					.user(userEntity)
 					.endpoint(dto.getEndpoint())
@@ -74,6 +73,7 @@ public class SubscriptionController {
 		}
 
 		subscriptionRepository.save(subscription);
-		return ResponseEntity.ok("구독 정보 저장 성공");
+
+		return new RsData<>("200-1", "구독 저장 성공");
 	}
 }
