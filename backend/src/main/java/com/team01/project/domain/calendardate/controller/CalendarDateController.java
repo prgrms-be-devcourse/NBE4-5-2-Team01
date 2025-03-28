@@ -53,13 +53,18 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 먼슬리 캘린더
 	 */
-	@Operation(summary = "먼슬리 캘린더 조회 api", description = "현재 로그인 하고 있는 유저 또는 헤더의 Calendar-Own"
-		+ "er-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회")
+	@Operation(
+		summary = "먼슬리 캘린더 조회 api",
+		description = "현재 로그인 하고 있는 유저 또는 헤더의 Calendar-Owner-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회"
+	)
 	@GetMapping(params = {"year", "month"})
 	@ResponseStatus(HttpStatus.OK)
-	public MonthlyFetchResponse fetchMonthlyCalendar(@RequestParam int year, @RequestParam int month,
+	public MonthlyFetchResponse fetchMonthlyCalendar(
+		@RequestParam int year,
+		@RequestParam int month,
 		@RequestHeader(name = "Calendar-Owner-Id", required = false) String ownerId,
-		@AuthenticationPrincipal OAuth2User loggedInUser) {
+		@AuthenticationPrincipal OAuth2User loggedInUser
+	) {
 		String loggedInUserId = loggedInUser.getName();
 		YearMonth yearMonth = YearMonth.of(year, month);
 
@@ -78,8 +83,10 @@ public class CalendarDateController {
 	@Operation(summary = "캘린더 조회 api", description = "현재 로그인 하고 있는 유저의 캘린더 조회")
 	@GetMapping("/{calendar-date-id}")
 	@ResponseStatus(HttpStatus.OK)
-	public CalendarDateFetchResponse fetchCalendarDate(@PathVariable(name = "calendar-date-id") Long calendarDateId,
-		@AuthenticationPrincipal OAuth2User loggedInUser) {
+	public CalendarDateFetchResponse fetchCalendarDate(
+		@PathVariable(name = "calendar-date-id") Long calendarDateId,
+		@AuthenticationPrincipal OAuth2User loggedInUser
+	) {
 		String loggedInUserId = loggedInUser.getName();
 
 		// CalendarDate 조회
@@ -103,9 +110,13 @@ public class CalendarDateController {
 	@Operation(summary = "캘린더 생성 api", description = "현재 로그인 하고 있는 유저의 캘린더 생성")
 	@PostMapping(params = {"year", "month", "day"})
 	@ResponseStatus(HttpStatus.CREATED)
-	public CalendarDateCreateResponse createCalendarDate(@RequestParam int year, @RequestParam int month,
-		@RequestParam int day, @RequestBody CalendarDateCreateRequest request,
-		@AuthenticationPrincipal OAuth2User loggedInUser) {
+	public CalendarDateCreateResponse createCalendarDate(
+		@RequestParam int year,
+		@RequestParam int month,
+		@RequestParam int day,
+		@RequestBody CalendarDateCreateRequest request,
+		@AuthenticationPrincipal OAuth2User loggedInUser
+	) {
 		String loggedInUserId = loggedInUser.getName();
 		LocalDate date = LocalDate.of(year, month, day);
 
@@ -129,8 +140,11 @@ public class CalendarDateController {
 	@Operation(summary = "음악 기록 수정 api", description = "현재 인증된 유저의 특정 캘린더 날짜에 대한 음악 기록 수정")
 	@PutMapping("/{calendar-date-id}/music")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void saveMusicToCalendarDate(@PathVariable(name = "calendar-date-id") Long calendarDateId,
-		@RequestBody CalendarDateMusicSaveRequest request, @AuthenticationPrincipal OAuth2User loggedInUser) {
+	public void saveMusicToCalendarDate(
+		@PathVariable(name = "calendar-date-id") Long calendarDateId,
+		@RequestBody CalendarDateMusicSaveRequest request,
+		@AuthenticationPrincipal OAuth2User loggedInUser
+	) {
 		String loggedInUserId = loggedInUser.getName();
 		musicRecordService.updateMusicRecords(calendarDateId, loggedInUserId, request.musicIds());
 	}
@@ -144,8 +158,11 @@ public class CalendarDateController {
 	@Operation(summary = "메모 기록 수정 api", description = "현재 인증된 유저의 특정 캘린더 날짜에 대한 메모 기록 수정")
 	@PatchMapping("/{calendar-date-id}/memo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void writeMemoToCalendarDate(@PathVariable(name = "calendar-date-id") Long calendarDateId,
-		@RequestBody CalendarDateMemoSaveRequest request, @AuthenticationPrincipal OAuth2User loggedInUser) {
+	public void writeMemoToCalendarDate(
+		@PathVariable(name = "calendar-date-id") Long calendarDateId,
+		@RequestBody CalendarDateMemoSaveRequest request,
+		@AuthenticationPrincipal OAuth2User loggedInUser
+	) {
 		String loggedInUserId = loggedInUser.getName();
 		calendarDateService.writeMemo(calendarDateId, loggedInUserId, request.memo());
 	}
