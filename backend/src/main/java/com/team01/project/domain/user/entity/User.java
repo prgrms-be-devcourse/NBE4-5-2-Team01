@@ -12,6 +12,8 @@ import com.team01.project.domain.notification.entity.Notification;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
@@ -55,6 +57,11 @@ public class User {
 	private LocalDateTime createdDate;
 
 	private String field;
+
+	@Column(name = "calendar_visibility", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private CalendarVisibility calendarVisibility = CalendarVisibility.PUBLIC;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RefreshToken> refreshTokens;
