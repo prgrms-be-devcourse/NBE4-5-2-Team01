@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,16 @@ public class FollowController {
 		@AuthenticationPrincipal OAuth2User user
 	) {
 		commandFollowService.delete(user.getName(), userId);
+	}
+
+	@Operation(summary = "팔로우 수락 api", description = "user-id의 팔로우 요청을 수락한다.")
+	@PutMapping("/accept/{user-id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void accept(
+		@PathVariable(name = "user-id") String userId,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		commandFollowService.accept(userId, user.getName());
 	}
 
 	@Operation(summary = "팔로잉 목록 조회 api", description = "user-id의 팔로잉 목록을 조회한다.")

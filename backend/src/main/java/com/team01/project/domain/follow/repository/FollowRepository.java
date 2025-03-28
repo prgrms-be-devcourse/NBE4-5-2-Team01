@@ -6,18 +6,23 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.team01.project.domain.follow.entity.Follow;
+import com.team01.project.domain.follow.entity.type.Status;
 import com.team01.project.domain.user.entity.User;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 	Optional<Follow> findByToUserAndFromUser(User toUser, User fromUser);
 
-	List<Follow> findByFromUser(User fromUser);
+	List<Follow> findByFromUserAndStatus(User fromUser, Status status);
 
-	List<Follow> findByToUser(User toUser);
+	List<Follow> findByToUserAndStatus(User toUser, Status status);
 
 	boolean existsByToUserAndFromUser(User toUser, User fromUser);
 
-	Long countByFromUser(User fromUser);
+	boolean existsByToUserAndFromUserAndStatus(User toUser, User fromUser, Status status);
 
-	Long countByToUser(User toUser);
+	Long countByFromUserAndStatus(User fromUser, Status status);
+
+	Long countByToUserAndStatus(User toUser, Status status);
+
+	Optional<Status> findStatusByToUserAndFromUser(User user, User currentUser);
 }
