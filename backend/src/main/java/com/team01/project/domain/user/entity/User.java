@@ -69,4 +69,11 @@ public class User {
 	@Builder.Default
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Notification> notifications = new ArrayList<>();
+
+	public void updateCalendarVisibility(CalendarVisibility newCalendarVisibility) {
+		if (this.calendarVisibility != newCalendarVisibility) {
+			this.calendarVisibility = newCalendarVisibility;
+		}
+	}
+
 }
