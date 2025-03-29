@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
@@ -36,6 +35,7 @@ import com.team01.project.domain.user.repository.RefreshTokenRepository;
 import com.team01.project.domain.user.repository.UserRepository;
 import com.team01.project.domain.user.service.SpotifyRefreshTokenService;
 import com.team01.project.domain.user.service.UserService;
+import com.team01.project.global.dto.RsData;
 import com.team01.project.global.security.JwtTokenProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -255,8 +255,7 @@ public class UserController {
 
 	@Operation(summary = "캘린더 공개 여부 수정 api", description = "현재 로그인한 유저의 캘린더 공개 여부를 수정한다.")
 	@PatchMapping("/calendar-visibility")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateCalendarVisibility(
+	public RsData<Void> updateCalendarVisibility(
 		@RequestBody(required = false) CalendarVisibilityUpdateRequest requestDto,
 		@AuthenticationPrincipal OAuth2User user
 	) {
@@ -265,6 +264,11 @@ public class UserController {
 		if (requestDto != null && requestDto.calendarVisibility() != null) {
 			userService.updateCalendarVisibility(userId, requestDto.calendarVisibility());
 		}
+
+		return new RsData<>(
+			"200-14",
+			"캘린더 공개 여부 수정이 완료되었습니다."
+		);
 	}
 
 }
