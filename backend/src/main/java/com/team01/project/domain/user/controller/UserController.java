@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
+import com.team01.project.domain.user.dto.CalendarVisibilityUpdateRequest;
 import com.team01.project.domain.user.dto.SimpleUserResponse;
 import com.team01.project.domain.user.dto.UserDto;
 import com.team01.project.domain.user.repository.RefreshTokenRepository;
@@ -249,4 +252,19 @@ public class UserController {
 		String spotifyToken = user.getAttribute("spotifyToken");
 		return ResponseEntity.ok(spotifyToken);
 	}
+
+	@Operation(summary = "캘린더 공개 여부 수정 api", description = "현재 로그인한 유저의 캘린더 공개 여부를 수정한다.")
+	@PatchMapping("/calendar-visibility")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void updateCalendarVisibility(
+		@RequestBody(required = false) CalendarVisibilityUpdateRequest requestDto,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		String userId = user.getName();
+
+		if (requestDto != null && requestDto.calendarVisibility() != null) {
+			userService.updateCalendarVisibility(userId, requestDto.calendarVisibility());
+		}
+	}
+
 }
