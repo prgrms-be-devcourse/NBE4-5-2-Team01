@@ -28,7 +28,7 @@ public class QueryFollowService {
 		User currentUser = userRepository.getById(currentUserId);
 		User user = userRepository.getById(userId);
 
-		return followRepository.findByFromUserAndStatus(user, ACCEPT).stream()
+		List<FollowResponse> list = followRepository.findByFromUserAndStatus(user, ACCEPT).stream()
 			.filter(follow -> !follow.getToUser().getId().equals(currentUser.getId()))
 			.map(follow -> FollowResponse.of(
 				follow.getToUser(),
@@ -36,6 +36,10 @@ public class QueryFollowService {
 				checkFollow(currentUser, follow.getToUser())
 			))
 			.toList();
+
+		System.out.println(list);
+
+		return list;
 	}
 
 	public List<FollowResponse> findFollower(String currentUserId, String userId) {
@@ -72,5 +76,22 @@ public class QueryFollowService {
 		boolean checkFollowing = followRepository.existsByToUserAndFromUserAndStatus(user, currentUser, ACCEPT);
 
 		return checkFollower && checkFollowing;
+	}
+
+	public List<FollowResponse> findMyFollowing(String currentUserId) {
+		User currentUser = userRepository.getById(currentUserId);
+
+		return followRepository.findByFromUser(currentUser)
+			.stream()
+			.map(follow -> FollowResponse.of(follow.getToUser(), follow.getStatus(), NONE))
+			.toList();
+	}
+
+	public List<FollowResponse> findPendingList(String currentUserId) {
+		User currentUser = userRepository.getById(currentUserId);
+
+		return followRepository.findByToUserAndStatus(currentUser, PENDING).stream()
+			.map(follow -> FollowResponse.of(follow.getFromUser(), NONE, follow.getStatus()))
+			.toList();
 	}
 }

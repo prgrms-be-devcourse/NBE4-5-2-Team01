@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.team01.project.domain.follow.entity.Follow;
 import com.team01.project.domain.follow.entity.type.Status;
@@ -13,6 +15,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 	Optional<Follow> findByToUserAndFromUser(User toUser, User fromUser);
 
 	List<Follow> findByFromUserAndStatus(User fromUser, Status status);
+
+	List<Follow> findByFromUser(User fromUser);
 
 	List<Follow> findByToUserAndStatus(User toUser, Status status);
 
@@ -24,5 +28,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
 	Long countByToUserAndStatus(User toUser, Status status);
 
-	Optional<Status> findStatusByToUserAndFromUser(User user, User currentUser);
+	@Query("SELECT f.status FROM Follow f WHERE f.toUser = :toUser AND f.fromUser = :fromUser")
+	Optional<Status> findStatusByToUserAndFromUser(@Param("toUser") User toUser, @Param("fromUser") User fromUser);
 }

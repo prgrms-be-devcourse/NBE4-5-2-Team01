@@ -43,13 +43,23 @@ public class FollowController {
 	}
 
 	@Operation(summary = "팔로우 삭제 api", description = "user-id에게 팔로우를 취소한다.")
-	@DeleteMapping("/{user-id}")
+	@DeleteMapping("/delete/{user-id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(
 		@PathVariable(name = "user-id") String userId,
 		@AuthenticationPrincipal OAuth2User user
 	) {
 		commandFollowService.delete(user.getName(), userId);
+	}
+
+	@Operation(summary = "팔로우 거절 api", description = "user-id의 팔로우 요청을 거절한다.")
+	@DeleteMapping("/reject/{user-id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void reject(
+		@PathVariable(name = "user-id") String userId,
+		@AuthenticationPrincipal OAuth2User user
+	) {
+		commandFollowService.delete(userId, user.getName());
 	}
 
 	@Operation(summary = "팔로우 수락 api", description = "user-id의 팔로우 요청을 수락한다.")
@@ -69,6 +79,18 @@ public class FollowController {
 		@AuthenticationPrincipal OAuth2User user
 	) {
 		return queryFollowService.findFollowing(user.getName(), userId);
+	}
+
+	@Operation(summary = "내 팔로잉 목록 조회 api", description = "로그인된 유저의 팔로잉 목록을 조회한다.")
+	@GetMapping("my")
+	public List<FollowResponse> getFollowings(@AuthenticationPrincipal OAuth2User user) {
+		return queryFollowService.findMyFollowing(user.getName());
+	}
+
+	@Operation(summary = "팔로워 요청 목록 조회 api", description = "로그인된 유저의 팔로워 요청 목록을 조회한다.")
+	@GetMapping("/my/pending")
+	public List<FollowResponse> getPendingList(@AuthenticationPrincipal OAuth2User user) {
+		return queryFollowService.findPendingList(user.getName());
 	}
 
 	@Operation(summary = "팔로워 목록 조회 api", description = "user-id의 팔로워 목록을 조회한다.")
