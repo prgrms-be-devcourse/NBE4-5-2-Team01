@@ -37,15 +37,23 @@ const SearchPage = () => {
     e.stopPropagation();
 
     try {
-      if (isFollowing) {
-        await axios.delete(`http://localhost:8080/api/v1/follows/${userId}`, {
-          withCredentials: true
+      if (isFollowing == "ACCEPT" || isFollowing == "PENDING") {
+        await axios.delete(`http://localhost:8080/api/v1/follows/delete/${userId}`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json"
+          }
         });
       } else {
         await axios.post(
           `http://localhost:8080/api/v1/follows/${userId}`,
           {},
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
         );
       }
 
@@ -84,9 +92,19 @@ const SearchPage = () => {
           const isFollowing = user.isFollowing;
           const isFollower = user.isFollower;
           let buttonText = "팔로우";
+          let buttonColor = "bg-[#C8B6FF] text-white hover:bg-[#B8C0FF]"; // 기본 팔로우 버튼 (보라색)
 
-          if (isFollowing) buttonText = "팔로잉";
-          else if (isFollower) buttonText = "맞팔로우";
+          if (isFollowing == "PENDING") {
+            buttonText = "요청함";
+            buttonColor = "bg-[#BBD0FF] text-gray-800 hover:bg-[#B8C0FF]"; // 요청함 (연한 블루)
+          } else if (isFollowing == "ACCEPT") {
+            buttonText = "팔로잉";
+            buttonColor = "bg-[#BBD0FF] text-gray-800 hover:bg-[#B8C0FF]"; // 팔로잉 (연한 블루)
+          } else if (isFollower == "ACCEPT") {
+            buttonText = "맞팔로우";
+            buttonColor = "bg-[#FFD6FF] text-gray-800 hover:bg-[#E7C6FF]"; // 맞팔로우 (연한 핑크)
+          }
+
 
           return (
             <div
@@ -96,12 +114,7 @@ const SearchPage = () => {
             >
               <span className="text-lg font-medium text-gray-800">{user.user.name}</span>
               <button
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${isFollowing
-                  ? "bg-[#BBD0FF] text-gray-800 hover:bg-[#B8C0FF]" // 팔로잉 → 연한 블루
-                  : isFollower
-                    ? "bg-[#FFD6FF] text-gray-800 hover:bg-[#E7C6FF]" // 맞팔로우 → 연한 핑크
-                    : "bg-[#C8B6FF] text-white hover:bg-[#B8C0FF]" // 기본 팔로우 버튼
-                  }`}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${buttonColor}`}
                 onClick={(e) => toggleFollow(e, user.user.id, isFollowing)}
               >
                 {buttonText}
