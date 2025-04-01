@@ -69,14 +69,14 @@ public class QueryFollowService {
 			.orElse(NONE);
 	}
 
-	public Boolean checkMutualFollow(String currentUserId, String userId) {
-		User user = userRepository.getById(userId);
-		User currentUser = userRepository.getById(currentUserId);
-		boolean checkFollower = followRepository.existsByToUserAndFromUserAndStatus(currentUser, user, ACCEPT);
-		boolean checkFollowing = followRepository.existsByToUserAndFromUserAndStatus(user, currentUser, ACCEPT);
-
-		return checkFollower && checkFollowing;
-	}
+	// public Boolean checkMutualFollow(String currentUserId, String userId) {
+	// 	User user = userRepository.getById(userId);
+	// 	User currentUser = userRepository.getById(currentUserId);
+	// 	boolean checkFollower = followRepository.existsByToUserAndFromUserAndStatus(currentUser, user, ACCEPT);
+	// 	boolean checkFollowing = followRepository.existsByToUserAndFromUserAndStatus(user, currentUser, ACCEPT);
+	//
+	// 	return checkFollower && checkFollowing;
+	// }
 
 	public List<FollowResponse> findMyFollowing(String currentUserId) {
 		User currentUser = userRepository.getById(currentUserId);

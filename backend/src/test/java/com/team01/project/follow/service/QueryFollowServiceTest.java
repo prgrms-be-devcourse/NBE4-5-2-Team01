@@ -76,19 +76,19 @@ public class QueryFollowServiceTest extends ServiceTest {
 		);
 	}
 
-	@Test
-	void 맞팔로우_여부를_확인한다() {
-		// given
-		User 메인_유저 = userRepository.save(유저("asdfasdf"));
-		User 서브_유저 = userRepository.save(유저_이메일("qwerqewr", "test@gamil.com"));
-		팔로우_전체_생성(메인_유저, List.of(서브_유저));
-
-		// when
-		Boolean response = queryFollowService.checkMutualFollow(메인_유저.getId(), 서브_유저.getId());
-
-		// then
-		assertThat(response).isTrue();
-	}
+	// @Test
+	// void 맞팔로우_여부를_확인한다() {
+	// 	// given
+	// 	User 메인_유저 = userRepository.save(유저("asdfasdf"));
+	// 	User 서브_유저 = userRepository.save(유저_이메일("qwerqewr", "test@gamil.com"));
+	// 	팔로우_전체_생성(메인_유저, List.of(서브_유저));
+	//
+	// 	// when
+	// 	Boolean response = queryFollowService.checkMutualFollow(메인_유저.getId(), 서브_유저.getId());
+	//
+	// 	// then
+	// 	assertThat(response).isTrue();
+	// }
 
 	private void 팔로우_전체_생성(User mainUser, List<User> users) {
 		for (User user : users) {

@@ -139,16 +139,16 @@ public class FollowController {
 		);
 	}
 
-	@Operation(summary = "맞팔로우 확인 api", description = "user-id와 맞팔로우 여부를 확인한다.")
-	@GetMapping("/check/{user-id}")
-	public RsData<Boolean> checkMutualFollow(
-		@PathVariable(name = "user-id") String userId,
-		@AuthenticationPrincipal OAuth2User user
-	) {
-		return new RsData<>(
-			"200-1",
-			"맞팔로우 여부 조회가 완료되었습니다.",
-			queryFollowService.checkMutualFollow(user.getName(), userId)
-		);
-	}
+	// @Operation(summary = "맞팔로우 확인 api", description = "user-id와 맞팔로우 여부를 확인한다.")
+	// @GetMapping("/check/{user-id}")
+	// public RsData<Boolean> checkMutualFollow(
+	// 	@PathVariable(name = "user-id") String userId,
+	// 	@AuthenticationPrincipal OAuth2User user
+	// ) {
+	// 	return new RsData<>(
+	// 		"200-1",
+	// 		"맞팔로우 여부 조회가 완료되었습니다.",
+	// 		queryFollowService.checkMutualFollow(user.getName(), userId)
+	// 	);
+	// }
 }
