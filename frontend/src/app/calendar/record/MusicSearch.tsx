@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { searchSpotifyTracks } from "@/app/utils/spotifyApi";
 import "./style.css";
 import { useGlobalAlert } from "@/components/GlobalAlert";
@@ -13,6 +13,19 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const { setAlert } = useGlobalAlert();
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setResults([]); // 리스트 닫기
+        setSelectedIndex(-1);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearch = async (event) => {
     const keyword = event.target.value;
@@ -38,9 +51,18 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
   };
 
   const handleSelectTrack = (track) => {
-    if (selectedTracks.length >= MAX_MUSIC_COUNT) {
+    const isDuplicate = selectedTracks.some((t) => t.id === track.id);
+    if (isDuplicate) {
       setAlert({
         code: "400-1",
+        message: "이미 추가한 곡이에요.",
+      });
+      return;
+    }
+
+    if (selectedTracks.length >= MAX_MUSIC_COUNT) {
+      setAlert({
+        code: "400-2",
         message: `최대 ${MAX_MUSIC_COUNT}곡까지 추가할 수 있어요.`,
       });
       return;
@@ -53,7 +75,7 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
   };
 
   return (
-    <div className="search-container">
+    <div className="search-container" ref={containerRef}>
       <input
         type="text"
         value={query}
