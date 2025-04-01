@@ -42,7 +42,7 @@ const FollowPage = () => {
           );
         } 
         
-        setUsers(response.data);
+        setUsers(response.data.data);
         console.log(users);
       } catch (error) {
         console.error("Error fetching users:", error);

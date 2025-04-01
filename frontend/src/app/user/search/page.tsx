@@ -17,7 +17,7 @@ const SearchPage = () => {
       const response = await axios.get(`http://localhost:8080/api/v1/user/search?q=${nickName}`,
         { withCredentials: true }
       );
-      setUsers(response.data);
+      setUsers(response.data.data);
       console.log(users);
     } catch (error) {
       console.error("Error fetching users:", error);
