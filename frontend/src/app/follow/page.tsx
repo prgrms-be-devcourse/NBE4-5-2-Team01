@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -170,10 +171,20 @@ const FollowPage = () => {
             return (
             <div
               key={index}
-              className="flex justify-between items-center p-4 bg-white border border-[#E7C6FF] rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+              className="flex justify-between items-center p-2 pl-4 pr-4 bg-white border border-[#E7C6FF] rounded-lg shadow hover:shadow-lg transition cursor-pointer"
               onClick={() => handleUserClick(user.user.id)}
             >
-              <span className="text-lg font-medium text-gray-800">{user.user.name}</span>
+              <div className="flex items-center gap-4">
+                <Image 
+                  src={user.user.profileImg}
+                  alt="프로필 이미지"
+                  unoptimized
+                  width={60}
+                  height={60}
+                  className="rounded-full object-cover border-1 border-gray-300"
+                />
+                <span className="text-lg font-medium text-gray-800">{user.user.name}</span>
+              </div>
 
               {activeTab === "pending" ? (
                 <div className="flex space-x-2">
