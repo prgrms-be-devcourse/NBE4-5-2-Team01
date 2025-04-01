@@ -80,8 +80,9 @@ public class UserController {
 
 	@Transactional
 	@GetMapping("/logout")
-	public ResponseEntity<?> forceLogout(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) {
+	public ResponseEntity<?> forceLogout(
+			HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) {
 
 		if (authentication == null) {
 			System.out.println("authentication 객체가 NULL입니다. SecurityContext에 인증 정보 없음.");
@@ -206,8 +207,9 @@ public class UserController {
 	@Operation(summary = "이름 변경 api", description = "현재 로그인한 유저의 이름을 수정한다.")
 	@ResponseBody
 	@PutMapping("/profileName")
-	public void changeProfileName(@AuthenticationPrincipal OAuth2User oAuth2User,
-		@RequestBody Map<String, Object> reqMap) {
+	public void changeProfileName(
+			@AuthenticationPrincipal OAuth2User oAuth2User,
+			@RequestBody Map<String, Object> reqMap) {
 		String profileName = reqMap.get("name").toString();
 		String userId = oAuth2User.getName();
 		userService.updateProfileName(userId, profileName);
@@ -216,8 +218,9 @@ public class UserController {
 	@Operation(summary = "이미지 변경 api", description = "현재 로그인한 유저의 프로필 사진을 변경한다.")
 	@ResponseBody
 	@PostMapping("/image")
-	public ResponseEntity<?> uploadImage(@AuthenticationPrincipal OAuth2User oAuth2User,
-		@RequestParam("image") MultipartFile file) {
+	public ResponseEntity<?> uploadImage(
+			@AuthenticationPrincipal OAuth2User oAuth2User,
+			@RequestParam("image") MultipartFile file) {
 		String userId = oAuth2User.getName();
 		System.out.println("파일네임" + file.getName());
 		try {
@@ -228,7 +231,7 @@ public class UserController {
 		} catch (Exception e) {
 			// 예외 발생 시 500 응답
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body("File upload failed: " + e.getMessage());
+					.body("File upload failed: " + e.getMessage());
 		}
 
 	}
