@@ -14,6 +14,10 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
 
   const { setAlert } = useGlobalAlert();
   const containerRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // 🔸 검색 결과 캐시 저장용
+  const latestResultsRef = useRef([]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,6 +31,12 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleFocus = () => {
+    if (query.length > 2 && latestResultsRef.current.length > 0) {
+      setResults(latestResultsRef.current);
+    }
+  };
+
   const handleSearch = async (event) => {
     const keyword = event.target.value;
     setQuery(keyword);
@@ -34,8 +44,10 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
 
     if (keyword.length > 2) {
       const searchResults = await searchSpotifyTracks(keyword);
+      latestResultsRef.current = searchResults;
       setResults(searchResults);
     } else {
+      latestResultsRef.current = [];
       setResults([]);
     }
   };
@@ -81,6 +93,8 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
         value={query}
         onChange={handleSearch}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        ref={inputRef}
         placeholder="Spotify에서 검색할 곡 또는 가수를 입력하세요."
         className="search-input"
       />
