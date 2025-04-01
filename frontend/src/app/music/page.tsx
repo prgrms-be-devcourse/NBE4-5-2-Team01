@@ -74,7 +74,14 @@ export default function MusicRecommendation() {
         },
         withCredentials: true,
       });
-      return { id: res.data.singerId, name: res.data.singer };
+
+      const { code, message, data } = res.data;
+
+      if (code.startsWith("200")) {
+        return { id: data.singerId, name: data.singer };
+      } else {
+        alert(`❗ ${message}`);
+      }
     } catch (error) {
       console.error("랜덤 음악 조회 실패:", error);
       throw error;
@@ -89,6 +96,7 @@ export default function MusicRecommendation() {
 
       const selectedArtist = idList[randomNum];
       setSinger(nameList[randomNum]);
+      console.log(selectedArtist);
 
       const res = await axios.get(
         `${SPOTIFY_URL}/artist/${selectedArtist}/top-tracks`,
@@ -99,7 +107,14 @@ export default function MusicRecommendation() {
           withCredentials: true,
         }
       );
-      setRecentTracks(res.data);
+
+      const { code, message, data } = res.data;
+
+      if (code.startsWith("200")) {
+        setRecentTracks(data);
+      } else {
+        alert(`❗ ${message}`);
+      }
     } catch (error) {
       console.error("최근 음악 조회 실패:", error);
       throw error;
@@ -114,7 +129,14 @@ export default function MusicRecommendation() {
         },
         withCredentials: true,
       });
-      setMoodTracks(res.data);
+
+      const { code, message, data } = res.data;
+
+      if (code.startsWith("200")) {
+        setMoodTracks(data);
+      } else {
+        alert(`❗ ${message}`);
+      }
     } catch (error) {
       console.error("기분 음악 조회 실패:", error);
       throw error;

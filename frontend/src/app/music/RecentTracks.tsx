@@ -58,7 +58,7 @@ const RecentTracks = ({ singer, tracks }) => {
                     <button onClick={scrollLeft} className={`px-3 ${isAtStart ? "text-gray-300 cursor-default" : "text-black"}`} disabled={isAtStart}>
                         <FontAwesomeIcon icon={faChevronLeft} />
                     </button>
-                    <button onClick={scrollRight} className={`px-3 ${isAtEnd ? "text-gray-300 cursor-default" : "text-black"}`} disabled={isAtEnd}>
+                    <button onClick={scrollRight} className={`px-3 ${isAtEnd || tracks.length === 0 ? "text-gray-300 cursor-default" : "text-black"}`} disabled={isAtEnd || tracks.length === 0}>
                         <FontAwesomeIcon icon={faChevronRight} />
                     </button>
                 </div>
