@@ -3,11 +3,16 @@
 import { useState } from "react";
 import { searchSpotifyTracks } from "@/app/utils/spotifyApi";
 import "./style.css";
+import { useGlobalAlert } from "@/components/GlobalAlert";
 
-export default function MusicSearch({ onSelectTrack }) {
+const MAX_MUSIC_COUNT = 20;
+
+export default function MusicSearch({ onSelectTrack, selectedTracks }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const { setAlert } = useGlobalAlert();
 
   const handleSearch = async (event) => {
     const keyword = event.target.value;
@@ -33,6 +38,14 @@ export default function MusicSearch({ onSelectTrack }) {
   };
 
   const handleSelectTrack = (track) => {
+    if (selectedTracks.length >= MAX_MUSIC_COUNT) {
+      setAlert({
+        code: "400-1",
+        message: `최대 ${MAX_MUSIC_COUNT}곡까지 추가할 수 있어요.`,
+      });
+      return;
+    }
+
     onSelectTrack(track);
     setQuery("");
     setResults([]);

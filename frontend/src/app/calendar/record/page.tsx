@@ -168,7 +168,10 @@ export default function CalendarRecordPage() {
           </button>
         </div>
         <div className="space-y-7">
-          <MusicSearch onSelectTrack={handleSelectTrack} />
+          <MusicSearch
+            onSelectTrack={handleSelectTrack}
+            selectedTracks={selectedTracks}
+          />
           <MusicList
             selectedTracks={selectedTracks}
             onRemoveTrack={handleRemoveTrack}
