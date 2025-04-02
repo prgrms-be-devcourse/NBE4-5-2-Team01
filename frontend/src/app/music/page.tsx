@@ -32,12 +32,6 @@ export default function MusicRecommendation() {
       try {
         setIsLoading(true);
 
-        setAlert({ code: "200", message: "test" });
-        setAlert({ code: "204", message: "test" });
-        setAlert({ code: "400", message: "test" });
-        setAlert({ code: "500", message: "test" });
-        setAlert({ code: "unknown", message: "test" });
-
         const fetchedUserId = await fetchUser();
         const fetchedArtist = await fetchRandomMusic(fetchedUserId);
 
