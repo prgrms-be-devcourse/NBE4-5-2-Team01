@@ -159,7 +159,7 @@
 
 .top-artist-tracks {
   padding: 20px;
-  width: 1000px;
+  min-width: 420px;
 }
 
 .track-grid {
