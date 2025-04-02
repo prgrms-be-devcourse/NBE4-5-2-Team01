@@ -37,10 +37,13 @@ export const GlobalAlertProvider = ({ children }: { children: React.ReactNode })
     };
 
     const getColor = (code: string) => {
+        if (!code) return "bg-gray-300";
+
         if (code.startsWith("204")) return "bg-blue-400";
         if (code.startsWith("2")) return "bg-green-500";
         if (code.startsWith("4")) return "bg-yellow-400";
         if (code.startsWith("5")) return "bg-red-500";
+
         return "bg-gray-500";
     };
 
