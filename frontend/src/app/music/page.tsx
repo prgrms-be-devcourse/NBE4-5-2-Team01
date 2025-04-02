@@ -32,11 +32,17 @@ export default function MusicRecommendation() {
       try {
         setIsLoading(true);
 
+        // setAlert({ code: "200", message: "test" });
+        // setAlert({ code: "204", message: "test" });
+        // setAlert({ code: "400", message: "test" });
+        // setAlert({ code: "500", message: "test" });
+        // setAlert({ code: "", message: "test" });
+
         const fetchedUserId = await fetchUser();
         const fetchedArtist = await fetchRandomMusic(fetchedUserId);
 
         if (!fetchedArtist || !fetchedArtist.id) {
-          console.warn("최근 음악 없음, 빈 리스트 반환");
+          setAlert({ code: "401", message: "최근 음악 없음, 빈 리스트 반환" });
           setRecentTracks([]);
         } else {
           await fetchRecentTracks(fetchedArtist.id, fetchedArtist.name);
@@ -46,7 +52,7 @@ export default function MusicRecommendation() {
         setSelectedMood(randomMood);
         await fetchMoodTracks(randomMood);
       } catch (error) {
-        console.error("데이터 로드 중 오류 발생:", error);
+        setAlert({ code: "500", message: "데이터를 불러오는 중 오류가 발생했습니다." });
       } finally {
         setIsLoading(false);
       }
