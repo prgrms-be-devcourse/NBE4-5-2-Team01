@@ -163,7 +163,7 @@ export default function CalendarRecordPage() {
 
       if (isEditing) {
         // 기존 기록 수정
-        const musicRes = await axios.post(
+        const musicRes = await axios.put(
           `${API_URL}/calendar/${id}/music`,
           { musicIds: musicIds },
           {
@@ -175,7 +175,7 @@ export default function CalendarRecordPage() {
         );
         setAlert({ code: musicRes.data.code, message: musicRes.data.msg });
 
-        const memoRes = await axios.post(
+        const memoRes = await axios.patch(
           `${API_URL}/calendar/${id}/memo`,
           { memo: finalMemo },
           {
@@ -185,7 +185,7 @@ export default function CalendarRecordPage() {
             withCredentials: true,
           }
         );
-        setAlert({ code: musicRes.data.code, message: musicRes.data.msg });
+        setAlert({ code: memoRes.data.code, message: memoRes.data.msg });
 
         alert("기록이 성공적으로 수정되었습니다!");
         router.push("/calendar");
