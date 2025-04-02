@@ -189,5 +189,4 @@ public class CalendarDateController {
 			return new RsData<>("200-2", "오늘 기록이 없습니다.", todayInfo);
 		}
 	}
-	
 }
