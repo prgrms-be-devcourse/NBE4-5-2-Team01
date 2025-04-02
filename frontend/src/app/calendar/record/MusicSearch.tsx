@@ -18,6 +18,7 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
 
   // 🔸 검색 결과 캐시 저장용
   const latestResultsRef = useRef([]);
+  const isKorean = (text: string) => /[ㄱ-ㅎ|가-힣]/.test(text);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,7 +43,7 @@ export default function MusicSearch({ onSelectTrack, selectedTracks }) {
     setQuery(keyword);
     setSelectedIndex(-1);
 
-    if (keyword.length > 2) {
+    if (keyword.length > 2 || (isKorean(query) && query.length >= 2)) {
       const searchResults = await searchSpotifyTracks(keyword);
       latestResultsRef.current = searchResults;
       setResults(searchResults);
