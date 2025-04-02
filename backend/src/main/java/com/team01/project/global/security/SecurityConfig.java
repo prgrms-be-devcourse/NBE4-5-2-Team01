@@ -43,8 +43,8 @@ public class SecurityConfig {
 						"/api/v1/user/refresh", "/api/v1/error", "/login", "/", "/api/v1/follows")
 					.permitAll()
 					.anyRequest()
-					// .authenticated()) // 모든 요청에 대해 인증 필요
-					.permitAll())
+					.authenticated()) // 모든 요청에 대해 인증 필요
+			// .permitAll())
 			//.anyRequest().permitAll()
 			.sessionManagement(
 				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용 시 세션 비활성화
