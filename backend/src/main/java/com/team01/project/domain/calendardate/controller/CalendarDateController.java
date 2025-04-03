@@ -113,7 +113,7 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 생성된 캘린더 아이디
 	 */
-	@Operation(summary = "캘린더 생성 api", description = "현재 로그인 하고 있는 유저의 캘린더 생성")
+	@Operation(summary = "캘린더 생성 api", description = "현재 인증된 유저의 캘린더 생성")
 	@PostMapping(params = {"year", "month", "day"})
 	public RsData<CalendarDateCreateResponse> createCalendarDate(
 		@RequestParam int year,
@@ -131,11 +131,11 @@ public class CalendarDateController {
 		Long calendarDateId = calendarDate.getId();
 
 		// 음악 기록 저장
-		musicRecordService.updateMusicRecords(calendarDateId, loggedInUserId, request.musicIds());
+		musicRecordService.createMusicRecords(calendarDateId, request.musicIds());
 
 		return new RsData<>(
 			"201-10",
-			"캘린더 데이터가 생성되었습니다.",
+			"캘린더 생성에 성공했습니다",
 			new CalendarDateCreateResponse(calendarDateId)
 		);
 	}

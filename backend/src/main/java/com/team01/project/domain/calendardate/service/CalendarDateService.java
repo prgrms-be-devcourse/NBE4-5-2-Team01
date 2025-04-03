@@ -8,10 +8,8 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.team01.project.domain.calendardate.controller.dto.response.CalendarDateFetchResponse;
 import com.team01.project.domain.calendardate.entity.CalendarDate;
@@ -21,6 +19,7 @@ import com.team01.project.domain.musicrecord.service.MusicRecordService;
 import com.team01.project.domain.notification.event.NotificationRecordEvent;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.exception.CalendarDateAlreadyExistsException;
 import com.team01.project.global.exception.PermissionDeniedException;
 import com.team01.project.global.permission.CalendarPermission;
 import com.team01.project.global.permission.PermissionService;
@@ -75,6 +74,28 @@ public class CalendarDateService {
 		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
 
 		return CalendarDateFetchResponse.of(calendarDate, musics, calendarPermission);
+	}
+
+	/**
+	 * 캘린더 생성
+	 */
+	public CalendarDate create(String userId, LocalDate date, String memo) {
+		User user = userRepository.getById(userId);
+
+		if (calendarDateRepository.existsByUserAndDate(user, date)) {
+			throw new CalendarDateAlreadyExistsException("409-10", "해당 날짜의 캘린더가 이미 존재합니다.");
+		}
+
+		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록) 캘린더 생성 알림
+		eventPublisher.publishEvent(new NotificationRecordEvent(this, LocalTime.now(), user));
+
+		CalendarDate calendarDate = CalendarDate.builder()
+			.user(user)
+			.date(date)
+			.memo(memo)
+			.build();
+
+		return calendarDateRepository.save(calendarDate);
 	}
 
 	/**

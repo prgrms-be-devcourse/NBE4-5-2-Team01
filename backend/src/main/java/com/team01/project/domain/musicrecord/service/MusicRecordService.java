@@ -63,9 +63,25 @@ public class MusicRecordService {
 	 * 캘린더에 음악 기록 저장
 	 *
 	 * @param calendarDateId 캘린더 아이디
-	 * @param loggedInUserId 현재 인증된 유저
 	 * @param newMusicIds    기록할 전체 음악 아이디 리스트
 	 */
+	public void createMusicRecords(Long calendarDateId, List<String> newMusicIds) {
+		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
+
+		// 기록할 MusicId 목록
+		Set<String> newMusicIdSet = new HashSet<>(newMusicIds);
+
+		List<MusicRecord> musicRecordsToAdd = newMusicIdSet.stream()
+			.map(musicId -> new MusicRecord(
+				new MusicRecordId(calendarDateId, musicId),
+				calendarDate,
+				musicRepository.findByIdOrThrow(musicId)
+			))
+			.toList();
+
+		musicRecordRepository.saveAll(musicRecordsToAdd);
+	}
+
 	public void updateMusicRecords(Long calendarDateId, String loggedInUserId, List<String> newMusicIds) {
 		User loggedInUser = userRepository.findById(loggedInUserId)
 				.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
