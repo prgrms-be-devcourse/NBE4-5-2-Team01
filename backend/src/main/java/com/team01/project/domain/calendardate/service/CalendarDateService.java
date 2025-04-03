@@ -1,5 +1,7 @@
 package com.team01.project.domain.calendardate.service;
 
+import static com.team01.project.global.permission.CalendarPermission.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
@@ -16,9 +18,10 @@ import com.team01.project.domain.calendardate.repository.CalendarDateRepository;
 import com.team01.project.domain.notification.event.NotificationRecordEvent;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
+import com.team01.project.global.exception.PermissionDeniedException;
+import com.team01.project.global.permission.CalendarPermission;
 import com.team01.project.global.permission.PermissionService;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,23 +37,21 @@ public class CalendarDateService {
 	/**
 	 * 특정 연도와 월에 해당하는 캘린더 리스트 조회
 	 */
-	public List<CalendarDate> findAllByYearAndMonth(String ownerId, String loggedInUserId, YearMonth yearMonth) {
+	public List<CalendarDate> findAllByYearAndMonth(String calendarOwnerId, String loggedInUserId,
+		YearMonth yearMonth) {
 		LocalDate start = yearMonth.atDay(1);
 		LocalDate end = yearMonth.atEndOfMonth();
 
-		User loggedInUser = userRepository.findById(loggedInUserId)
-				.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+		User calendarOwner = userRepository.getById(calendarOwnerId);
+		User loggedInUser = userRepository.getById(loggedInUserId);
 
-		if (ownerId == null) {
-			return calendarDateRepository.findByUserAndDateBetween(loggedInUser, start, end);
+		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
+
+		if (calendarPermission == NONE) {
+			throw new PermissionDeniedException("403-10", "먼슬리 캘린더를 조회할 권한이 없습니다.");
 		}
 
-		User owner = userRepository.findById(ownerId)
-				.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
-
-		permissionService.checkMonthlyFetchPermission(owner, loggedInUser);
-
-		return calendarDateRepository.findByUserAndDateBetween(owner, start, end);
+		return calendarDateRepository.findByUserAndDateBetween(calendarOwner, start, end);
 	}
 
 	/**

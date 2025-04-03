@@ -48,30 +48,34 @@ public class CalendarDateController {
 	 * 먼슬리 캘린더 조회
 	 * @param year 연도
 	 * @param month 월
-	 * @param ownerId 캘린더 소유자 아이디
+	 * @param calendarOwnerId 캘린더 소유자 아이디
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 먼슬리 캘린더
 	 */
 	@Operation(
 		summary = "먼슬리 캘린더 조회 api",
-		description = "현재 로그인 하고 있는 유저 또는 헤더의 Calendar-Owner-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회"
+		description = "현재 인증된 유저 또는 헤더의 Calendar-Owner-Id와 동일한 아이디를 갖는 유저의 먼슬리 캘린더 조회"
 	)
 	@GetMapping(params = {"year", "month"})
 	public RsData<MonthlyFetchResponse> fetchMonthlyCalendar(
 		@RequestParam int year,
 		@RequestParam int month,
-		@RequestHeader(name = "Calendar-Owner-Id", required = false) String ownerId,
+		@RequestHeader(name = "Calendar-Owner-Id", required = false) String calendarOwnerId,
 		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
 		String loggedInUserId = loggedInUser.getName();
 		YearMonth yearMonth = YearMonth.of(year, month);
 
 		List<MonthlyFetchResponse.SingleCalendarDate> monthly = mapToMonthly(
-			calendarDateService.findAllByYearAndMonth(ownerId, loggedInUserId, yearMonth));
+			calendarDateService.findAllByYearAndMonth(
+				calendarOwnerId == null ? loggedInUserId : calendarOwnerId,
+				loggedInUserId,
+				yearMonth)
+		);
 
 		return new RsData<>(
 			"200-10",
-			"먼슬리 캘린더 조회가 완료되었습니다.",
+			"먼슬리 캘린더 조회에 성공했습니다.",
 			new MonthlyFetchResponse(monthly)
 		);
 	}
