@@ -158,7 +158,7 @@ public class CalendarDateController {
 
 		return new RsData<>(
 			"200-12",
-			"음악 기록 수정이 완료되었습니다."
+			"음악 기록 수정에 성공했습니다."
 		);
 	}
 
