@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -52,7 +51,6 @@ public class UserController {
 	private final SpotifyRefreshTokenService spotifyRefreshTokenService;
 	private final UserService userService;
 	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
 
 	@Operation(summary = "로그인 api", description = "db에서 아이디 조회 후 입력한 비밀번호 검증 후 토큰 반환")
 	@ResponseBody
