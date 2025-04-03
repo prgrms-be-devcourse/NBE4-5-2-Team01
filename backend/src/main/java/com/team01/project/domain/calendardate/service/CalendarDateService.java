@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class CalendarDateService {
 
 		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
 
-		if (calendarPermission == NONE) {
+		if (NONE == calendarPermission) {
 			throw new PermissionDeniedException("403-10", "먼슬리 캘린더를 조회할 권한이 없습니다.");
 		}
 
@@ -67,7 +68,7 @@ public class CalendarDateService {
 
 		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
 
-		if (calendarPermission == NONE) {
+		if (NONE == calendarPermission) {
 			throw new PermissionDeniedException("403-11", "캘린더를 조회할 권한이 없습니다.");
 		}
 
@@ -108,11 +109,18 @@ public class CalendarDateService {
 
 		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
 
-		if (calendarPermission != EDIT) {
+		if (EDIT != calendarPermission) {
 			throw new PermissionDeniedException("403-12", "캘린더를 수정할 권한이 없습니다.");
 		}
 
 		calendarDate.writeMemo(memo);
+	}
+
+	/**
+	 * 오늘 날짜 캘린더 조회
+	 */
+	public Optional<CalendarDate> findByUserIdAndDate(String userId, LocalDate date) {
+		return calendarDateRepository.findByUserIdAndDate(userId, date);
 	}
 
 }

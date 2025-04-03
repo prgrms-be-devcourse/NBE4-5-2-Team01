@@ -32,4 +32,6 @@ public interface CalendarDateRepository extends JpaRepository<CalendarDate, Long
 			-> new IllegalArgumentException("해당 ID의 캘린더 기록을 찾을 수 없습니다: " + calendarDateId));
 	}
 
+	Optional<CalendarDate> findByUserIdAndDate(String userId, LocalDate date);
+
 }
