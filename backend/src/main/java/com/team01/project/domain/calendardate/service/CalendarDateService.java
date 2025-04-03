@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.team01.project.domain.calendardate.controller.dto.response.CalendarDateFetchResponse;
 import com.team01.project.domain.calendardate.entity.CalendarDate;
 import com.team01.project.domain.calendardate.repository.CalendarDateRepository;
+import com.team01.project.domain.music.entity.Music;
+import com.team01.project.domain.musicrecord.service.MusicRecordService;
 import com.team01.project.domain.notification.event.NotificationRecordEvent;
 import com.team01.project.domain.user.entity.User;
 import com.team01.project.domain.user.repository.UserRepository;
@@ -33,6 +36,7 @@ public class CalendarDateService {
 	private final UserRepository userRepository;
 	private final PermissionService permissionService;
 	private final ApplicationEventPublisher eventPublisher;    // 🔥 이벤트 발행기 추가
+	private final MusicRecordService musicRecordService;
 
 	/**
 	 * 특정 연도와 월에 해당하는 캘린더 리스트 조회
@@ -55,31 +59,22 @@ public class CalendarDateService {
 	}
 
 	/**
-	 * 캘린더 조회
+	 * 캘린더 및 음악 기록 조회
 	 */
-	public CalendarDate findById(Long calendarDateId, String loggedInUserId) {
-		User loggedInUser = userRepository.findById(loggedInUserId)
-				.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
+	public CalendarDateFetchResponse findCalendarDateWithMusics(Long calendarDateId, String loggedInUserId) {
+		CalendarDate calendarDate = calendarDateRepository.findWithOwnerByIdOrThrow(calendarDateId);
+		User calendarOwner = calendarDate.getUser();
+		User loggedInUser = userRepository.getById(loggedInUserId);
 
-		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
+		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
 
-		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
+		if (calendarPermission == NONE) {
+			throw new PermissionDeniedException("403-11", "캘린더를 조회할 권한이 없습니다.");
+		}
 
-		return calendarDate;
-	}
+		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId);
 
-	/**
-	 * 메모 작성
-	 */
-	public void writeMemo(Long calendarDateId, String loggedInUserId, String memo) {
-		User loggedInUser = userRepository.findById(loggedInUserId)
-				.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
-
-		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
-
-		permissionService.checkCalendarDateUpdatePermission(calendarDateId, loggedInUser);
-
-		calendarDate.writeMemo(memo);
+		return CalendarDateFetchResponse.of(calendarDate, musics, calendarPermission);
 	}
 
 	/**

@@ -38,19 +38,13 @@ public class MusicRecordService {
 	 * 캘린더에 기록된 음악 리스트 조회
 	 *
 	 * @param calendarDateId 캘린더 아이디
-	 * @param loggedInUserId 현재 인증된 유저 아이디
 	 * @return 음악 리스트
 	 */
-	public List<Music> findMusicsByCalendarDateId(Long calendarDateId, String loggedInUserId) {
-		User loggedInUser = userRepository.findById(loggedInUserId)
-				.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 유저입니다."));
-
+	public List<Music> findMusicsByCalendarDateId(Long calendarDateId) {
 		CalendarDate calendarDate = calendarDateRepository.findByIdOrThrow(calendarDateId);
 
-		permissionService.checkCalendarDateFetchPermission(calendarDate, loggedInUser);
-
 		return musicRecordRepository.findByCalendarDate(calendarDate)
-				.stream().map(MusicRecord::getMusic).toList();
+			.stream().map(MusicRecord::getMusic).toList();
 	}
 
 	/**

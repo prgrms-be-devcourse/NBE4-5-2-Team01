@@ -26,7 +26,6 @@ import com.team01.project.domain.calendardate.controller.dto.response.CalendarDa
 import com.team01.project.domain.calendardate.controller.dto.response.MonthlyFetchResponse;
 import com.team01.project.domain.calendardate.entity.CalendarDate;
 import com.team01.project.domain.calendardate.service.CalendarDateService;
-import com.team01.project.domain.music.entity.Music;
 import com.team01.project.domain.musicrecord.entity.MusicRecord;
 import com.team01.project.domain.musicrecord.service.MusicRecordService;
 import com.team01.project.global.dto.RsData;
@@ -86,7 +85,7 @@ public class CalendarDateController {
 	 * @param loggedInUser 현재 인증된 유저
 	 * @return 캘린더
 	 */
-	@Operation(summary = "캘린더 조회 api", description = "현재 로그인 하고 있는 유저의 캘린더 조회")
+	@Operation(summary = "캘린더 조회 api", description = "캘린더 아이디에 해당하는 캘린더 조회")
 	@GetMapping("/{calendar-date-id}")
 	public RsData<CalendarDateFetchResponse> fetchCalendarDate(
 		@PathVariable(name = "calendar-date-id") Long calendarDateId,
@@ -94,16 +93,14 @@ public class CalendarDateController {
 	) {
 		String loggedInUserId = loggedInUser.getName();
 
-		// CalendarDate 조회
-		CalendarDate calendarDate = calendarDateService.findById(calendarDateId, loggedInUserId);
-
-		// CalendarDate와 연관된 MusicRecord를 이용해 Music 리스트 조회
-		List<Music> musics = musicRecordService.findMusicsByCalendarDateId(calendarDateId, loggedInUserId);
+		// CalendarDate와 함께 CalendarDate에 기록된 Music 리스트 조회
+		CalendarDateFetchResponse responseDto =
+			calendarDateService.findCalendarDateWithMusics(calendarDateId, loggedInUserId);
 
 		return new RsData<>(
 			"200-11",
-			"캘린더 조회가 완료되었습니다.",
-			CalendarDateFetchResponse.of(calendarDate, musics)
+			"캘린더 조회에 성공했습니다.",
+			responseDto
 		);
 	}
 
