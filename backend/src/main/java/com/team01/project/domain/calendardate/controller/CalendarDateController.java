@@ -176,11 +176,11 @@ public class CalendarDateController {
 		@AuthenticationPrincipal OAuth2User loggedInUser
 	) {
 		String loggedInUserId = loggedInUser.getName();
-		calendarDateService.writeMemo(calendarDateId, loggedInUserId, request.memo());
+		calendarDateService.updateMemo(calendarDateId, loggedInUserId, request.memo());
 
 		return new RsData<>(
 			"200-13",
-			"메모 기록 수정이 완료되었습니다."
+			"메모 기록 수정에 성공했습니다."
 		);
 	}
 

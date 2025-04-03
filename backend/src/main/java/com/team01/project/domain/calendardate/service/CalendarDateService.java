@@ -99,26 +99,20 @@ public class CalendarDateService {
 	}
 
 	/**
-	 * 캘린더 생성
+	 * 메모 수정
 	 */
-	public CalendarDate create(String userId, LocalDate date, String memo) {
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+	public void updateMemo(Long calendarDateId, String loggedInUserId, String memo) {
+		CalendarDate calendarDate = calendarDateRepository.findWithOwnerByIdOrThrow(calendarDateId);
+		User calendarOwner = calendarDate.getUser();
+		User loggedInUser = userRepository.getById(loggedInUserId);
 
-		if (calendarDateRepository.existsByUserAndDate(user, date)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 날짜의 캘린더가 이미 존재합니다.");
+		CalendarPermission calendarPermission = permissionService.checkPermission(calendarOwner, loggedInUser);
+
+		if (calendarPermission != EDIT) {
+			throw new PermissionDeniedException("403-12", "캘린더를 수정할 권한이 없습니다.");
 		}
 
-		// 🔥 이벤트 발행 (`NotificationScheduler`에서 감지할 수 있도록) 캘린더 생성 알림
-		eventPublisher.publishEvent(new NotificationRecordEvent(this, LocalTime.now(), user));
-
-		CalendarDate calendarDate = CalendarDate.builder()
-				.user(user)
-				.date(date)
-				.memo(memo)
-				.build();
-
-		return calendarDateRepository.save(calendarDate);
+		calendarDate.writeMemo(memo);
 	}
 
 }
