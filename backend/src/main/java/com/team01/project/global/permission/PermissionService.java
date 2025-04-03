@@ -46,12 +46,14 @@ public class PermissionService {
 
 	}
 
-	public void checkCalendarDateFetchPermission(CalendarDate calendarDate, User loggedInUser) {
-		if (isOwner(calendarDate.getId(), loggedInUser) || isMutualFollowing(calendarDate.getUser(), loggedInUser)) {
-			return; // 권한 있음
-		}
-
-		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 캘린더를 조회할 권한이 없습니다.");
+	/**
+	 * 캘린더 수정 가능 여부 확인
+	 * @param calendarOwner 캘린더 소유자
+	 * @param loggedInUser 현재 인증된 유저
+	 * @return 캘린더 수정 가능 여부
+	 */
+	public boolean hasEditPermission(User calendarOwner, User loggedInUser) {
+		return isCalendarOwner(calendarOwner, loggedInUser);
 	}
 
 	private boolean isPublicCalendar(User calendarOwner) {
