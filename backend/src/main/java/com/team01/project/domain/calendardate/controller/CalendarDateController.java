@@ -204,7 +204,6 @@ public class CalendarDateController {
 	 */
 	@Operation(summary = "오늘 날짜의 캘린더 조회", description = "오늘 날짜의 캘린더 기록이 존재하는지 확인하여 아이디 또는 날짜 반환")
 	@GetMapping("/today")
-	@ResponseStatus(HttpStatus.OK)
 	public RsData<?> checkToday(@AuthenticationPrincipal OAuth2User loggedInUser) {
 		String loggedInUserId = loggedInUser.getName();
 		LocalDate today = LocalDate.now();
