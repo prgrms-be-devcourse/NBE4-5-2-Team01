@@ -1,7 +1,6 @@
 package com.team01.project.domain.user.service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	@Autowired
 	private SpotifyRefreshTokenService spotifyRefreshTokenService;
 
-
 	@Transactional
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -85,10 +83,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 			userRepository.save(foundUser);
 			log.info("최초 로그인 사용자 저장:{}", userId);
 
-			notificationService.createDefaultNotifications(foundUser);
+			// notificationService.createDefaultNotifications(foundUser);
 			log.info("{}님의 알림이 생성되었습니다.", foundUser.getName());
 
-			notificationService.initLoginNotifications(LocalTime.now(), foundUser);
+			// notificationService.initLoginNotifications(LocalTime.now(), foundUser);
 		}
 
 		Optional<User> matchId = userRepository.findById(userId);

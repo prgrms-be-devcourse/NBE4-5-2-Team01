@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
+import com.team01.project.domain.follow.entity.type.Status;
 import com.team01.project.domain.follow.repository.FollowRepository;
 import com.team01.project.domain.user.dto.UserDto;
 import com.team01.project.domain.user.entity.RefreshToken;
@@ -209,8 +210,9 @@ public class UserService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저 찾을 수 없습니다: " + id));
 	}
 
-	private boolean checkFollow(User user, User currentUser) {
-		return followRepository.existsByToUserAndFromUser(user, currentUser);
+	private Status checkFollow(User user, User currentUser) {
+		return followRepository.findStatusByToUserAndFromUser(user, currentUser)
+			.orElse(Status.NONE);
 	}
 
 	@Transactional
