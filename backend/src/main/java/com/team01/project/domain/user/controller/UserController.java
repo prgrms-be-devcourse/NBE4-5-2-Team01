@@ -210,8 +210,8 @@ public class UserController {
 
 			// 성공적으로 저장되었으면 200 OK와 함께 정보 반환
 			return new RsData<>("200-1",
-				"File uploaded successfully."
-				, savedFileInfo);
+				"File uploaded successfully.",
+				savedFileInfo);
 		} catch (Exception e) {
 			// 예외 발생 시 500 응답
 			return new RsData<>("500",
