@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team01.project.domain.follow.controller.dto.FollowResponse;
 import com.team01.project.domain.follow.entity.type.Status;
 import com.team01.project.domain.follow.repository.FollowRepository;
+import com.team01.project.domain.notification.service.NotificationService;
 import com.team01.project.domain.user.dto.UserDto;
 import com.team01.project.domain.user.entity.RefreshToken;
 import com.team01.project.domain.user.entity.User;
@@ -79,6 +80,8 @@ public class UserService {
 	private final String uploadDir = "uploads/profiles/";
 
 	private final PasswordEncoder passwordEncoder;
+
+	private final NotificationService notificationService;
 
 	@Transactional
 	public Map<String, Object> refreshToken(String refreshTokenValue) {
@@ -318,6 +321,7 @@ public class UserService {
 		}
 
 		log.info("로그아웃 된 유저 ID:{} ", authentication.getName());
+		notificationService.deleteSubscription(authentication.getName());
 
 		if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
 			OAuth2User oAuth2User = oAuth2AuthenticationToken.getPrincipal();
