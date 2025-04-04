@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.team01.project.domain.user.dto.UserDto;
 import com.team01.project.domain.user.entity.User;
@@ -19,10 +20,13 @@ import com.team01.project.domain.user.service.UserService;
 public class UserServiceTest {
 
 	@Mock
-	private UserRepository userRepository; // 목 처리할 repository
+	private UserRepository userRepository;
 
 	@InjectMocks
-	private UserService userService; // 테스트할 서비스
+	private UserService userService;
+
+	@Mock
+	private PasswordEncoder passwordEncoder;
 
 	@Test
 	void testAddUser() {
@@ -36,13 +40,15 @@ public class UserServiceTest {
 			.password("password")
 			.build();
 
+		when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+
 		User expectedUser = User.builder()
 			.id(userDto.getId())
 			.email(userDto.getEmail())
 			.name(userDto.getName())
 			.originalName(userDto.getOriginalName())
 			.field(userDto.getField())
-			.userPassword(userDto.getPassword())
+			.userPassword("encodedPassword")
 			.build();
 
 		// repository.save() 호출 시 expectedUser를 반환하도록 설정

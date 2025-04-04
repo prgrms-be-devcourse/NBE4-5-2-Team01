@@ -1,18 +1,22 @@
 package com.team01.project.domain.user.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.team01.project.domain.user.service.UserEmailService;
 import com.team01.project.global.dto.RsData;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Slf4j
+@Tag(name = "Email", description = "메일 API")
+@Controller
 @RequestMapping("/userEmail")
 @RequiredArgsConstructor
 public class UserEmailController {

@@ -397,7 +397,7 @@ public class UserService {
 		Map<String, Object> resMap = new HashMap<>();
 
 		if (!isPasswordCorrect) {
-			return resMap;
+			return null;
 		}
 
 		String jwtToken = jwtTokenProvider.generateJwtToken(reqMap.get("loginId").toString(), "");

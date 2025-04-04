@@ -23,7 +23,6 @@ export default function LoginPage() {
       const refreshToken = response.data.data.refresh_token;
 
       if (response.status === 200) {
-        console.log("라웉퍼쉬");
         router.push(
           `/login/callback?access_token=${accessToken}&refresh_token=${refreshToken}&spotify_access_token=null`
         );
