@@ -261,6 +261,7 @@ public class UserController {
 	}
 
 	@Operation(summary = "캘린더 공개 여부 수정 api", description = "현재 로그인한 유저의 캘린더 공개 여부를 수정한다.")
+	@ResponseBody
 	@PatchMapping("/calendar-visibility")
 	public RsData<Void> updateCalendarVisibility(
 		@RequestBody(required = false) CalendarVisibilityUpdateRequest requestDto,
