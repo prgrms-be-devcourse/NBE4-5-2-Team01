@@ -2,25 +2,9 @@
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
-import {useEffect, useState} from "react";
-import {useParams, useRouter, useSearchParams} from "next/navigation";
-
-interface Music {
-    id: string;
-    name: string;
-    singer: string;
-    singerId: string;
-    releaseDate: string;
-    albumImage: string;
-    genre: string;
-}
-
-interface MusicRecord {
-    id: number;
-    date: string;
-    memo: string;
-    musics: Music[];
-}
+import { useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { MusicRecord } from "@/types/musicRecord";
 
 const BASE_URL = "http://localhost:8080/api/v1";
 
