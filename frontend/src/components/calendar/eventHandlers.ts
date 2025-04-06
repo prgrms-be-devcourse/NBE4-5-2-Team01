@@ -1,5 +1,6 @@
 import type { DayCellMountArg, EventMountArg } from "@fullcalendar/core";
 import { createPlusButton } from "@/components/calendar/plusButton";
+import { isDarkImage } from "@/components/calendar/imageBrightness";
 
 /**
  * 음악 기록이 있는 날짜 셀 스타일 처리
@@ -19,11 +20,19 @@ export const handleEventDidMount = (arg: EventMountArg) => {
 
         const dateNumber = cell.querySelector(".fc-daygrid-day-number") as HTMLElement;
 
-        if (dateNumber) {
-            dateNumber.style.setProperty("color", "#AE96FD", "important");
-            dateNumber.style.setProperty("font-weight", "700", "important");
-            dateNumber.style.setProperty("text-shadow", "0 0 3px rgba(0,0,0,0.5)", "important");
-        }
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.src = albumImage;
+
+        image.onload = async () => {
+            const isDark = await isDarkImage(albumImage);
+
+            if (dateNumber) {
+                dateNumber.style.setProperty("color", isDark ? "#FFFFFF" : "#AE96FD", "important");
+                dateNumber.style.setProperty("font-weight", "700", "important");
+                if (isDark) dateNumber.style.setProperty("text-shadow", "0 0 3px rgba(0,0,0,0.5)", "important");
+            }
+        };
     }
 };
 
