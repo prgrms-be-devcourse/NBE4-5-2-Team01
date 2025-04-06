@@ -151,6 +151,18 @@ export default function MusicPlayer() {
     }
   };
 
+  // 개별 곡 일시정지
+  const toggleSingleTrackPlay = async () => {
+    if (!playerInstance) return;
+
+    try {
+      await playerInstance.togglePlay(); // 재생 상태 토글
+      console.log("⏯ 개별 곡 재생 상태 전환");
+    } catch (err) {
+      console.error("⏯ 개별 곡 토글 실패:", err);
+    }
+  };
+
   const handleVolumeChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -226,7 +238,19 @@ export default function MusicPlayer() {
               <p className="text-sm text-gray-500">
                 {music.singer}
                 {currentTrackUri === music.uri && (
-                  <span className="ml-2 text-green-600">(재생 중)</span>
+                  <>
+                    <span className="ml-2 text-green-600">(재생 중)</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // 리스트 클릭 방지
+                        toggleSingleTrackPlay();
+                      }}
+                      className="ml-2 text-base text-[#393D3F] bg-[#c8b6ff] rounded px-2 py-1 hover:bg-white"
+                      title={isPaused ? "재생" : "일시정지"}
+                    >
+                      {isPaused ? "▶ 재생" : "⏸ 일시정지"}
+                    </button>
+                  </>
                 )}
               </p>
             </div>
@@ -245,7 +269,7 @@ export default function MusicPlayer() {
           onClick={handleTogglePlay}
           className="px-4 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
-          {!isPlayingAll || isPaused ? "▶ 재생" : "⏸ 일시정지"}
+          {!isPlayingAll || isPaused ? "▶ 플리 재생" : "⏸ 일시정지"}
         </button>
         <button
           onClick={handleNext}
@@ -271,9 +295,14 @@ export default function MusicPlayer() {
 
         <button
           onClick={toggleRepeatMode}
-          className="px-3 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
+          className={`px-3 py-2 rounded transition
+                    ${
+                      repeatMode === "off"
+                        ? "bg-[#c8b6ff] text-white hover:bg-[#e7c6ff]"
+                        : "bg-white text-[#c8b6ff] border border-[#c8b6ff] hover:bg-[#f3e8ff]"
+                    }`}
         >
-          🔁{" "}
+          ⟳ 반복{" "}
           {repeatMode === "off"
             ? "없음"
             : repeatMode === "context"
