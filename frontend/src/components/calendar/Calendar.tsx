@@ -60,7 +60,7 @@ const Calendar: React.FC = () => {
       if (calendarOwnerId === null) {
         const response = await fetchUser(`/user/byCookie`);
 
-        const calendarOwner: User = response.data;
+        const calendarOwner: User = response.data.data;
 
         setCalendarOwner(calendarOwner);
         setIsCalendarOwner(true);
@@ -68,8 +68,8 @@ const Calendar: React.FC = () => {
         const responseByCookie = await fetchUser(`/user/byCookie`);
         const responseById = await fetchUser(`/user/${calendarOwnerId}`)
 
-        const currentUser: User = responseByCookie.data;
-        const calendarOwner: User = responseById.data;
+        const currentUser: User = responseByCookie.data.data;
+        const calendarOwner: User = responseById.data.data;
 
         setCalendarOwner(calendarOwner);
         setIsCalendarOwner(currentUser.id === calendarOwner.id);

@@ -1,8 +1,8 @@
 export interface User {
     id: string;
     name: string;
-    nickName: string;
     profileImg: string;
+    originalName: string;
     calendarVisibility: "PUBLIC" | "FOLLOWER_ONLY" | "PRIVATE";
 }
 

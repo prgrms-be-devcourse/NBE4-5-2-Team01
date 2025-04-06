@@ -6,6 +6,7 @@ export interface Music {
     releaseDate: string;
     albumImage: string;
     genre: string;
+    uri: string;
 }
 
 export interface MusicRecord {

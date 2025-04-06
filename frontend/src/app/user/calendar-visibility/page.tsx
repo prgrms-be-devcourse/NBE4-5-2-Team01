@@ -20,7 +20,7 @@ export default function CalendarVisibilitySetting() {
       try {
         const response = await fetchUser(`/user/byCookie`);
 
-        const currentUser: User = response.data;
+        const currentUser: User = response.data.data;
 
         setCalendarVisibility(currentUser.calendarVisibility.toLowerCase());
       } catch (error) {
