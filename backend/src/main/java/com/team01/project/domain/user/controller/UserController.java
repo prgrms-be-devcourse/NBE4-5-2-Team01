@@ -223,16 +223,25 @@ public class UserController {
 	@Operation(summary = "유저 조회 api", description = "아이디가 user-id인 유저의 정보를 조회한다.")
 	@ResponseBody
 	@GetMapping("/{user-id}")
-	public SimpleUserResponse getUserByUserId(@PathVariable(name = "user-id") String userId) {
-		return SimpleUserResponse.from(userService.getUserById(userId));
+	public RsData<SimpleUserResponse> getUserByUserId(@PathVariable(name = "user-id") String userId) {
+		return new RsData<>(
+			"200-15",
+			"유저 정보 조회에 성공했습니다.",
+			SimpleUserResponse.from(userService.getUserById(userId))
+		);
 	}
 
 	@Operation(summary = "유저 조회 api", description = "현재 로그인한 유저의 정보를 조회한다.")
 	@ResponseBody
 	@GetMapping("/byCookie")
-	public SimpleUserResponse getUserByCookie(@CookieValue(name = "accessToken") String accessToken) {
+	public RsData<SimpleUserResponse> getUserByCookie(@CookieValue(name = "accessToken") String accessToken) {
 		String userId = jwtTokenProvider.getUserIdFromToken(accessToken);
-		return SimpleUserResponse.from(userService.getUserById(userId));
+
+		return new RsData<>(
+			"200-15",
+			"유저 정보 조회에 성공했습니다.",
+			SimpleUserResponse.from(userService.getUserById(userId))
+		);
 	}
 
 	@Operation(summary = "Spotify Token 반환", description = "쿠키에 존재하는 Spotify Token 반환한다.")
