@@ -98,17 +98,6 @@ const Calendar: React.FC = () => {
     setCurrentMonth(arg.view.currentStart.getMonth() + 1);
   };
 
-  useEffect(() => {
-    const style = document.createElement("style");
-    style.innerHTML = `
-        .fc { background-color: #F8F7FF; color: #393D3F; } 
-        .fc-daygrid-day { background-color: white; } 
-        .fc-toolbar { background-color: #F8F7FF; color: #393D3F; } 
-        .fc-daygrid-day-number { color: #393D3F !important; } 
-        `;
-    document.head.appendChild(style);
-  }, []);
-
   const handleDayCellContent = (arg: { dayNumberText: string }) => {
     return (<span className="ml-auto">{arg.dayNumberText.replace("일", "")}</span>
     );
