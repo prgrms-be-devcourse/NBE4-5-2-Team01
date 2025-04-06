@@ -4,32 +4,11 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useState } from "react";
-import {
-  DatesSetArg,
-} from "@fullcalendar/core";
+import { DatesSetArg } from "@fullcalendar/core";
 import { useRouter, useSearchParams } from "next/navigation";
-
-interface CalendarDate {
-  id: number; // 캘린더 아이디
-  date: string; // 'yyyy-MM-dd' 형식
-  hasMemo: boolean; // 메모 작성 여부
-  albumImage: string; // 앨범 이미지 링크
-}
-
-interface Monthly {
-  monthly: CalendarDate[];
-}
-
-interface User {
-  id: string;
-  name: string;
-  nickName: string;
-}
-
-interface FollowCount {
-  followingCount: number;
-  followerCount: number;
-}
+import { CalendarDate, Monthly } from "@/types/calendar";
+import { User } from "@/types/user";
+import { FollowCount } from "@/types/follow";
 
 const BASE_URL = "http://localhost:8080/api/v1";
 
