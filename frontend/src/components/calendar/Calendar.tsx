@@ -127,6 +127,30 @@ const Calendar: React.FC = () => {
     initMonthly(selectedYear, selectedMonth);
   }, [isCalendarOwner, selectedYear, selectedMonth])
 
+  // 페이지를 떠날 때 스타일 속성 삭제
+  useEffect(() => {
+    return () => {
+
+      // 기록이 있는 날짜 셀 선택
+      const cells = document.querySelectorAll(".fc-daygrid-day.has-record");
+
+      cells.forEach((cell) => {
+        if (cell instanceof HTMLElement) {
+          const dateNumber = cell.querySelector(".fc-daygrid-day-number") as HTMLElement;
+
+          if (dateNumber) { // 속성 삭제
+            dateNumber.style.removeProperty("color");
+            dateNumber.style.removeProperty("font-weight");
+            dateNumber.style.removeProperty("text-shadow");
+          }
+
+          // 클래스 삭제
+          cell.classList.remove("has-record");
+        }
+      });
+    };
+  }, [queryString]);
+
   const handleDateChange = (arg: DatesSetArg) => {
     setSelectedYear(arg.view.currentStart.getFullYear());
     setSelectedMonth(arg.view.currentStart.getMonth() + 1);
@@ -188,7 +212,8 @@ const Calendar: React.FC = () => {
               height: "min(90vh, calc(100vw - 18rem))",
             }}
         >
-          <FullCalendar
+          {isCalendarOwner !== null && (
+            <FullCalendar
               locale="ko"
               height="100%"
               contentHeight="100%"
@@ -208,12 +233,14 @@ const Calendar: React.FC = () => {
               dayMaxEvents={true}
               events={events}
               eventDidMount={handleEventDidMount}
-              dayCellDidMount={(arg) => handleDayCellDidMount(arg, monthly)}
+              dayCellDidMount={(arg) => handleDayCellDidMount(arg, isCalendarOwner)}
               stickyHeaderDates={true}
               validRange={{
                 end: today,
               }}
-          />
+              showNonCurrentDates={false}
+            />
+          )}
         </div>
       </div>
   );
