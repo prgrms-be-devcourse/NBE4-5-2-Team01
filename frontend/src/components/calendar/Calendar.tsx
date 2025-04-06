@@ -9,8 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDate, Monthly } from "@/types/calendar";
 import { User } from "@/types/user";
 import { FollowCount } from "@/types/follow";
-
-const BASE_URL = "http://localhost:8080/api/v1";
+import { apiClient } from "@/lib/api/apiClient";
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
@@ -34,19 +33,8 @@ const Calendar: React.FC = () => {
       let currentOwnerId: string | null = null;
 
       // 현재 로그인한 사용자의 정보 조회
-      const response = await fetch(BASE_URL + "/user/byCookie", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
-      }
-
-      const currentUser: User = await response.json();
+      const response = await apiClient.get("/user/byCookie");
+      const currentUser: User = response.data.data();
 
       // 파라미터가 없거나 현재 로그인한 유저와 동일하다면 현재 로그인한 유저가 캘린더 오너
       if (!userId || userId === currentUser.id) {
@@ -54,34 +42,12 @@ const Calendar: React.FC = () => {
         currentOwnerId = currentUser.id;
         setIsCalendarOwner(true);
       } else { // 아니라면 userId를 가진 유저와 맞팔인지 확인
-        const response = await fetch(BASE_URL + `/follows/check/${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("맞팔로우 여부 정보를 불러오는 데 실패했습니다.");
-        }
-
-        const isMutualFollowing: boolean = await response.json();
+        const response = await apiClient.get(`/follows/check/${userId}`)
+        const isMutualFollowing: boolean = response.data.data();
 
         if (isMutualFollowing) { // 맞팔이라면 userId를 가진 유저가 캘린더 오너
-          const response = await fetch(BASE_URL + `/user/${userId}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          });
-
-          if (!response.ok) {
-            throw new Error("사용자 정보를 불러오는 데 실패했습니다.");
-          }
-
-          const fetchedUser: User = await response.json();
+          const response = await apiClient.get(`/user/${userId}`);
+          const fetchedUser: User = response.data.data();
 
           setUser(fetchedUser);
           currentOwnerId = fetchedUser.id;
@@ -103,39 +69,21 @@ const Calendar: React.FC = () => {
   }, [params]);
 
   const fetchFollowCount = async (userId: string | undefined) => {
-    const response = await fetch(BASE_URL + `/follows/count/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
+    const response = await apiClient.get(`/follows/count/${userId}`);
+    const data: FollowCount = response.data.data();
 
-    if (!response.ok) {
-      throw new Error("사용자 팔로우 정보를 불러오는 데 실패했습니다.");
-    }
-
-    const data: FollowCount = await response.json();
     setFollowerCount(data.followerCount);
     setFollowingCount(data.followingCount);
   };
 
   const fetchCalendarData = async (year: number, month: number) => {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
     };
 
-    const res = await fetch(
-      BASE_URL + `/calendar?year=${year}&month=${month}`,
-      {
-        method: "GET",
-        headers: headers,
-        credentials: "include",
-      }
-    );
+    const response = await apiClient.get(`/calendar?year=${year}&month=${month}`, { headers });
+    const data: Monthly = response.data.data;
 
-    const data: Monthly = await res.json();
     setMonthly(data.monthly);
   };
 
