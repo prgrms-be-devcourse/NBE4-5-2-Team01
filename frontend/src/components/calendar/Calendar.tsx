@@ -23,7 +23,7 @@ const Calendar: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
-  const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(false);
+  const [isCalendarOwner, setIsCalendarOwner] = useState<boolean | null>(null);
   const [calendarOwner, setCalendarOwner] = useState<User | null>(null);
   const [today, setToday] = useState(new Date());
   const { setAlert } = useGlobalAlert();
