@@ -15,6 +15,7 @@ import { useGlobalAlert } from "../GlobalAlert";
 import { fetchUser } from "@/lib/api/user";
 import { fetchFollowCount } from "@/lib/api/follow";
 import { fetchMonthlyData } from "@/lib/api/calendar";
+import "@/components/style/calendar.css";
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
