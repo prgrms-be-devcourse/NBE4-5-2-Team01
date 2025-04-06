@@ -14,19 +14,28 @@ import { handleDayCellDidMount, handleEventDidMount } from "@/components/calenda
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
-  const [currentYear, setCurrentYear] = useState<number>(
-    new Date().getFullYear()
-  );
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    new Date().getMonth() + 1
-  );
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
   const [user, setUser] = useState<User | null>(null);
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
   const [ownerId, setOwnerId] = useState<string | null>(null);
   const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(false);
+
   const router = useRouter();
   const params = useSearchParams();
+
+  const events = useMemo(
+      () =>
+          monthly.map((arg) => ({
+            start: arg.date,
+            display: "background",
+            extendedProps: {
+              albumImage: arg.albumImage,
+            },
+          })),
+      [monthly]
+  );
 
   useEffect(() => {
     const fetchOwnerId = async () => {
@@ -69,25 +78,6 @@ const Calendar: React.FC = () => {
     fetchOwnerId();
   }, [params]);
 
-  const fetchFollowCount = async (userId: string | undefined) => {
-    const response = await apiClient.get(`/follows/count/${userId}`);
-    const data: FollowCount = response.data.data();
-
-    setFollowerCount(data.followerCount);
-    setFollowingCount(data.followingCount);
-  };
-
-  const fetchCalendarData = async (year: number, month: number) => {
-    const headers: Record<string, string> = {
-      ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
-    };
-
-    const response = await apiClient.get(`/calendar?year=${year}&month=${month}`, { headers });
-    const data: Monthly = response.data.data;
-
-    setMonthly(data.monthly);
-  };
-
   useEffect(() => {
     if (ownerId) {
       fetchCalendarData(currentYear, currentMonth);
@@ -110,7 +100,7 @@ const Calendar: React.FC = () => {
 
   const handleDateClick = (arg: { dateStr: string }) => {
     const clickedDate: CalendarDate | undefined = monthly?.find(
-      (calendarDate) => calendarDate.date === arg.dateStr
+        (calendarDate) => calendarDate.date === arg.dateStr
     );
 
     if (!clickedDate && isCalendarOwner) {
@@ -128,17 +118,24 @@ const Calendar: React.FC = () => {
     }
   };
 
-  const events = useMemo(
-    () =>
-      monthly.map((arg) => ({
-        start: arg.date,
-        display: "background",
-        extendedProps: {
-          albumImage: arg.albumImage,
-        },
-      })),
-      [monthly]
-  );
+  const fetchFollowCount = async (userId: string | undefined) => {
+    const response = await apiClient.get(`/follows/count/${userId}`);
+    const data: FollowCount = response.data.data();
+
+    setFollowerCount(data.followerCount);
+    setFollowingCount(data.followingCount);
+  };
+
+  const fetchCalendarData = async (year: number, month: number) => {
+    const headers: Record<string, string> = {
+      ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
+    };
+
+    const response = await apiClient.get(`/calendar?year=${year}&month=${month}`, { headers });
+    const data: Monthly = response.data.data;
+
+    setMonthly(data.monthly);
+  };
 
   return (
       <div className="flex flex-col w-full px-10 justify-center items-center">
