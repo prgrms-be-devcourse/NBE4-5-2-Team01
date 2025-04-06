@@ -16,6 +16,7 @@ import { fetchUser } from "@/lib/api/user";
 import { fetchFollowCount } from "@/lib/api/follow";
 import { fetchMonthlyData } from "@/lib/api/calendar";
 import "@/components/style/calendar.css";
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
@@ -193,63 +194,80 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full px-10 justify-center items-center">
-      <div className="flex justify-end mt-4 mb-4" style={{width: "min(90vh, calc(100vw - 18rem))"}}>
-        <h2 className="text-xl text-[#393D3F]" onClick={() => router.push("/user/calendar-visibility")}>
-          {calendarOwner?.name ?? "나"}의 캘린더📆
-        </h2>
-        <div className="flex space-x-4 ml-4">
-          <button
-            className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
-            onClick={handleFollowCountClick}
+    <>
+      {isCalendarOwner === null ? (
+        <LoadingSpinner message={"캘린더를 불러오는 중..."}/>
+        ) : (
+        <div className="flex flex-col w-full px-10 justify-center items-center">
+          <div
+            className="flex justify-end mt-4 mb-4"
+            style={{ width: "min(90vh, calc(100vw - 18rem))" }}
           >
-            {followerCount} 팔로워
-          </button>
-          <button
-            className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
-            onClick={handleFollowCountClick}
+            <h2
+              className={`text-xl text-[#393D3F]`}
+              onClick={
+                isCalendarOwner
+                  ? () => router.push("/user/calendar-visibility")
+                  : undefined
+              }
+            >
+              {calendarOwner?.name ?? "나"}의 캘린더📆
+            </h2>
+            <div className="flex space-x-4 ml-4">
+              <button
+                className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
+                onClick={handleFollowCountClick}
+              >
+                {followerCount} 팔로워
+              </button>
+              <button
+                className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
+                onClick={handleFollowCountClick}
+              >
+                {followingCount} 팔로잉
+              </button>
+            </div>
+          </div>
+
+          <div
+            style={{
+              width: "min(90vh, calc(100vw - 18rem))",
+              height: "min(90vh, calc(100vw - 18rem))",
+            }}
           >
-            {followingCount} 팔로잉
-          </button>
+            <FullCalendar
+              locale="ko"
+              height="100%"
+              contentHeight="100%"
+              plugins={[dayGridPlugin, interactionPlugin]}
+              headerToolbar={{
+                left: "prevYear,prev",
+                center: "title",
+                right: "next,nextYear",
+              }}
+              initialView="dayGridMonth"
+              editable={false}
+              selectable={false}
+              selectMirror={true}
+              dayCellContent={handleDayCellContent}
+              datesSet={handleDateChange}
+              dateClick={handleDateClick}
+              dayMaxEvents={true}
+              events={events}
+              eventDidMount={handleEventDidMount}
+              dayCellDidMount={(arg) =>
+                  handleDayCellDidMount(arg, isCalendarOwner)
+              }
+              stickyHeaderDates={true}
+              validRange={{
+                end: today,
+              }}
+              showNonCurrentDates={false}
+            />
+          </div>
         </div>
-      </div>
-      <div
-        style={{
-          width: "min(90vh, calc(100vw - 18rem))",
-          height: "min(90vh, calc(100vw - 18rem))",
-        }}
-      >
-        {isCalendarOwner !== null && (
-          <FullCalendar
-            locale="ko"
-            height="100%"
-            contentHeight="100%"
-            plugins={[dayGridPlugin, interactionPlugin]}
-            headerToolbar={{
-              left: "prevYear,prev",
-              center: "title",
-              right: "next,nextYear",
-            }}
-            initialView="dayGridMonth"
-            editable={false}
-            selectable={false}
-            selectMirror={true}
-            dayCellContent={handleDayCellContent}
-            datesSet={handleDateChange}
-            dateClick={handleDateClick}
-            dayMaxEvents={true}
-            events={events}
-            eventDidMount={handleEventDidMount}
-            dayCellDidMount={(arg) => handleDayCellDidMount(arg, isCalendarOwner)}
-            stickyHeaderDates={true}
-            validRange={{
-              end: today,
-            }}
-            showNonCurrentDates={false}
-          />
-        )}
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
