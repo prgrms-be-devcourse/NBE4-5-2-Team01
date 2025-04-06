@@ -9,7 +9,6 @@ import { AxiosError } from "axios";
 import { useGlobalAlert } from "@/components/GlobalAlert";
 import { fetchMusicRecords } from "@/lib/api/musicRecord";
 
-
 export default function MusicDetailPage() {
     const [musicRecord, setMusicRecord] = useState<MusicRecord>();
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
@@ -57,7 +56,7 @@ export default function MusicDetailPage() {
         }
     }
 
-    return <div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto mt-3">
+    return (<div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto mt-3">
         <div className="w-full max-w-2xl flex justify-between mb-3">
             <h2 className="text-lg text-[#393D3F]">{currentYear}년 {currentMonth}월 {currentDay}일</h2>
             {
@@ -78,31 +77,49 @@ export default function MusicDetailPage() {
                                     className="w-1/3 h-1/3 object-contain rounded-lg"
                                 />
 
-                                <div className="flex flex-col items-start m-10 space-y-4">
-                                    <div className="space-y-2">
-                                        <h2 className="text-3xl font-semibold text-[#393D3F]">{music.name}</h2>
-                                        <p className="text-lg text-[#393D3F]">{music.singer}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-lg text-[#393D3F]">{music.genre}</p>
-                                        <p className="text-lg text-gray-400">
-                                            {music.releaseDate.replaceAll("-", ".")}
-                                        </p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </CarouselItem>
-                ))}
-            </CarouselContent>
-            <CarouselPrevious/>
-            <CarouselNext/>
-        </Carousel>
+                  <div className="flex flex-col items-start m-10 space-y-4">
+                    <div className="space-y-2">
+                      <h2 className="text-3xl font-semibold text-[#393D3F]">
+                        {music.name}
+                      </h2>
+                      <p className="text-lg text-[#393D3F]">{music.singer}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-lg text-[#393D3F]">{music.genre}</p>
+                      <p className="text-lg text-gray-400">
+                        {music.releaseDate.replaceAll("-", ".")}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
 
-        {/* 메모 영역 */}
-        <div className="w-full max-w-2xl mt-6 p-4 rounded-lg shadow">
-            <h3 className="text-md text-gray-400">메모</h3>
-            <p className="mt-2 text-md text-[#393D3F]">{musicRecord?.memo}</p>
-        </div>
-    </div>;
+      {/* 메모 영역 */}
+      <div className="w-full max-w-2xl mt-6 p-4 rounded-lg shadow">
+        <h3 className="text-md text-gray-400">메모</h3>
+        <p className="mt-2 text-md text-[#393D3F]">{musicRecord?.memo}</p>
+      </div>
+
+      {musicRecord && (
+        <button
+          className="mt-6 w-full max-w-2xl bg-green-500 text-white py-2 px-4 rounded-lg"
+          onClick={() => {
+            sessionStorage.setItem(
+              "spotify-music-record",
+              JSON.stringify(musicRecord)
+            );
+            router.push("/calendar/spotify-player"); // 🎯 이동할 페이지
+          }}
+        >
+          ▶️ 이날의 플레이리스트 듣기
+        </button>
+      )}
+    </div>
+  );
 }
