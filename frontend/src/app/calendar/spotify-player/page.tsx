@@ -172,7 +172,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-10 p-4 border rounded-lg shadow">
+    <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-10 p-4 border border-gray-300 rounded-lg shadow">
       <h2 className="text-xl font-bold text-[#393D3F] mb-4">
         {musicRecord?.date} 재생 목록
       </h2>
@@ -181,7 +181,7 @@ export default function MusicPlayer() {
         {musicRecord?.musics.map((music) => (
           <li
             key={music.id}
-            className="flex items-center space-x-4 border p-4 rounded-lg"
+            className="flex items-center space-x-4 border p-4 rounded-lg border-gray-300 hover:bg-[#e7c6ff] transition"
           >
             <img
               src={music.albumImage}
@@ -199,21 +199,21 @@ export default function MusicPlayer() {
       <div className="flex space-x-4 mb-4 mt-4">
         <button
           onClick={handlePrevious}
-          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-3 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
-          ⏮️
+          이전 곡
         </button>
         <button
           onClick={handleTogglePlay}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="px-4 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
-          {isPaused ? "▶️" : "⏸️"}
+          {isPaused ? "▶ 재생" : "⏸ 일시정지"}
         </button>
         <button
           onClick={handleNext}
-          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          className="px-3 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
-          ⏭️
+          다음 곡
         </button>
       </div>
 
