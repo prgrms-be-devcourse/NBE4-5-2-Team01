@@ -3,7 +3,7 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { MusicRecord } from "@/types/musicRecord";
 
 const BASE_URL = "http://localhost:8080/api/v1";
@@ -13,19 +13,8 @@ export default function MusicDetailPage() {
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
     const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
-    const searchParams = useSearchParams();
-    const [isReadOnly, setIsReadOnly] = useState(false);
     const params = useParams();
     const router = useRouter();
-
-    useEffect(() => {
-        if (!searchParams.has("readOnly")) {
-            setIsReadOnly(false);
-        } else {
-            const value = searchParams.get("readOnly");
-            setIsReadOnly(value === null || value === "true");
-        }
-    }, [searchParams]);
 
     useEffect(() => {
         const fetchMusicRecords = async () => {
@@ -60,7 +49,7 @@ export default function MusicDetailPage() {
         <div className="w-full max-w-2xl flex justify-between mb-3">
             <h2 className="text-lg text-[#393D3F]">{currentYear}년 {currentMonth}월 {currentDay}일</h2>
             {
-                !isReadOnly && <button className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2" onClick={handleButtonClick}>수정하기</button>
+                <button className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2" onClick={handleButtonClick}>수정하기</button>
             }
         </div>
         <Carousel className="w-full max-w-2xl">
