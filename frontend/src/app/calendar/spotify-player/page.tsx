@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadSpotifyPlayer } from "./player";
 
 interface Music {
@@ -32,14 +32,19 @@ function getSpotifyAccessToken(): string | null {
 }
 
 export default function MusicPlayer() {
-  const [isPaused, setIsPaused] = useState<boolean>(true);
+  const [isPaused, setIsPaused] = useState(true);
   const [playerInstance, setPlayerInstance] = useState<Spotify.Player | null>(
     null
   );
-  const [hasLoadedTrack, setHasLoadedTrack] = useState(false);
   const [musicRecord, setMusicRecord] = useState<MusicRecord>();
   const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [repeatMode, setRepeatMode] = useState<"off" | "context" | "track">(
+    "off"
+  );
+  const [hasLoadedTrack, setHasLoadedTrack] = useState(false);
+
   const token = getSpotifyAccessToken();
+  const progressRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!token) {
@@ -129,9 +134,46 @@ export default function MusicPlayer() {
     }
   };
 
+  // 다음 트랙으로 이동
+  const handleNext = async () => {
+    if (!token || !deviceId) return;
+    await fetch("https://api.spotify.com/v1/me/player/next", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  };
+
+  // 이전 트랙으로 이동
+  const handlePrevious = async () => {
+    if (!token || !deviceId) return;
+    await fetch("https://api.spotify.com/v1/me/player/previous", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  };
+
+  // 트랙 반복 상태
+  const toggleRepeatMode = async () => {
+    if (!token) return;
+    const nextMode =
+      repeatMode === "off"
+        ? "context"
+        : repeatMode === "context"
+        ? "track"
+        : "off";
+    await fetch(
+      "https://api.spotify.com/v1/me/player/repeat?state=" + nextMode,
+      {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    setRepeatMode(nextMode);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold text-[#393D3F] mb-6">
+    <div className="flex flex-col items-center w-full max-w-2xl mx-auto mt-10 p-4 border rounded-lg shadow">
+      <h2 className="text-xl font-bold text-[#393D3F] mb-4">
         {musicRecord?.date} 재생 목록
       </h2>
 
@@ -153,26 +195,53 @@ export default function MusicPlayer() {
           </li>
         ))}
       </ul>
-      <div className="mt-4 flex space-x-4 items-center">
+
+      <div className="flex space-x-4 mb-4 mt-4">
+        <button
+          onClick={handlePrevious}
+          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          ⏮️
+        </button>
         <button
           onClick={handleTogglePlay}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          {isPaused ? "▶️ 재생" : "⏸️ 일시정지"}
+          {isPaused ? "▶️" : "⏸️"}
         </button>
+        <button
+          onClick={handleNext}
+          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          ⏭️
+        </button>
+      </div>
 
-        <label className="text-gray-600 text-sm">
-          볼륨:
+      <div className="flex space-x-4 items-center">
+        <label className="text-sm text-gray-700">
+          볼륨
           <input
             type="range"
             min="0"
             max="1"
             step="0.01"
-            onChange={handleVolumeChange}
             defaultValue="0.5"
+            onChange={handleVolumeChange}
             className="ml-2 w-32"
           />
         </label>
+
+        <button
+          onClick={toggleRepeatMode}
+          className="px-3 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+        >
+          🔁{" "}
+          {repeatMode === "off"
+            ? "없음"
+            : repeatMode === "context"
+            ? "전체"
+            : "한곡"}
+        </button>
       </div>
     </div>
   );
