@@ -9,22 +9,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDate, Monthly } from "@/types/calendar";
 import { User } from "@/types/user";
 import { FollowCount } from "@/types/follow";
-import { apiClient } from "@/lib/api/apiClient";
 import { handleDayCellDidMount, handleEventDidMount } from "@/components/calendar/eventHandlers";
+import { AxiosError } from "axios";
+import { useGlobalAlert } from "../GlobalAlert";
+import { fetchUser } from "@/lib/api/user";
+import { fetchFollowCount } from "@/lib/api/follow";
+import { fetchMonthlyData } from "@/lib/api/calendar";
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
-  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
-  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth() + 1);
-  const [user, setUser] = useState<User | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
-  const [ownerId, setOwnerId] = useState<string | null>(null);
   const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(false);
+  const [calendarOwner, setCalendarOwner] = useState<User | null>(null);
   const [today, setToday] = useState(new Date());
+  const { setAlert } = useGlobalAlert();
 
   const router = useRouter();
   const params = useSearchParams();
+  const queryString = params.toString();
 
   const events = useMemo(
       () =>
@@ -46,56 +51,85 @@ const Calendar: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // 캘린더 소유자 데이터 조회
   useEffect(() => {
-    const fetchOwnerId = async () => {
-      const userId = params.get("userId");
-      let currentOwnerId: string | null = null;
+    const calendarOwnerId = params.get("userId");
 
-      // 현재 로그인한 사용자의 정보 조회
-      const response = await apiClient.get("/user/byCookie");
-      const currentUser: User = response.data.data();
+    async function initCalendarOwner() {
+      if (calendarOwnerId === null) {
+        const response = await fetchUser(`/user/byCookie`);
 
-      // 파라미터가 없거나 현재 로그인한 유저와 동일하다면 현재 로그인한 유저가 캘린더 오너
-      if (!userId || userId === currentUser.id) {
-        setUser(currentUser);
-        currentOwnerId = currentUser.id;
+        const calendarOwner: User = response.data;
+
+        setCalendarOwner(calendarOwner);
         setIsCalendarOwner(true);
-      } else { // 아니라면 userId를 가진 유저와 맞팔인지 확인
-        const response = await apiClient.get(`/follows/check/${userId}`)
-        const isMutualFollowing: boolean = response.data.data();
+      } else {
+        const responseByCookie = await fetchUser(`/user/byCookie`);
+        const responseById = await fetchUser(`/user/${calendarOwnerId}`)
 
-        if (isMutualFollowing) { // 맞팔이라면 userId를 가진 유저가 캘린더 오너
-          const response = await apiClient.get(`/user/${userId}`);
-          const fetchedUser: User = response.data.data();
+        const currentUser: User = responseByCookie.data;
+        const calendarOwner: User = responseById.data;
 
-          setUser(fetchedUser);
-          currentOwnerId = fetchedUser.id;
-          setIsCalendarOwner(false);
-        } else { // 아니라면 캘린더 조회 권한 없음
-          alert("캘린더를 조회할 권한이 없습니다.");
-          router.push("/calendar");
-          return;
-        }
+        setCalendarOwner(calendarOwner);
+        setIsCalendarOwner(currentUser.id === calendarOwner.id);
       }
-
-      if (currentOwnerId) {
-        setOwnerId(currentOwnerId);
-        fetchFollowCount(currentOwnerId);
-      }
-    };
-
-    fetchOwnerId();
-  }, [params]);
-
-  useEffect(() => {
-    if (ownerId) {
-      fetchCalendarData(currentYear, currentMonth);
     }
-  }, [ownerId, currentYear, currentMonth]);
+
+    initCalendarOwner();
+  }, [queryString])
+
+  // 캘린더 소유자의 팔로잉, 팔로워 수 조회
+  useEffect(() => {
+    async function initFollowCount() {
+      if (calendarOwner) {
+        const response = await fetchFollowCount(calendarOwner.id);
+
+        const followCount: FollowCount = response.data.data;
+
+        setFollowingCount(followCount.followingCount);
+        setFollowerCount(followCount.followerCount);
+      }
+    }
+
+    initFollowCount();
+  }, [calendarOwner])
+
+  // 캘린더 소유자의 먼슬리 캘린더 데이터 조회
+  useEffect(() => {
+    async function initMonthly(year: number, month: number) {
+      if (isCalendarOwner === null || !calendarOwner) return;
+
+      try {
+        const response = await fetchMonthlyData(
+            year,
+            month,
+            isCalendarOwner ? undefined : calendarOwner.id
+        );
+
+        const monthly: Monthly = response.data.data;
+
+        setMonthly(monthly.monthly);
+      } catch (error) { // 예외 처리
+        if (error instanceof AxiosError)
+          setAlert({
+            code: error.response!.status.toString(),
+            message:  error.response!.data.msg,
+          });
+
+        setTimeout(() => {
+          router.push("/calendar");
+        }, 2000); // 2초 대기 후 이동
+
+        return;
+      }
+    }
+
+    initMonthly(selectedYear, selectedMonth);
+  }, [isCalendarOwner, selectedYear, selectedMonth])
 
   const handleDateChange = (arg: DatesSetArg) => {
-    setCurrentYear(arg.view.currentStart.getFullYear());
-    setCurrentMonth(arg.view.currentStart.getMonth() + 1);
+    setSelectedYear(arg.view.currentStart.getFullYear());
+    setSelectedMonth(arg.view.currentStart.getMonth() + 1);
   };
 
   const handleDayCellContent = (arg: { dayNumberText: string }) => {
@@ -127,41 +161,22 @@ const Calendar: React.FC = () => {
     }
   };
 
-  const fetchFollowCount = async (userId: string | undefined) => {
-    const response = await apiClient.get(`/follows/count/${userId}`);
-    const data: FollowCount = response.data.data();
-
-    setFollowerCount(data.followerCount);
-    setFollowingCount(data.followingCount);
-  };
-
-  const fetchCalendarData = async (year: number, month: number) => {
-    const headers: Record<string, string> = {
-      ...(isCalendarOwner ? {} : { "Calendar-Owner-Id": ownerId! }),
-    };
-
-    const response = await apiClient.get(`/calendar?year=${year}&month=${month}`, { headers });
-    const data: Monthly = response.data.data;
-
-    setMonthly(data.monthly);
-  };
-
   return (
       <div className="flex flex-col w-full px-10 justify-center items-center">
         <div className="flex justify-end mt-4 mb-4" style={{width: "min(90vh, calc(100vw - 18rem))"}}>
           <h2 className="text-xl text-[#393D3F]">
-            {user?.name ?? "나"}의 캘린더📆
+            {calendarOwner?.name ?? "나"}의 캘린더📆
           </h2>
           <div className="flex space-x-4 ml-4">
             <button
                 className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2"
-                onClick={() => handleFollowButtonClick(ownerId!)}
+                onClick={() => handleFollowButtonClick(calendarOwner!.id)}
             >
               {followerCount} 팔로워
             </button>
             <button
                 className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2"
-                onClick={() => handleFollowButtonClick(ownerId!)}
+                onClick={() => handleFollowButtonClick(calendarOwner!.id)}
             >
               {followingCount} 팔로잉
             </button>
