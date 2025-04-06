@@ -151,37 +151,43 @@ const Calendar: React.FC = () => {
     };
   }, [queryString]);
 
+  // 먼슬리 캘린더에서 연도와 월이 변경된 경우 상태 저장
   const handleDateChange = (arg: DatesSetArg) => {
     setSelectedYear(arg.view.currentStart.getFullYear());
     setSelectedMonth(arg.view.currentStart.getMonth() + 1);
   };
 
+  // 날짜 셀의 내용에서 숫자 뒤에 오는 "일" 삭제
   const handleDayCellContent = (arg: { dayNumberText: string }) => {
     return (<span className="ml-auto">{arg.dayNumberText.replace("일", "")}</span>
     );
   };
 
-  const handleFollowButtonClick = (ownerId: string) => {
-    router.push(`/follow?userId=${ownerId}`);
+  // 팔로워 또는 팔로잉을 클릭할 경우 목록 페이지로 라우팅
+  const handleFollowCountClick = () => {
+    if (calendarOwner) {
+      router.push(`/follow?userId=${calendarOwner.id}`);
+    }
   };
 
+  // 날짜 셀을 클릭한 경우 분기 처리
   const handleDateClick = (arg: { dateStr: string }) => {
-    const clickedDate: CalendarDate | undefined = monthly?.find(
-        (calendarDate) => calendarDate.date === arg.dateStr
-    );
+    if (monthly) {
+      const calendarDate: CalendarDate | undefined = monthly.find(
+          (calendarDate) => calendarDate.date === arg.dateStr
+      );
 
-    if (!clickedDate && isCalendarOwner) {
-      const [yearStr, monthStr, dayStr] = arg.dateStr.split("-");
-
-      const year = parseInt(yearStr, 10);
-      const month = parseInt(monthStr, 10);
-      const day = parseInt(dayStr, 10);
-
-      router.push(`/calendar/record?year=${year}&month=${month}&day=${day}`);
-    } else if (clickedDate && isCalendarOwner) {
-      router.push(`/calendar/${clickedDate.id}`);
-    } else if (clickedDate && !isCalendarOwner) {
-      router.push(`/calendar/${clickedDate.id}?readOnly=true`);
+      if (!calendarDate && isCalendarOwner) { // 해당 날짜에 기록이 없는 경우 기록 페이지로 이동
+        const [year, month, day] = arg.dateStr.split("-");
+        router.push(`/calendar/record?year=${year}&month=${month}&day=${day}`);
+      } else if (calendarDate) { // 해당 날짜에 기록이 있는 경우 상세 페이지로 이동
+        router.push(`/calendar/${calendarDate.id}`);
+      } else {
+        setAlert({
+          code: "404",
+          message: "해당 날짜에 기록된 음악이 없습니다.",
+        });
+      }
     }
   };
 
@@ -193,14 +199,14 @@ const Calendar: React.FC = () => {
         </h2>
         <div className="flex space-x-4 ml-4">
           <button
-            className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2"
-            onClick={() => handleFollowButtonClick(calendarOwner!.id)}
+            className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
+            onClick={handleFollowCountClick}
           >
             {followerCount} 팔로워
           </button>
           <button
-            className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2"
-            onClick={() => handleFollowButtonClick(calendarOwner!.id)}
+            className="text-lg text-[#393D3F] bg-[#E8E0FF] rounded-lg px-2"
+            onClick={handleFollowCountClick}
           >
             {followingCount} 팔로잉
           </button>
