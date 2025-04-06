@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { loadSpotifyPlayer } from "./player";
 
 interface Music {
@@ -41,10 +41,12 @@ export default function MusicPlayer() {
   const [repeatMode, setRepeatMode] = useState<"off" | "context" | "track">(
     "off"
   );
-  const [hasLoadedTrack, setHasLoadedTrack] = useState(false);
+  const [hasLoadedAllTracks, setHasLoadedAllTracks] = useState(false);
+  const [hasLoadedSingleTrack, setHasLoadedSingleTrack] = useState(false);
+  const [currentTrackUri, setCurrentTrackUri] = useState<string | null>(null);
+  const [isPlayingAll, setIsPlayingAll] = useState(false);
 
   const token = getSpotifyAccessToken();
-  const progressRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!token) {
@@ -68,25 +70,31 @@ export default function MusicPlayer() {
     loadSpotifyPlayer(token, (player, deviceId) => {
       console.log("🚀 플레이어 준비 완료, deviceId:", deviceId);
       setDeviceId(deviceId);
-
       setPlayerInstance(player);
 
       // 재생 상태 변화 감지
       player.addListener("player_state_changed", (state) => {
         if (!state) return;
+
         setIsPaused(state.paused);
+
+        const uri = state?.track_window?.current_track?.uri;
+        if (uri) {
+          setCurrentTrackUri(uri);
+        } else {
+          setCurrentTrackUri(null);
+        }
+
         console.log("🎧 상태 변경됨: isPaused =", state.paused);
       });
     });
   }, []);
 
-  // 재생/일시정지 버튼 누르면 자동으로 재생 <-> 일시정지 전환
   const handleTogglePlay = async () => {
     if (!playerInstance || !deviceId || !musicRecord) return;
 
     try {
-      // 트랙이 아직 로드되지 않았다면, 먼저 플레이 API로 트랙 로드
-      if (!hasLoadedTrack) {
+      if (!hasLoadedAllTracks) {
         const uris = musicRecord.musics.map((music) => music.uri);
         const res = await fetch(
           "https://api.spotify.com/v1/me/player/play?device_id=" + deviceId,
@@ -96,34 +104,57 @@ export default function MusicPlayer() {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              uris: uris,
-            }),
+            body: JSON.stringify({ uris }),
           }
         );
 
         if (!res.ok) {
-          console.error("🎵 트랙 로드 실패:", await res.text());
+          console.error("🎵 전체 트랙 로드 실패:", await res.text());
           return;
         }
 
-        console.log("✅ 트랙 로드 완료");
-        setHasLoadedTrack(true);
-        return; // 재생은 Spotify가 자동으로 해주기 때문에 여기서 return
+        console.log("✅ 전체 트랙 로드 완료");
+        setHasLoadedAllTracks(true);
+        setHasLoadedSingleTrack(false);
+        setIsPlayingAll(true);
+        return;
       }
 
-      // 트랙이 로드되어 있다면, togglePlay 실행
       await playerInstance.togglePlay();
     } catch (err) {
       console.error("🎧 토글 실패:", err);
     }
   };
 
-  // 볼륨 조절 슬라이더
+  const handlePlaySingleTrack = async (uri: string) => {
+    if (!token || !deviceId) return;
+
+    const res = await fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uris: [uri] }),
+      }
+    );
+
+    if (res.ok) {
+      console.log("🎶 단일 곡 재생됨:", uri);
+      setHasLoadedSingleTrack(true);
+      setHasLoadedAllTracks(false);
+      setIsPlayingAll(false);
+    } else {
+      console.error("❌ 단일 곡 재생 실패:", await res.text());
+    }
+  };
+
   const handleVolumeChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const volume = Number(event.target.value); // 0 ~ 1 범위
+    const volume = Number(event.target.value);
     if (!playerInstance) return;
 
     try {
@@ -134,7 +165,6 @@ export default function MusicPlayer() {
     }
   };
 
-  // 다음 트랙으로 이동
   const handleNext = async () => {
     if (!token || !deviceId) return;
     await fetch("https://api.spotify.com/v1/me/player/next", {
@@ -143,7 +173,6 @@ export default function MusicPlayer() {
     });
   };
 
-  // 이전 트랙으로 이동
   const handlePrevious = async () => {
     if (!token || !deviceId) return;
     await fetch("https://api.spotify.com/v1/me/player/previous", {
@@ -152,7 +181,6 @@ export default function MusicPlayer() {
     });
   };
 
-  // 트랙 반복 상태
   const toggleRepeatMode = async () => {
     if (!token) return;
     const nextMode =
@@ -181,7 +209,12 @@ export default function MusicPlayer() {
         {musicRecord?.musics.map((music) => (
           <li
             key={music.id}
-            className="flex items-center space-x-4 border p-4 rounded-lg border-gray-300 hover:bg-[#e7c6ff] transition"
+            onClick={() => handlePlaySingleTrack(music.uri)}
+            className={`cursor-pointer flex items-center space-x-4 border p-4 rounded-lg border-gray-300 transition ${
+              currentTrackUri === music.uri
+                ? "bg-[#e7c6ff] text-[#393D3F] font-bold"
+                : "hover:bg-[#c8b6ff]"
+            }`}
           >
             <img
               src={music.albumImage}
@@ -190,7 +223,12 @@ export default function MusicPlayer() {
             />
             <div>
               <h3 className="text-lg font-semibold">{music.name}</h3>
-              <p className="text-sm text-gray-500">{music.singer}</p>
+              <p className="text-sm text-gray-500">
+                {music.singer}
+                {currentTrackUri === music.uri && (
+                  <span className="ml-2 text-green-600">(재생 중)</span>
+                )}
+              </p>
             </div>
           </li>
         ))}
@@ -207,7 +245,7 @@ export default function MusicPlayer() {
           onClick={handleTogglePlay}
           className="px-4 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
-          {isPaused ? "▶ 재생" : "⏸ 일시정지"}
+          {!isPlayingAll || isPaused ? "▶ 재생" : "⏸ 일시정지"}
         </button>
         <button
           onClick={handleNext}
@@ -219,7 +257,7 @@ export default function MusicPlayer() {
 
       <div className="flex space-x-4 items-center">
         <label className="text-sm text-gray-700">
-          볼륨
+          volume
           <input
             type="range"
             min="0"
@@ -233,7 +271,7 @@ export default function MusicPlayer() {
 
         <button
           onClick={toggleRepeatMode}
-          className="px-3 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+          className="px-3 py-2 bg-[#c8b6ff] text-white rounded hover:bg-[#e7c6ff]"
         >
           🔁{" "}
           {repeatMode === "off"
