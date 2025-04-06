@@ -180,56 +180,6 @@ public class SpotifyService {
 		}
 	}
 
-	private LocalDate parseReleaseDate(String releaseDate) {
-		if (releaseDate == null || releaseDate.isBlank()) {
-			return null; // 날짜가 없으면 null 반환
-		}
-
-		try {
-			if (releaseDate.length() == 4) {  // "yyyy"
-				return LocalDate.of(Integer.parseInt(releaseDate), 1, 1);
-			} else if (releaseDate.length() == 7) {  // "yyyy-MM"
-				return LocalDate.parse(releaseDate + "-01", DateTimeFormatter.ISO_DATE);
-			} else {  // "yyyy-MM-dd"
-				return LocalDate.parse(releaseDate, DateTimeFormatter.ISO_DATE);
-			}
-		} catch (Exception e) {
-			System.err.println("날짜 변환 오류: " + releaseDate);
-			return null; // 오류 발생 시 null 반환
-		}
-	}
-
-	private Map<String, String> fetchArtistGenres(Set<String> artistIds, String accessToken) {
-		String token = extractToken(accessToken);
-		Map<String, String> artistGenres = new HashMap<>();
-
-		List<Mono<Map.Entry<String, String>>> requests = artistIds.stream()
-			.map(artistId -> webClient.get()
-				.uri("/artists/" + artistId)
-				.headers(headers -> headers.setBearerAuth(token))
-				.retrieve()
-				.bodyToMono(SpotifyArtistResponse.class)
-				.map(response -> Map.entry(artistId, String.join(", ", response.getGenres())))
-				.onErrorResume(e -> {
-					System.err.println("아티스트 ID: " + artistId + " 장르 조회 실패: " + e.getMessage());
-					return Mono.empty();
-				}))
-			.collect(Collectors.toList());
-
-		// 병렬 요청 처리 후 결과 매핑
-		List<Map.Entry<String, String>> results = Mono.zip(requests, objects ->
-				Arrays.stream(objects)
-					.map(o -> (Map.Entry<String, String>) o)
-					.collect(Collectors.toList()))
-			.block();
-
-		if (results != null) {
-			results.forEach(entry -> artistGenres.put(entry.getKey(), entry.getValue()));
-		}
-
-		return artistGenres;
-	}
-
 	public List<MusicRequest> getTopTracksByArtist(String artistId, String accessToken) {
 		String url = "/artists/" + artistId + "/top-tracks?market=KR";
 		String token = extractToken(accessToken);
@@ -266,7 +216,8 @@ public class SpotifyService {
 					track.getArtistsIdAsString(),
 					parsedReleaseDate,
 					track.getAlbum().getImages().get(0).getUrl(),
-					null
+					null,
+					track.getUri()
 				));
 			}
 
@@ -353,7 +304,8 @@ public class SpotifyService {
 					track.getArtistsIdAsString(),
 					parsedReleaseDate,
 					track.getAlbum().getImages().get(0).getUrl(),
-					null
+					null,
+					track.getUri()
 				));
 			}
 
