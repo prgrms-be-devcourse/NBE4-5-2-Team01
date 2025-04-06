@@ -194,7 +194,7 @@ const Calendar: React.FC = () => {
   return (
     <div className="flex flex-col w-full px-10 justify-center items-center">
       <div className="flex justify-end mt-4 mb-4" style={{width: "min(90vh, calc(100vw - 18rem))"}}>
-        <h2 className="text-xl text-[#393D3F]">
+        <h2 className="text-xl text-[#393D3F]" onClick={() => router.push("/user/calendar-visibility")}>
           {calendarOwner?.name ?? "나"}의 캘린더📆
         </h2>
         <div className="flex space-x-4 ml-4">
