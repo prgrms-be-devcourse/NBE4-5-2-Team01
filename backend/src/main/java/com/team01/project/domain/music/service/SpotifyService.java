@@ -123,7 +123,8 @@ public class SpotifyService {
 			track.getArtistsIdAsString(),
 			parsedReleaseDate,
 			track.getAlbum().getImages().get(0).getUrl(),
-			String.join(", ", allGenres)
+			String.join(", ", allGenres),
+			track.getUri()
 		);
 	}
 
@@ -162,7 +163,7 @@ public class SpotifyService {
 				musicRequests.add(new MusicRequest(track.getId(), track.getName(), track.getArtistsAsString(),
 					track.getArtistsIdAsString(),
 					parsedReleaseDate,
-					track.getAlbum().getImages().get(0).getUrl(), ""));
+					track.getAlbum().getImages().get(0).getUrl(), "", track.getUri()));
 			}
 
 			// 모든 아티스트의 장르를 한 번에 가져오기
@@ -229,7 +230,7 @@ public class SpotifyService {
 		// 병렬 요청 처리 후 결과 매핑
 		List<Map.Entry<String, String>> results = Mono.zip(requests, objects ->
 				Arrays.stream(objects)
-					.map(o -> (Map.Entry<String, String>)o)
+					.map(o -> (Map.Entry<String, String>) o)
 					.collect(Collectors.toList()))
 			.block();
 
