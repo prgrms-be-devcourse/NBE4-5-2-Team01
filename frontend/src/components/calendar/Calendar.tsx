@@ -3,7 +3,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DatesSetArg } from "@fullcalendar/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarDate, Monthly } from "@/types/calendar";
@@ -128,6 +128,18 @@ const Calendar: React.FC = () => {
     }
   };
 
+  const events = useMemo(
+    () =>
+      monthly.map((arg) => ({
+        start: arg.date,
+        display: "background",
+        extendedProps: {
+          albumImage: arg.albumImage,
+        },
+      })),
+      [monthly]
+  );
+
   return (
       <div className="flex flex-col w-full px-10 justify-center items-center">
         <div className="flex justify-end mt-4 mb-4" style={{width: "min(90vh, calc(100vw - 18rem))"}}>
@@ -173,13 +185,7 @@ const Calendar: React.FC = () => {
               datesSet={handleDateChange}
               dateClick={handleDateClick}
               dayMaxEvents={true}
-              events={monthly?.map((arg) => ({
-                start: arg.date,
-                display: "background", // 배경 이벤트로 설정
-                extendedProps: {
-                  albumImage: arg.albumImage,
-                },
-              }))}
+              events={events}
               eventDidMount={(info) => {
                 const albumImage = info.event.extendedProps.albumImage;
                 if (albumImage) {
