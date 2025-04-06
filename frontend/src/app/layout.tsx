@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 // import Sidebar from "@/components/Sidebar";
 import ConditionalSidebar from "@/components/ConditionalSidebar";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <Script src="https://sdk.scdn.co/spotify-player.js"></Script>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
