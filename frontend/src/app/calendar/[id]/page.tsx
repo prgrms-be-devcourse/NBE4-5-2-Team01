@@ -51,8 +51,10 @@ export default function MusicDetailPage() {
         initMusicRecords();
     }, [])
 
-    const handleButtonClick = () => {
-        router.push(`/calendar/record?id=${musicRecord!.id}`);
+    const handleEditButtonClick = () => {
+        if (musicRecord) {
+            router.push(`/calendar/record?id=${musicRecord.id}`);
+        }
     }
 
     return <div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto mt-3">
@@ -61,7 +63,7 @@ export default function MusicDetailPage() {
             {
                 (calendarPermission === "EDIT") &&
                 <button className="text-lg text-[#393D3F] bg-[#C8B6FF] rounded-lg px-2"
-                        onClick={handleButtonClick}>수정하기</button>
+                        onClick={handleEditButtonClick}>수정하기</button>
             }
         </div>
         <Carousel className="w-full max-w-2xl">
