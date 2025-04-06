@@ -21,6 +21,7 @@ const Calendar: React.FC = () => {
   const [followerCount, setFollowerCount] = useState(0);
   const [ownerId, setOwnerId] = useState<string | null>(null);
   const [isCalendarOwner, setIsCalendarOwner] = useState<boolean>(false);
+  const [today, setToday] = useState(new Date());
 
   const router = useRouter();
   const params = useSearchParams();
@@ -36,6 +37,14 @@ const Calendar: React.FC = () => {
           })),
       [monthly]
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setToday(new Date());
+    }, 60 * 1000 * 10); // 10분마다 갱신
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchOwnerId = async () => {
@@ -187,7 +196,7 @@ const Calendar: React.FC = () => {
               dayCellDidMount={(arg) => handleDayCellDidMount(arg, monthly)}
               stickyHeaderDates={true}
               validRange={{
-                end: new Date(),
+                end: today,
               }}
           />
         </div>
