@@ -10,7 +10,7 @@ import { CalendarDate, Monthly } from "@/types/calendar";
 import { User } from "@/types/user";
 import { FollowCount } from "@/types/follow";
 import { apiClient } from "@/lib/api/apiClient";
-import { createPlusButton } from "@/components/calendar/plusButton";
+import { handleDayCellDidMount, handleEventDidMount } from "@/components/calendar/eventHandlers";
 
 const Calendar: React.FC = () => {
   const [monthly, setMonthly] = useState<CalendarDate[]>([]);
@@ -186,53 +186,8 @@ const Calendar: React.FC = () => {
               dateClick={handleDateClick}
               dayMaxEvents={true}
               events={events}
-              eventDidMount={(info) => {
-                const albumImage = info.event.extendedProps.albumImage;
-                if (albumImage) {
-                  info.el.style.backgroundImage = `url(${albumImage})`;
-                  info.el.style.backgroundSize = "cover";
-                  info.el.style.backgroundPosition = "center";
-                  info.el.style.opacity = "1";
-                  info.el.style.pointerEvents = "none";
-                }
-                const cell = info.el.closest(".fc-daygrid-day");
-                const dateNumber = cell?.querySelector(".fc-daygrid-day-number") as HTMLElement;
-
-                if (dateNumber) {
-                  dateNumber.style.setProperty("color", "#C8B6FF", "important");
-                  dateNumber.style.setProperty("font-weight", "700", "important");
-                  dateNumber.style.setProperty("text-shadow", "0 0 3px rgba(0,0,0,0.5)", "important");
-                }
-              }}
-              dayCellDidMount={(info) => {
-                const cellDate = info.date.toLocaleDateString("en-CA"); // YYYY-MM-DD 형식으로 변환
-                const hasEvent = monthly.some((event) => event.date === cellDate);
-                const currentDate = new Date().toLocaleDateString("en-CA");
-                const isAfterToday = cellDate > currentDate;
-
-                if (isAfterToday) {
-                  return;
-                }
-                info.el.style.position = "relative"; // 날짜 셀에 상대적인 위치 부여
-
-                const button = createPlusButton(); // [+] 버튼 생성
-                const cell = info.el as HTMLElement;
-
-                cell.addEventListener("mouseenter", () => {
-                  cell.style.backgroundColor = "#D9CFFF"; // 배경색 변경
-                  if (!hasEvent) {
-                    cell.appendChild(button); // 이벤트가 없으면 [+] 버튼 추가
-                  }
-                });
-
-                // 마우스가 셀에서 벗어날 때
-                cell.addEventListener("mouseleave", () => {
-                  cell.style.backgroundColor = ""; // 배경색 원래대로 복구
-                  if (!hasEvent && button.parentNode) {
-                    button.parentNode.removeChild(button); // [+] 버튼 제거
-                  }
-                });
-              }}
+              eventDidMount={handleEventDidMount}
+              dayCellDidMount={(arg) => handleDayCellDidMount(arg, monthly)}
               stickyHeaderDates={true}
               validRange={{
                 end: new Date(),
