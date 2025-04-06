@@ -1,20 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import "./style.css";
+
 import MemoInput from "./MemoInput";
 import MusicList from "./MusicList";
 import MusicSearch from "./MusicSearch";
-import "./style.css";
-import { AlertComponent } from "@/components/alert";
+
 import { Card } from "@/components/ui/card";
+import { useGlobalAlert } from "@/components/GlobalAlert";
 
 export default function CalendarRecordPage() {
   const API_URL = "http://localhost:8080/api/v1";
+  const SPOTIFY_URL = "http://localhost:8080/api/v1/music/spotify";
 
   const router = useRouter();
+
   const searchParams = useSearchParams();
+  const trackId = searchParams.get("trackId");
+  const playlistId = searchParams.get("playlistId");
 
   const id = searchParams.get("id");
   const year = searchParams.get("year");
@@ -23,20 +29,106 @@ export default function CalendarRecordPage() {
 
   const [memo, setMemo] = useState("");
   const [selectedTracks, setSelectedTracks] = useState<any[]>([]);
+
+  const { setAlert } = useGlobalAlert();
   const [isEditing, setIsEditing] = useState(false);
 
-  const [alertData, setAlertData] = useState<{
-    title: string;
-    description: string;
-    variant: "default" | "success" | "warning" | "destructive"
-  } | null>(null);
+  const isFetched = useRef(false);
 
-  // 📌 기존 기록 불러오기 (id가 존재할 경우)
   useEffect(() => {
-    fetchRecord();
-  }, [id]);
+    if (isFetched.current) return;
+    isFetched.current = true;
 
-  const fetchRecord = async () => {
+    const fetchInitialData = async () => {
+      const data = await fetchRecord(id);
+
+      if (data !== undefined) {
+        setMemo(data.memo || "");
+        await setSelectedTracks(data.musics || []);
+      }
+
+      if (trackId) {
+        await fetchTrack(trackId, data?.musics || []);
+      }
+
+      if (playlistId) {
+        if (id === null) {
+          await fetchTracksFromPlaylist(playlistId);
+        }
+        else {
+          setAlert({
+            code: "400-5",
+            message: "오늘은 이미 음악이 기록되어 있어 전체 추가는 불가능해요.",
+          });
+        }
+      }
+    };
+
+    fetchInitialData();
+  }, [trackId, id]);
+
+
+  const fetchTrack = async (trackId: string, musics: any) => {
+    try {
+      const res = await axios.get(`${SPOTIFY_URL}/${trackId}`, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+
+      const { code, msg, data } = res.data;
+      setAlert({ code: code, message: msg });
+
+      if (code.startsWith("2")) {
+        // ✅ 중복 체크 먼저 실행
+        const isDuplicate = musics.some(track => track.id === data.id);
+        if (isDuplicate) {
+          setAlert({
+            code: "400-2",
+            message: "이미 추가된 음악입니다.",
+          });
+          return;
+        }
+
+        // ✅ 20개 초과 여부도 밖에서 확인
+        if (musics.length >= 20) {
+          setAlert({
+            code: "400-3",
+            message: "음악은 최대 20개까지만 추가할 수 있습니다.",
+          });
+          return;
+        }
+
+        // ✅ 문제 없을 경우만 추가
+        setSelectedTracks(prev => [...prev, data]);
+      }
+    } catch (error) {
+      setAlert({
+        code: "500-1",
+        message: "음악 정보를 가져오는 데 실패했습니다."
+      });
+      throw error;
+    }
+  };
+
+  const fetchTracksFromPlaylist = async (playlistId: string) => {
+    try {
+      const res = await axios.get(`${API_URL}/music/spotify/playlist/${playlistId}`, {
+        withCredentials: true,
+      });
+
+      const { code, data, msg } = res.data;
+      setAlert({ code, message: msg });
+
+      if (code.startsWith("200")) {
+        setSelectedTracks(data);
+      }
+    } catch (error) {
+      console.error(error);
+      setAlert({ code: "500-4", message: "플레이리스트 트랙을 불러오지 못했습니다." });
+    }
+  };
+
+  const fetchRecord = async (id: any) => {
     try {
       if (id) {
         setIsEditing(true);
@@ -47,12 +139,22 @@ export default function CalendarRecordPage() {
           withCredentials: true,
         });
 
-        setMemo(res.data.memo || "");
-        setSelectedTracks(res.data.musics || []);
+        // const { code, msg, data } = res.data;
+        // console.log(res.data);
+        // setAlert({ code: code, message: msg });
+        const code = "200";
+        const data = res.data;
+
+        if (code.startsWith("2")) {
+          return data;
+        }
       }
     } catch (error) {
-      console.error("기록 불러오기 실패:", error);
-      router.push("/calendar");
+      setAlert({
+        code: "500-2",
+        message: "음악 기록을 불러오는 데 실패했습니다."
+      });
+      throw error;
     }
   };
 
@@ -61,10 +163,9 @@ export default function CalendarRecordPage() {
     try {
       // 📌 음악이 하나도 선택되지 않았다면 알림 표시
       if (selectedTracks.length === 0) {
-        setAlertData({
-          title: "기록 저장",
-          description: "음악 기록을 추가해주세요",
-          variant: "warning",
+        setAlert({
+          code: "400-4",
+          message: "음악 기록을 추가해주세요.",
         });
         return;
       }
@@ -77,20 +178,23 @@ export default function CalendarRecordPage() {
         if (!confirmSave) return;
       }
 
-      let finalMemo = memo.trim() ? memo : null;
+      const finalMemo = memo.trim();
 
-      await axios.post(`${API_URL}/music/save-all`, selectedTracks, {
+      const saveRes = await axios.post(`${API_URL}/music/save-all`, selectedTracks, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
 
+      const { code, msg } = saveRes.data;
+      setAlert({ code: code, message: msg });
+
       const musicIds = selectedTracks.map((track) => track.id);
 
       if (isEditing) {
         // 기존 기록 수정
-        await axios.put(
+        const musicRes = await axios.put(
           `${API_URL}/calendar/${id}/music`,
           { musicIds: musicIds },
           {
@@ -100,8 +204,9 @@ export default function CalendarRecordPage() {
             withCredentials: true,
           }
         );
+        setAlert({ code: musicRes.data.code, message: musicRes.data.msg });
 
-        await axios.patch(
+        const memoRes = await axios.patch(
           `${API_URL}/calendar/${id}/memo`,
           { memo: finalMemo },
           {
@@ -111,12 +216,13 @@ export default function CalendarRecordPage() {
             withCredentials: true,
           }
         );
+        setAlert({ code: memoRes.data.code, message: memoRes.data.msg });
 
         alert("기록이 성공적으로 수정되었습니다!");
         router.push("/calendar");
       } else {
         // 새 기록 추가
-        await axios.post(
+        const res = await axios.post(
           `${API_URL}/calendar`,
           { memo: finalMemo, musicIds },
           {
@@ -128,16 +234,18 @@ export default function CalendarRecordPage() {
           }
         );
 
+        const { code, msg } = res.data;
+        setAlert({ code: code, message: msg });
+
         alert("새로운 기록이 추가되었습니다!");
         router.push("/calendar");
       }
     } catch (error) {
-      console.error("기록 저장 실패:", error);
-      setAlertData({
-        title: "기록 저장",
-        description: "기록 저장 중 오류 발생",
-        variant: "destructive",
+      setAlert({
+        code: "500-3",
+        message: "음악 기록을 저장하는 중 오류가 발생생했습니다."
       });
+      throw error;
     }
   };
 
@@ -152,13 +260,6 @@ export default function CalendarRecordPage() {
   return (
     <Card className="m-10 bg-white border-0 p-0">
       <div className="p-6">
-        {alertData && (
-          <AlertComponent
-            title={alertData.title}
-            description={alertData.description}
-            variant={alertData.variant}
-          />
-        )}
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-2xl font-bold">
             {isEditing ? "기록 수정" : "기록 추가"}
@@ -168,7 +269,10 @@ export default function CalendarRecordPage() {
           </button>
         </div>
         <div className="space-y-7">
-          <MusicSearch onSelectTrack={handleSelectTrack} />
+          <MusicSearch
+            onSelectTrack={handleSelectTrack}
+            selectedTracks={selectedTracks}
+          />
           <MusicList
             selectedTracks={selectedTracks}
             onRemoveTrack={handleRemoveTrack}
