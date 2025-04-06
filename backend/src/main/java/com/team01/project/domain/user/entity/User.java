@@ -80,11 +80,12 @@ public class User {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (o == null || getClass() != o.getClass())
+	public boolean equals(Object object) {
+		if (object == null || getClass() != object.getClass()) {
 			return false;
+		}
 
-		User user = (User)o;
+		User user = (User)object;
 
 		return Objects.equals(id, user.id);
 	}
