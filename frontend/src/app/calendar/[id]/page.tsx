@@ -29,6 +29,16 @@ interface MusicRecord {
   musics: Music[];
 }
 
+function getSpotifyAccessToken(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie
+    .split(";")
+    .map((c) => c.trim())
+    .find((c) => c.startsWith("spotifyAccessToken="));
+
+  return match ? decodeURIComponent(match.split("=")[1]) : null;
+}
+
 const BASE_URL = "http://localhost:8080/api/v1";
 
 export default function MusicDetailPage() {
@@ -42,6 +52,8 @@ export default function MusicDetailPage() {
   const [currentDay, setCurrentDay] = useState<number>(new Date().getDay());
   const searchParams = useSearchParams();
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [isPremium, setIsPremium] = useState<boolean | null>(null);
+
   const params = useParams();
   const router = useRouter();
 
@@ -74,6 +86,27 @@ export default function MusicDetailPage() {
     };
 
     fetchMusicRecords();
+
+    const checkPremiumStatus = async () => {
+      const token = getSpotifyAccessToken();
+      if (!token) return;
+
+      try {
+        const res = await fetch("https://api.spotify.com/v1/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+
+        setIsPremium(data.product === "premium");
+      } catch (err) {
+        console.error("❌ Spotify 사용자 정보 조회 실패:", err);
+        setIsPremium(false); // 실패 시 기본값: 무료 계정
+      }
+    };
+
+    checkPremiumStatus();
   }, []);
 
   const handleButtonClick = () => {
@@ -136,7 +169,7 @@ export default function MusicDetailPage() {
         <p className="mt-2 text-md text-[#393D3F]">{musicRecord?.memo}</p>
       </div>
 
-      {musicRecord && (
+      {musicRecord && isPremium === true && (
         <button
           className="mt-6 w-full max-w-2xl bg-green-500 text-white py-2 px-4 rounded-lg"
           onClick={() => {
@@ -144,10 +177,25 @@ export default function MusicDetailPage() {
               "spotify-music-record",
               JSON.stringify(musicRecord)
             );
-            router.push("/calendar/spotify-player"); // 🎯 이동할 페이지
+            router.push("/calendar/spotify-player");
           }}
         >
           ▶️ 이날의 플레이리스트 듣기
+        </button>
+      )}
+
+      {musicRecord && isPremium === false && (
+        <button
+          className="mt-6 w-full max-w-2xl bg-green-500 text-white py-2 px-4 rounded-lg"
+          onClick={() => {
+            sessionStorage.setItem(
+              "spotify-music-record",
+              JSON.stringify(musicRecord)
+            );
+            router.push("/player");
+          }}
+        >
+          ▶️ Spotify에서 플레이리스트 듣기
         </button>
       )}
     </div>
