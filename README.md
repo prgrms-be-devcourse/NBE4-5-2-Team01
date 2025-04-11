@@ -96,7 +96,7 @@ npm run dev
 ![Usecase Diagram](https://github.com/user-attachments/assets/bb40ca6e-387e-4ec0-a72c-f0251057f4b2)
 
 ## ERD
-![ERD](https://github.com/user-attachments/assets/c113aef1-aa1c-43d6-a7ce-3e0bb696d01c)
+![ERD](https://github.com/user-attachments/assets/04f4b578-ab86-479a-9338-4fdbfa06d35c)
 
 ## System Architecture
 ![System Architecture](https://github.com/user-attachments/assets/117881b9-3f0e-49c9-b4a7-1b0c94fed91b)
